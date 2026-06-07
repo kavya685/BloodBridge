@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: bloodbridge
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bloodbridge
+    username: postgres
+    password: radhe
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
