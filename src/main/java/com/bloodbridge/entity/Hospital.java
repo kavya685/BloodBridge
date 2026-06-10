@@ -40,4 +40,7 @@ public class Hospital {
 
     private String address;
 
+    @Column(unique = true)
+    private String registrationNumber;
+
 }

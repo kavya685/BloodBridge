@@ -1,6 +1,7 @@
 package com.bloodbridge.controller;
 
-import com.bloodbridge.entity.Hospital;
+import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
+import com.bloodbridge.dto.hospital.HospitalRegistrationResponse;
 import com.bloodbridge.service.HospitalService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +19,8 @@ public class HospitalController {
     }
 
     @PostMapping("/register")
-    public Hospital registerHospital(@RequestBody Hospital hospital)
+    public HospitalRegistrationResponse registerHospital(@RequestBody HospitalRegistrationRequest request)
     {
-        return hospitalService.registerHospital(hospital);
+        return hospitalService.registerHospital(request);
     }
 }
