@@ -1,9 +1,8 @@
 package com.bloodbridge.service;
 
 import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
-import com.bloodbridge.dto.hospital.HospitalRegistrationResponse;
-import com.bloodbridge.entity.Hospital;
+import com.bloodbridge.dto.hospital.HospitalResponse;
 
 public interface HospitalService {
-    HospitalRegistrationResponse registerHospital(HospitalRegistrationRequest request);
+    HospitalResponse registerHospital(HospitalRegistrationRequest request);
 }

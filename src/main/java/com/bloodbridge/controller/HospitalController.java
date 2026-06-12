@@ -1,7 +1,7 @@
 package com.bloodbridge.controller;
 
 import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
-import com.bloodbridge.dto.hospital.HospitalRegistrationResponse;
+import com.bloodbridge.dto.hospital.HospitalResponse;
 import com.bloodbridge.service.HospitalService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ public class HospitalController {
     }
 
     @PostMapping("/register")
-    public HospitalRegistrationResponse registerHospital(@Valid @RequestBody HospitalRegistrationRequest request)
+    public HospitalResponse registerHospital(@Valid @RequestBody HospitalRegistrationRequest request)
     {
         return hospitalService.registerHospital(request);
     }

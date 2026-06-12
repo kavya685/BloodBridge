@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HospitalRegistrationResponse {
+public class HospitalResponse {
 
     private Long id;
 
