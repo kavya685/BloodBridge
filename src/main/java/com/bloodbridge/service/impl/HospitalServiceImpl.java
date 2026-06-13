@@ -6,15 +6,18 @@ import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.HospitalService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public HospitalServiceImpl(HospitalRepository hospitalRepository) {
+    public HospitalServiceImpl(HospitalRepository hospitalRepository, PasswordEncoder passwordEncoder) {
         this.hospitalRepository = hospitalRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .hospitalName(request.getHospitalName())
                 .contactNumber(request.getContactNumber())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .city(request.getCity())
                 .address(request.getAddress())
                 .registrationNumber(request.getRegistrationNumber())
