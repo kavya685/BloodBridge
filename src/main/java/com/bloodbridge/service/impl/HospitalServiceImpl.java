@@ -1,13 +1,18 @@
 package com.bloodbridge.service.impl;
 
+import com.bloodbridge.dto.hospital.HospitalLoginRequest;
+import com.bloodbridge.dto.hospital.HospitalLoginResponse;
 import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
 import com.bloodbridge.dto.hospital.HospitalResponse;
 import com.bloodbridge.entity.Hospital;
+import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.HospitalService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -51,6 +56,29 @@ public class HospitalServiceImpl implements HospitalService {
                 .city(savedHospital.getCity())
                 .address(savedHospital.getAddress())
                 .registrationNumber(savedHospital.getRegistrationNumber())
+                .build();
+    }
+
+    @Override
+    public HospitalLoginResponse loginHospital(HospitalLoginRequest request)
+    {
+        Hospital hospital = hospitalRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if(!passwordEncoder.matches(request.getPassword(), hospital.getPassword()))
+        {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+
+        return HospitalLoginResponse.builder()
+                .message("Login successful")
+                .hospitalName(hospital.getHospitalName())
+                .id(hospital.getId())
+                .contactNumber(hospital.getContactNumber())
+                .email(hospital.getEmail())
+                .city(hospital.getCity())
+                .address(hospital.getAddress())
+                .registrationNumber(hospital.getRegistrationNumber())
                 .build();
     }
 }
