@@ -7,6 +7,7 @@ import com.bloodbridge.dto.hospital.HospitalResponse;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
+import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.HospitalService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,6 +75,23 @@ public class HospitalServiceImpl implements HospitalService {
                 .message("Login successful")
                 .hospitalName(hospital.getHospitalName())
                 .id(hospital.getId())
+                .contactNumber(hospital.getContactNumber())
+                .email(hospital.getEmail())
+                .city(hospital.getCity())
+                .address(hospital.getAddress())
+                .registrationNumber(hospital.getRegistrationNumber())
+                .build();
+    }
+
+    @Override
+    public HospitalResponse getHospitalById(Long id)
+    {
+        Hospital hospital = hospitalRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with id: " + id));
+
+        return HospitalResponse.builder()
+                .id(hospital.getId())
+                .hospitalName(hospital.getHospitalName())
                 .contactNumber(hospital.getContactNumber())
                 .email(hospital.getEmail())
                 .city(hospital.getCity())

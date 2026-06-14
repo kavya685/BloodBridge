@@ -33,4 +33,7 @@ public class HospitalController {
     {
         return hospitalService.loginHospital(request);
     }
+
+    @GetMapping("/hospital/{id}")
+    public
 }

@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface HospitalService {
     HospitalResponse registerHospital(HospitalRegistrationRequest request);
     HospitalLoginResponse loginHospital(HospitalLoginRequest request);
+    HospitalResponse getHospitalById(Long id);
 }
