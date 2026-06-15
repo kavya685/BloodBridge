@@ -1,8 +1,11 @@
 package com.bloodbridge.service.impl;
 
+import com.bloodbridge.dto.donor.DonorLoginRequest;
+import com.bloodbridge.dto.donor.DonorLoginResponse;
 import com.bloodbridge.dto.donor.DonorRegistrationRequest;
 import com.bloodbridge.dto.donor.DonorResponse;
 import com.bloodbridge.entity.Donor;
+import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.InvalidDonorException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.repository.DonorRepository;
@@ -86,6 +89,49 @@ public class DonorServiceImpl implements DonorService {
                 .bloodGroup(savedDonor.getBloodGroup())
                 .available(savedDonor.getAvailable())
                 .lastDonationDate(savedDonor.getLastDonationDate())
+                .build();
+    }
+
+    @Override
+    public DonorLoginResponse loginDonor(DonorLoginRequest request)
+    {
+        Donor donor = donorRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if(!passwordEncoder.matches(request.getPassword(), donor.getPassword()))
+        {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+
+        return DonorLoginResponse.builder()
+                .message("Login successful!")
+                .id(donor.getId())
+                .fullName(donor.getFullName())
+                .dateOfBirth(donor.getDateOfBirth())
+                .contactNumber(donor.getContactNumber())
+                .email(donor.getEmail())
+                .city(donor.getCity())
+                .bloodGroup(donor.getBloodGroup())
+                .lastDonationDate(donor.getLastDonationDate())
+                .build();
+    }
+
+    @Override
+    public DonorResponse getDonorById(Long id)
+    {
+        Donor donor = donorRepository.findById(id)
+                .orElseThrow(() -> new InvalidCredentialsException("Donor not found with id: " + id));
+
+        return DonorResponse.builder()
+                .id(donor.getId())
+                .fullName(donor.getFullName())
+                .dateOfBirth(donor.getDateOfBirth())
+                .contactNumber(donor.getContactNumber())
+                .email(donor.getEmail())
+                .city(donor.getCity())
+                .bloodGroup(donor.getBloodGroup())
+                .available(donor.getAvailable())
+                .lastDonationDate(donor.getLastDonationDate())
                 .build();
     }
 }

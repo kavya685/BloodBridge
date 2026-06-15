@@ -72,7 +72,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         return HospitalLoginResponse.builder()
-                .message("Login successful")
+                .message("Login successful!")
                 .hospitalName(hospital.getHospitalName())
                 .id(hospital.getId())
                 .contactNumber(hospital.getContactNumber())
