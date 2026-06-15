@@ -42,7 +42,7 @@ public class Donor {
     private String password;
 
     @Column(unique = true, nullable = false)
-    private String phoneNumber;
+    private String contactNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -51,6 +51,7 @@ public class Donor {
     @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
     private Boolean available;
 
     private LocalDate lastDonationDate;

@@ -7,6 +7,7 @@ import com.bloodbridge.dto.hospital.HospitalResponse;
 import com.bloodbridge.service.HospitalService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +36,8 @@ public class HospitalController {
     }
 
     @GetMapping("/hospital/{id}")
-    public
+    public HospitalResponse getHospitalById(@PathVariable Long id)
+    {
+        return hospitalService.getHospitalById(id);
+    }
 }
