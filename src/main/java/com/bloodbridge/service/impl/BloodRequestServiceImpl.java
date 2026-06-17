@@ -56,5 +56,23 @@ public class BloodRequestServiceImpl implements BloodRequestService {
                 .build();
     }
 
+    @Override
+    public BloodRequestResponse getBloodRequestById(Long id)
+    {
+        BloodRequest request = bloodRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + id));
 
+        return BloodRequestResponse.builder()
+                .id(request.getId())
+                .hospitalId(request.getHospital().getId())
+                .hospitalName(request.getHospital().getHospitalName())
+                .bloodGroup(request.getBloodGroup())
+                .unitsRequired(request.getUnitsRequired())
+                .description(request.getDescription())
+                .createdAt(request.getCreatedAt())
+                .urgency(request.getUrgency())
+                .expiresAt(request.getExpiresAt())
+                .status(request.getStatus())
+                .build();
+    }
 }
