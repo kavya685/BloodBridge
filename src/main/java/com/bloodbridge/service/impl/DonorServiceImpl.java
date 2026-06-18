@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DonorServiceImpl implements DonorService {
@@ -134,5 +136,29 @@ public class DonorServiceImpl implements DonorService {
                 .available(donor.getAvailable())
                 .lastDonationDate(donor.getLastDonationDate())
                 .build();
+    }
+
+    @Override
+    public List<DonorResponse> getAllDonors()
+    {
+        List<Donor> donors = donorRepository.findAll();
+
+        List<DonorResponse> responses = new ArrayList<>();
+
+        for(Donor donor : donors)
+        {
+            responses.add(DonorResponse.builder()
+                    .id(donor.getId())
+                    .fullName(donor.getFullName())
+                    .dateOfBirth(donor.getDateOfBirth())
+                    .contactNumber(donor.getContactNumber())
+                    .email(donor.getEmail())
+                    .city(donor.getCity())
+                    .bloodGroup(donor.getBloodGroup())
+                    .available(donor.getAvailable())
+                    .lastDonationDate(donor.getLastDonationDate())
+                    .build());
+        }
+        return responses;
     }
 }

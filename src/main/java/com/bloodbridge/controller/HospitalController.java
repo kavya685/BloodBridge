@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/hospitals")
 public class HospitalController {
@@ -35,9 +37,15 @@ public class HospitalController {
         return hospitalService.loginHospital(request);
     }
 
-    @GetMapping("/hospital/{id}")
+    @GetMapping("/{id}")
     public HospitalResponse getHospitalById(@PathVariable Long id)
     {
         return hospitalService.getHospitalById(id);
+    }
+
+    @GetMapping("/all-hospitals")
+    public List<HospitalResponse> getAllHospitals()
+    {
+        return hospitalService.getAllHospitals();
     }
 }

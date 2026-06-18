@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/donors")
 public class DonorController {
@@ -37,9 +39,15 @@ public class DonorController {
         return donorService.loginDonor(request);
     }
 
-    @GetMapping("/donor/{id}")
+    @GetMapping("/{id}")
     public DonorResponse getDonorById(@PathVariable Long id)
     {
         return donorService.getDonorById(id);
+    }
+
+    @GetMapping("/all-donors")
+    public List<DonorResponse> getAllDonors()
+    {
+        return donorService.getAllDonors();
     }
 }

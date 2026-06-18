@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/blood-requests")
 public class BloodRequestController {
@@ -30,5 +32,11 @@ public class BloodRequestController {
     public BloodRequestResponse getBloodRequestById(Long id)
     {
         return bloodRequestService.getBloodRequestById(id);
+    }
+
+    @GetMapping("/all-blood-requests")
+    public List<BloodRequestResponse> getAllBloodRequests()
+    {
+        return bloodRequestService.getAllBloodRequests();
     }
 }

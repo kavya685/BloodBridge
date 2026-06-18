@@ -13,6 +13,8 @@ import com.bloodbridge.service.HospitalService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,5 +100,27 @@ public class HospitalServiceImpl implements HospitalService {
                 .address(hospital.getAddress())
                 .registrationNumber(hospital.getRegistrationNumber())
                 .build();
+    }
+
+    @Override
+    public List<HospitalResponse> getAllHospitals()
+    {
+        List<Hospital> hospitals = hospitalRepository.findAll();
+
+        List<HospitalResponse> responses = new ArrayList<>();
+
+        for(Hospital hospital : hospitals)
+        {
+            responses.add(HospitalResponse.builder()
+                    .id(hospital.getId())
+                    .hospitalName(hospital.getHospitalName())
+                    .contactNumber(hospital.getContactNumber())
+                    .email(hospital.getEmail())
+                    .city(hospital.getCity())
+                    .address(hospital.getAddress())
+                    .registrationNumber(hospital.getRegistrationNumber())
+                    .build());
+        }
+        return responses;
     }
 }

@@ -12,6 +12,9 @@ import com.bloodbridge.service.BloodRequestService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class BloodRequestServiceImpl implements BloodRequestService {
@@ -77,5 +80,30 @@ public class BloodRequestServiceImpl implements BloodRequestService {
                 .expiresAt(request.getExpiresAt())
                 .status(request.getStatus())
                 .build();
+    }
+
+    @Override
+    public List<BloodRequestResponse> getAllBloodRequests()
+    {
+        List<BloodRequest> bloodRequests = bloodRequestRepository.findAll();
+
+        List<BloodRequestResponse> responses = new ArrayList<>();
+
+        for(BloodRequest bloodRequest : bloodRequests)
+        {
+            responses.add(BloodRequestResponse.builder()
+                    .id(bloodRequest.getId())
+                    .hospitalId(bloodRequest.getHospital().getId())
+                    .hospitalName(bloodRequest.getHospital().getHospitalName())
+                    .bloodGroup(bloodRequest.getBloodGroup())
+                    .unitsRequired(bloodRequest.getUnitsRequired())
+                    .description(bloodRequest.getDescription())
+                    .createdAt(bloodRequest.getCreatedAt())
+                    .urgency(bloodRequest.getUrgency())
+                    .expiresAt(bloodRequest.getExpiresAt())
+                    .status(bloodRequest.getStatus())
+                    .build());
+        }
+        return responses;
     }
 }
