@@ -9,9 +9,11 @@ import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.BloodRequestService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class BloodRequestServiceImpl implements BloodRequestService {
 
     private final BloodRequestRepository bloodRequestRepository;
@@ -53,6 +55,7 @@ public class BloodRequestServiceImpl implements BloodRequestService {
                 .urgency(savedRequest.getUrgency())
                 .expiresAt(savedRequest.getExpiresAt())
                 .status(savedRequest.getStatus())
+                .id(savedRequest.getId())
                 .build();
     }
 
