@@ -4,6 +4,7 @@ import com.bloodbridge.dto.bloodRequest.BloodRequestCreateRequest;
 import com.bloodbridge.dto.bloodRequest.BloodRequestResponse;
 import com.bloodbridge.service.BloodRequestService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class BloodRequestController {
     }
 
     @GetMapping("/{id}")
-    public BloodRequestResponse getBloodRequestById(Long id)
+    public BloodRequestResponse getBloodRequestById(@PathVariable Long id)
     {
         return bloodRequestService.getBloodRequestById(id);
     }
