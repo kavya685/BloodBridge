@@ -41,5 +41,9 @@ public class DonationApplicationController {
         return donationApplicationService.getAllDonationApplications();
     }
 
-
+    @GetMapping("/blood-requests/{bloodRequestId}")
+    public List<DonationApplicationResponse> getApplicationsByBloodRequest(@PathVariable @RequestBody Long bloodRequestId)
+    {
+        return donationApplicationService.getApplicationsByBloodRequest(bloodRequestId);
+    }
 }
