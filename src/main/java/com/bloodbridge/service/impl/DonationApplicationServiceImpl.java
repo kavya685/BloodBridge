@@ -96,4 +96,23 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         }
         return responses;
     }
+
+    @Override
+    public List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId) {
+        List<DonationApplication> applications = donationApplicationRepository.findByBloodRequestId(bloodRequestId);
+        List<DonationApplicationResponse> responses = new ArrayList<>();
+
+        for (DonationApplication application : applications) {
+            responses.add(
+                    DonationApplicationResponse.builder()
+                            .id(application.getId())
+                            .donorId(application.getDonor().getId())
+                            .donorName(application.getDonor().getFullName())
+                            .bloodRequestId(application.getBloodRequest().getId())
+                            .status(application.getStatus())
+                            .appliedAt(application.getAppliedAt())
+                            .build());
+        }
+        return responses;
+    }
 }

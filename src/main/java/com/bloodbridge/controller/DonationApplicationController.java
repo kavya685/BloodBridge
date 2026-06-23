@@ -40,4 +40,6 @@ public class DonationApplicationController {
     {
         return donationApplicationService.getAllDonationApplications();
     }
+
+
 }
