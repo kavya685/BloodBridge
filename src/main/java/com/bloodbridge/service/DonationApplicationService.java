@@ -14,4 +14,6 @@ public interface DonationApplicationService {
     List<DonationApplicationResponse> getAllDonationApplications();
 
     List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId);
+
+    DonationApplicationResponse acceptApplication(Long applicationId);
 }
