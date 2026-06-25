@@ -6,6 +6,7 @@ import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.DonationApplication;
 import com.bloodbridge.entity.Donor;
 import com.bloodbridge.enums.ApplicationStatus;
+import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.DonationApplicationRepository;
@@ -42,6 +43,13 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         BloodRequest bloodRequest = bloodRequestRepository.findById(request.getBloodRequestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + request.getBloodRequestId()));
 
+        if(donationApplicationRepository.existsByDonorAndBloodRequest(
+                        donor, bloodRequest))
+        {
+            throw new ResourceAlreadyExistsException(
+                    "You have already applied for this blood request");
+        }
+
         DonationApplication donationApplication = DonationApplication.builder()
                         .donor(donor)
                         .bloodRequest(bloodRequest)
@@ -52,6 +60,7 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         DonationApplication savedRequest = donationApplicationRepository.save(donationApplication);
 
         return DonationApplicationResponse.builder()
+                .id(savedRequest.getId())
                 .bloodRequestId(savedRequest.getBloodRequest().getId())
                 .donorId(savedRequest.getDonor().getId())
                 .donorName(savedRequest.getDonor().getFullName())
@@ -152,5 +161,34 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                 .status(updatedApplication.getStatus())
                 .appliedAt(updatedApplication.getAppliedAt())
                 .build();
+    }
+
+    @Override
+    public List<DonationApplicationResponse> getApplicationsByDonor(Long donorId)
+    {
+        // here orelsethrow does not work coz list returns empty if no data is there
+        // not null, orelse works with null or optional
+        List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donorId);
+
+        if(applications.isEmpty())
+        {
+            throw new ResourceNotFoundException("No donation applications found for donor with id: " + donorId);
+        }
+
+        List<DonationApplicationResponse> responses = new ArrayList<>();
+        for(DonationApplication application : applications)
+        {
+            responses.add(
+                    DonationApplicationResponse.builder()
+                            .id(application.getId())
+                            .donorId(application.getDonor().getId())
+                            .donorName(application.getDonor().getFullName())
+                            .bloodRequestId(application.getBloodRequest().getId())
+                            .status(application.getStatus())
+                            .appliedAt(application.getAppliedAt())
+                            .build()
+            );
+        }
+        return responses;
     }
 }

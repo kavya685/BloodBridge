@@ -18,4 +18,6 @@ public interface DonationApplicationService {
     DonationApplicationResponse acceptApplication(Long applicationId);
 
     DonationApplicationResponse rejectApplication(Long applicationId);
+
+    List<DonationApplicationResponse> getApplicationsByDonor(Long donorId);
 }

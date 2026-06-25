@@ -3,6 +3,7 @@ package com.bloodbridge.controller;
 import com.bloodbridge.dto.donationApplication.DonationApplicationCreateRequest;
 import com.bloodbridge.dto.donationApplication.DonationApplicationResponse;
 import com.bloodbridge.service.DonationApplicationService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,8 @@ public class DonationApplicationController {
         this.donationApplicationService = donationApplicationService;
     }
 
-    @PostMapping("/create")
-    public DonationApplicationResponse createDonationApplication(@RequestBody DonationApplicationCreateRequest request)
+    @PostMapping
+    public DonationApplicationResponse createDonationApplication(@Valid @RequestBody DonationApplicationCreateRequest request)
     {
         return donationApplicationService.createDonationApplication(request);
     }
@@ -36,26 +37,26 @@ public class DonationApplicationController {
         return donationApplicationService.getDonationApplicationById(id);
     }
 
-    @GetMapping("/all-donation-applications")
+    @GetMapping
     public List<DonationApplicationResponse> getAllDonationApplications()
     {
         return donationApplicationService.getAllDonationApplications();
     }
 
     @GetMapping("/blood-requests/{bloodRequestId}")
-    public List<DonationApplicationResponse> getApplicationsByBloodRequest(@PathVariable @RequestBody Long bloodRequestId)
+    public List<DonationApplicationResponse> getApplicationsByBloodRequest(@PathVariable Long bloodRequestId)
     {
         return donationApplicationService.getApplicationsByBloodRequest(bloodRequestId);
     }
 
-    @PutMapping("/accept-application/{applicationId}")
-    public DonationApplicationResponse acceptApplication(@RequestBody @PathVariable Long applicationId)
+    @PutMapping("/accept/{applicationId}")
+    public DonationApplicationResponse acceptApplication(@PathVariable Long applicationId)
     {
         return donationApplicationService.acceptApplication(applicationId);
     }
 
-    @PutMapping("/reject-application/{applicationId}")
-    public DonationApplicationResponse rejectApplication(@RequestBody @PathVariable Long applicationId)
+    @PutMapping("/reject/{applicationId}")
+    public DonationApplicationResponse rejectApplication(@PathVariable Long applicationId)
     {
         return donationApplicationService.rejectApplication(applicationId);
     }

@@ -27,14 +27,14 @@ public class DonorController {
         this.donorService = donorService;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public DonorResponse registerDonor(@Valid @RequestBody DonorRegistrationRequest request)
     {
         return donorService.registerDonor(request);
     }
 
     @PostMapping("/login")
-    public DonorLoginResponse loginDonor(@RequestBody DonorLoginRequest request)
+    public DonorLoginResponse loginDonor(@Valid @RequestBody DonorLoginRequest request)
     {
         return donorService.loginDonor(request);
     }
@@ -45,7 +45,7 @@ public class DonorController {
         return donorService.getDonorById(id);
     }
 
-    @GetMapping("/all-donors")
+    @GetMapping
     public List<DonorResponse> getAllDonors()
     {
         return donorService.getAllDonors();

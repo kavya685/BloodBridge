@@ -3,6 +3,7 @@ package com.bloodbridge.controller;
 import com.bloodbridge.dto.bloodRequest.BloodRequestCreateRequest;
 import com.bloodbridge.dto.bloodRequest.BloodRequestResponse;
 import com.bloodbridge.service.BloodRequestService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,8 @@ public class BloodRequestController {
         this.bloodRequestService = bloodRequestService;
     }
 
-    @PostMapping("/create")
-    public BloodRequestResponse createBloodRequest(@RequestBody BloodRequestCreateRequest request)
+    @PostMapping
+    public BloodRequestResponse createBloodRequest(@Valid @RequestBody BloodRequestCreateRequest request)
     {
         return bloodRequestService.createBloodRequest(request);
     }
@@ -35,7 +36,7 @@ public class BloodRequestController {
         return bloodRequestService.getBloodRequestById(id);
     }
 
-    @GetMapping("/all-blood-requests")
+    @GetMapping
     public List<BloodRequestResponse> getAllBloodRequests()
     {
         return bloodRequestService.getAllBloodRequests();

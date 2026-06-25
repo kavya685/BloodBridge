@@ -25,14 +25,14 @@ public class HospitalController {
         this.hospitalService = hospitalService;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public HospitalResponse registerHospital(@Valid @RequestBody HospitalRegistrationRequest request)
     {
         return hospitalService.registerHospital(request);
     }
 
     @PostMapping("/login")
-    public HospitalLoginResponse loginHospital(@RequestBody HospitalLoginRequest request)
+    public HospitalLoginResponse loginHospital(@Valid @RequestBody HospitalLoginRequest request)
     {
         return hospitalService.loginHospital(request);
     }
@@ -43,7 +43,7 @@ public class HospitalController {
         return hospitalService.getHospitalById(id);
     }
 
-    @GetMapping("/all-hospitals")
+    @GetMapping
     public List<HospitalResponse> getAllHospitals()
     {
         return hospitalService.getAllHospitals();
