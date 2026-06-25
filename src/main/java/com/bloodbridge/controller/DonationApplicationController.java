@@ -49,8 +49,14 @@ public class DonationApplicationController {
     }
 
     @PutMapping("/accept-application/{applicationId}")
-    public DonationApplicationResponse acceptApplication(Long applicationId)
+    public DonationApplicationResponse acceptApplication(@RequestBody @PathVariable Long applicationId)
     {
         return donationApplicationService.acceptApplication(applicationId);
+    }
+
+    @PutMapping("/reject-application/{applicationId}")
+    public DonationApplicationResponse rejectApplication(@RequestBody @PathVariable Long applicationId)
+    {
+        return donationApplicationService.rejectApplication(applicationId);
     }
 }

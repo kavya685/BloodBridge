@@ -134,4 +134,23 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                 .appliedAt(updatedApplication.getAppliedAt())
                 .build();
     }
+
+    @Override
+    public DonationApplicationResponse rejectApplication(Long applicationId)
+    {
+        DonationApplication application = donationApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
+
+        application.setStatus(ApplicationStatus.REJECTED);
+        DonationApplication updatedApplication = donationApplicationRepository.save(application);
+
+        return DonationApplicationResponse.builder()
+                .id(updatedApplication.getId())
+                .donorId(updatedApplication.getDonor().getId())
+                .donorName(updatedApplication.getDonor().getFullName())
+                .bloodRequestId(updatedApplication.getBloodRequest().getId())
+                .status(updatedApplication.getStatus())
+                .appliedAt(updatedApplication.getAppliedAt())
+                .build();
+    }
 }
