@@ -6,6 +6,8 @@ import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.DonationApplication;
 import com.bloodbridge.entity.Donor;
 import com.bloodbridge.enums.ApplicationStatus;
+import com.bloodbridge.enums.BloodRequestStatus;
+import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
@@ -42,6 +44,19 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
 
         BloodRequest bloodRequest = bloodRequestRepository.findById(request.getBloodRequestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + request.getBloodRequestId()));
+
+        if(bloodRequest.getStatus() != BloodRequestStatus.OPEN)
+        {
+            throw new InvalidBloodRequestException("Cannot apply for a blood request that is not open");
+        }
+
+        // this condition is for when no body accepts the request and it expires,
+        // so no one can apply for it anymore
+        if (bloodRequest.getExpiresAt().isBefore(LocalDateTime.now()))
+        {
+            throw new InvalidBloodRequestException(
+                    "This blood request has expired");
+        }
 
         if(donationApplicationRepository.existsByDonorAndBloodRequest(
                         donor, bloodRequest))
@@ -166,8 +181,9 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     @Override
     public List<DonationApplicationResponse> getApplicationsByDonor(Long donorId)
     {
-        // here orelsethrow does not work coz list returns empty if no data is there
-        // not null, orelse works with null or optional
+        // orElseThrow() cannot be used here because findByDonorId()
+        // returns a List, not an Optional. If no records are found,
+        // Spring Data JPA returns an empty List.
         List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donorId);
 
         if(applications.isEmpty())

@@ -41,4 +41,11 @@ public class BloodRequestController {
     {
         return bloodRequestService.getAllBloodRequests();
     }
+
+    @GetMapping("/hospital/{hospitalId}")
+    public List<BloodRequestResponse> getBloodRequestsByHospital(
+            @PathVariable Long hospitalId)
+    {
+        return bloodRequestService.getBloodRequestsByHospital(hospitalId);
+    }
 }

@@ -106,4 +106,39 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         }
         return responses;
     }
+
+    @Override
+    public List<BloodRequestResponse> getBloodRequestsByHospital(Long hospitalId)
+    {
+        List<BloodRequest> bloodRequests =
+                bloodRequestRepository.findByHospitalId(hospitalId);
+
+        if (bloodRequests.isEmpty())
+        {
+            throw new ResourceNotFoundException(
+                    "No blood requests found for hospital with id: " + hospitalId);
+        }
+
+        List<BloodRequestResponse> responses = new ArrayList<>();
+
+        for (BloodRequest bloodRequest : bloodRequests)
+        {
+            responses.add(
+                    BloodRequestResponse.builder()
+                            .id(bloodRequest.getId())
+                            .bloodGroup(bloodRequest.getBloodGroup())
+                            .unitsRequired(bloodRequest.getUnitsRequired())
+                            .description(bloodRequest.getDescription())
+                            .createdAt(bloodRequest.getCreatedAt())
+                            .expiresAt(bloodRequest.getExpiresAt())
+                            .urgency(bloodRequest.getUrgency())
+                            .status(bloodRequest.getStatus())
+                            .hospitalId(bloodRequest.getHospital().getId())
+                            .hospitalName(bloodRequest.getHospital().getHospitalName())
+                            .build()
+            );
+        }
+
+        return responses;
+    }
 }
