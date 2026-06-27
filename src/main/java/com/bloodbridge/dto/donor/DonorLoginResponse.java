@@ -34,4 +34,6 @@ public class DonorLoginResponse {
     private Boolean available;
 
     private LocalDate lastDonationDate;
+
+    private String token;
 }

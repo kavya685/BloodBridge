@@ -10,6 +10,7 @@ import com.bloodbridge.exception.InvalidDonorException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.DonorRepository;
+import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.DonorService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,14 @@ public class DonorServiceImpl implements DonorService {
 
     private final DonorRepository donorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public DonorServiceImpl(DonorRepository donorRepository, PasswordEncoder passwordEncoder)
+    public DonorServiceImpl(DonorRepository donorRepository, PasswordEncoder passwordEncoder,
+                            JwtService jwtService)
     {
         this.donorRepository = donorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -106,8 +110,11 @@ public class DonorServiceImpl implements DonorService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
+        String token = jwtService.generateToken(donor.getEmail());
+
         return DonorLoginResponse.builder()
                 .message("Login successful!")
+                .token(token)
                 .id(donor.getId())
                 .fullName(donor.getFullName())
                 .dateOfBirth(donor.getDateOfBirth())

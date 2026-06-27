@@ -27,4 +27,6 @@ public class HospitalLoginResponse {
     private String address;
 
     private String registrationNumber;
+
+    private String token;
 }

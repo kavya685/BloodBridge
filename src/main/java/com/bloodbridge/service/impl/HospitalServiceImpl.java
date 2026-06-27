@@ -9,7 +9,9 @@ import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.HospitalRepository;
+import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.HospitalService;
+import io.jsonwebtoken.Jwt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +24,13 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public HospitalServiceImpl(HospitalRepository hospitalRepository, PasswordEncoder passwordEncoder) {
+    public HospitalServiceImpl(HospitalRepository hospitalRepository, PasswordEncoder passwordEncoder,
+    JwtService jwtService) {
         this.hospitalRepository = hospitalRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -73,8 +78,11 @@ public class HospitalServiceImpl implements HospitalService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
+        String token = jwtService.generateToken(hospital.getEmail());
+
         return HospitalLoginResponse.builder()
                 .message("Login successful!")
+                .token(token)
                 .hospitalName(hospital.getHospitalName())
                 .id(hospital.getId())
                 .contactNumber(hospital.getContactNumber())
