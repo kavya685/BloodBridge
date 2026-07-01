@@ -1,5 +1,6 @@
 package com.bloodbridge.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,36 @@ public class JwtService {
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    private Claims extractAllClaims(String token)
+    {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public String extractUsername(String token)
+    {
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
+    }
+
+    public Date extractExpiration(String token)
+    {
+        Claims claims = extractAllClaims(token);
+        return claims.getExpiration();
+    }
+
+    private boolean isTokenExpired(String token)
+    {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public boolean isTokenValid(String token)
+    {
+        return !isTokenExpired(token);
     }
 }
