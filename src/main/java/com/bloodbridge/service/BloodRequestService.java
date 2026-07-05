@@ -12,5 +12,5 @@ public interface BloodRequestService {
 
     List<BloodRequestResponse> getAllBloodRequests();
 
-    List<BloodRequestResponse> getBloodRequestsByHospital(Long hospitalId);
+    List<BloodRequestResponse> getMyBloodRequests();
 }

@@ -14,6 +14,7 @@ import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.service.DonationApplicationService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,8 +40,9 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     @Override
     public DonationApplicationResponse createDonationApplication(DonationApplicationCreateRequest request)
     {
-        Donor donor = donorRepository.findById(request.getDonorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + request.getDonorId()));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
 
         BloodRequest bloodRequest = bloodRequestRepository.findById(request.getBloodRequestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + request.getBloodRequestId()));
@@ -101,27 +103,6 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     }
 
     @Override
-    public List<DonationApplicationResponse> getAllDonationApplications()
-    {
-        List<DonationApplication> donationApplications = donationApplicationRepository.findAll();
-
-        List<DonationApplicationResponse> responses = new ArrayList<>();
-
-        for(DonationApplication donationApplication : donationApplications)
-        {
-            responses.add(DonationApplicationResponse.builder()
-                    .donorId(donationApplication.getDonor().getId())
-                    .donorName(donationApplication.getDonor().getFullName())
-                    .bloodRequestId(donationApplication.getBloodRequest().getId())
-                    .status(donationApplication.getStatus())
-                    .appliedAt(donationApplication.getAppliedAt())
-                    .id(donationApplication.getId())
-                    .build());
-        }
-        return responses;
-    }
-
-    @Override
     public List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId) {
         List<DonationApplication> applications = donationApplicationRepository.findByBloodRequestId(bloodRequestId);
         List<DonationApplicationResponse> responses = new ArrayList<>();
@@ -179,16 +160,19 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     }
 
     @Override
-    public List<DonationApplicationResponse> getApplicationsByDonor(Long donorId)
+    public List<DonationApplicationResponse> getMyApplications()
     {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email:" + email));
         // orElseThrow() cannot be used here because findByDonorId()
         // returns a List, not an Optional. If no records are found,
         // Spring Data JPA returns an empty List.
-        List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donorId);
+        List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donor.getId());
 
         if(applications.isEmpty())
         {
-            throw new ResourceNotFoundException("No donation applications found for donor with id: " + donorId);
+            throw new ResourceNotFoundException("No donation applications found for donor with id: " + donor.getId());
         }
 
         List<DonationApplicationResponse> responses = new ArrayList<>();

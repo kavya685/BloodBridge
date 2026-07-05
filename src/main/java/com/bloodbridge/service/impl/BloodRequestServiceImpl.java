@@ -9,6 +9,7 @@ import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.BloodRequestService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,9 +33,9 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     @Override
     public BloodRequestResponse createBloodRequest(BloodRequestCreateRequest request)
     {
-        Hospital hospital = hospitalRepository.findById(request.getHospitalId())
-                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with id: " + request.getHospitalId()));
-
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
         BloodRequest bloodRequest = BloodRequest.builder()
                 .hospital(hospital)
                 .bloodGroup(request.getBloodGroup())
@@ -108,15 +109,18 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     }
 
     @Override
-    public List<BloodRequestResponse> getBloodRequestsByHospital(Long hospitalId)
+    public List<BloodRequestResponse> getMyBloodRequests()
     {
-        List<BloodRequest> bloodRequests =
-                bloodRequestRepository.findByHospitalId(hospitalId);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
+        List<BloodRequest> bloodRequests = bloodRequestRepository.findByHospitalId(hospital.getId());
 
         if (bloodRequests.isEmpty())
         {
             throw new ResourceNotFoundException(
-                    "No blood requests found for hospital with id: " + hospitalId);
+                    "No blood requests found for hospital with id: " + hospital.getId());
         }
 
         List<BloodRequestResponse> responses = new ArrayList<>();

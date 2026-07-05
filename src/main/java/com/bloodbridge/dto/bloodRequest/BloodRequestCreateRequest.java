@@ -19,9 +19,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BloodRequestCreateRequest {
 
-    @NotNull(message = "Hospital id is required")
-    private Long hospitalId;
-
     @NotNull(message = "Blood group is required")
     private BloodGroup bloodGroup;
 

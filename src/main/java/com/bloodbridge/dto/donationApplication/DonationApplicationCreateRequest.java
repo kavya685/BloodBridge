@@ -12,9 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DonationApplicationCreateRequest {
 
-    @NotNull(message = "Donor id is required")
-    private Long donorId;
-
     @NotNull(message = "Blood request id is required")
     private Long bloodRequestId;
 }

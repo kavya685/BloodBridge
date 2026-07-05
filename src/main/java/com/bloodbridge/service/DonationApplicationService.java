@@ -19,5 +19,5 @@ public interface DonationApplicationService {
 
     DonationApplicationResponse rejectApplication(Long applicationId);
 
-    List<DonationApplicationResponse> getApplicationsByDonor(Long donorId);
+    List<DonationApplicationResponse> getMyApplications();
 }
