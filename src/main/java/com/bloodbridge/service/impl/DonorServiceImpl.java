@@ -12,6 +12,7 @@ import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.DonorService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -127,10 +128,14 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
-    public DonorResponse getDonorById(Long id)
+    public DonorResponse getDonorById()
     {
-        Donor donor = donorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + id));
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
 
         return DonorResponse.builder()
                 .id(donor.getId())
@@ -145,27 +150,4 @@ public class DonorServiceImpl implements DonorService {
                 .build();
     }
 
-    @Override
-    public List<DonorResponse> getAllDonors()
-    {
-        List<Donor> donors = donorRepository.findAll();
-
-        List<DonorResponse> responses = new ArrayList<>();
-
-        for(Donor donor : donors)
-        {
-            responses.add(DonorResponse.builder()
-                    .id(donor.getId())
-                    .fullName(donor.getFullName())
-                    .dateOfBirth(donor.getDateOfBirth())
-                    .contactNumber(donor.getContactNumber())
-                    .email(donor.getEmail())
-                    .city(donor.getCity())
-                    .bloodGroup(donor.getBloodGroup())
-                    .available(donor.getAvailable())
-                    .lastDonationDate(donor.getLastDonationDate())
-                    .build());
-        }
-        return responses;
-    }
 }

@@ -12,6 +12,8 @@ import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.HospitalService;
 import io.jsonwebtoken.Jwt;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -94,10 +96,14 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public HospitalResponse getHospitalById(Long id)
+    public HospitalResponse getHospitalById()
     {
-        Hospital hospital = hospitalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with id: " + id));
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
 
         return HospitalResponse.builder()
                 .id(hospital.getId())
@@ -110,25 +116,4 @@ public class HospitalServiceImpl implements HospitalService {
                 .build();
     }
 
-    @Override
-    public List<HospitalResponse> getAllHospitals()
-    {
-        List<Hospital> hospitals = hospitalRepository.findAll();
-
-        List<HospitalResponse> responses = new ArrayList<>();
-
-        for(Hospital hospital : hospitals)
-        {
-            responses.add(HospitalResponse.builder()
-                    .id(hospital.getId())
-                    .hospitalName(hospital.getHospitalName())
-                    .contactNumber(hospital.getContactNumber())
-                    .email(hospital.getEmail())
-                    .city(hospital.getCity())
-                    .address(hospital.getAddress())
-                    .registrationNumber(hospital.getRegistrationNumber())
-                    .build());
-        }
-        return responses;
-    }
 }

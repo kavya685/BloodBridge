@@ -12,7 +12,6 @@ public interface DonorService {
 
     DonorLoginResponse loginDonor(DonorLoginRequest request);
 
-    DonorResponse getDonorById(Long id);
+    DonorResponse getDonorById();
 
-    List<DonorResponse> getAllDonors();
 }

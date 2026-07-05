@@ -4,7 +4,6 @@ import com.bloodbridge.dto.donor.DonorLoginRequest;
 import com.bloodbridge.dto.donor.DonorLoginResponse;
 import com.bloodbridge.dto.donor.DonorRegistrationRequest;
 import com.bloodbridge.dto.donor.DonorResponse;
-import com.bloodbridge.dto.hospital.HospitalResponse;
 import com.bloodbridge.service.DonorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,15 +38,10 @@ public class DonorController {
         return donorService.loginDonor(request);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     public DonorResponse getDonorById(@PathVariable Long id)
     {
-        return donorService.getDonorById(id);
+        return donorService.getDonorById();
     }
 
-    @GetMapping
-    public List<DonorResponse> getAllDonors()
-    {
-        return donorService.getAllDonors();
-    }
 }

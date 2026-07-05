@@ -37,15 +37,10 @@ public class HospitalController {
         return hospitalService.loginHospital(request);
     }
 
-    @GetMapping("/{id}")
-    public HospitalResponse getHospitalById(@PathVariable Long id)
+    @GetMapping
+    public HospitalResponse getHospitalById()
     {
-        return hospitalService.getHospitalById(id);
+        return hospitalService.getHospitalById();
     }
 
-    @GetMapping
-    public List<HospitalResponse> getAllHospitals()
-    {
-        return hospitalService.getAllHospitals();
-    }
 }

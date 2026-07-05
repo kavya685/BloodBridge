@@ -12,7 +12,6 @@ public interface HospitalService {
 
     HospitalLoginResponse loginHospital(HospitalLoginRequest request);
 
-    HospitalResponse getHospitalById(Long id);
+    HospitalResponse getHospitalById();
 
-    List<HospitalResponse> getAllHospitals();
 }
