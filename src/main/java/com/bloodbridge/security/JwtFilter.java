@@ -1,3 +1,33 @@
+// flow:
+/*      Request
+        │
+        ▼
+        Read Authorization header
+        │
+        ▼
+        Bearer token present?
+        │
+        ▼
+        Extract JWT
+        │
+        ▼
+        Extract email
+        │
+        ▼
+        Load user from database
+        │
+        ▼
+        Validate JWT
+        │
+        ▼
+        Create Authentication object
+        │
+        ▼
+        Store in SecurityContextHolder
+        │
+        ▼
+        Continue to the controller */
+
 package com.bloodbridge.security;
 
 import jakarta.servlet.FilterChain;
