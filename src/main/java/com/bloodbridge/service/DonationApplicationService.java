@@ -11,10 +11,12 @@ public interface DonationApplicationService {
 
     DonationApplicationResponse getDonationApplicationById(Long id);
 
-    List<DonationApplicationResponse> getAllDonationApplications();
-
+    // TODO: Verify that the authenticated hospital owns this blood request
+    // before returning its applications.
     List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId);
 
+    // TODO: Verify that the authenticated hospital owns this application's
+    // blood request before accepting/rejecting.
     DonationApplicationResponse acceptApplication(Long applicationId);
 
     DonationApplicationResponse rejectApplication(Long applicationId);

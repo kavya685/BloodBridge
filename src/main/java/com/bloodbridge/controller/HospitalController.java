@@ -37,7 +37,7 @@ public class HospitalController {
         return hospitalService.loginHospital(request);
     }
 
-    @GetMapping
+    @GetMapping("/my")
     public HospitalResponse getHospitalById()
     {
         return hospitalService.getHospitalById();

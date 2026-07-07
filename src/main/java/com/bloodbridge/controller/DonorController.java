@@ -7,13 +7,10 @@ import com.bloodbridge.dto.donor.DonorResponse;
 import com.bloodbridge.service.DonorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/donors")
@@ -38,8 +35,8 @@ public class DonorController {
         return donorService.loginDonor(request);
     }
 
-    @GetMapping
-    public DonorResponse getDonorById(@PathVariable Long id)
+    @GetMapping("/my")
+    public DonorResponse getDonorById()
     {
         return donorService.getDonorById();
     }
