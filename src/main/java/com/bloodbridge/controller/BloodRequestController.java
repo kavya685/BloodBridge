@@ -42,7 +42,7 @@ public class BloodRequestController {
         return bloodRequestService.getAllBloodRequests();
     }
 
-    @GetMapping("/hospital")
+    @GetMapping("/my")
     public List<BloodRequestResponse> getMyBloodRequests()
     {
         return bloodRequestService.getMyBloodRequests();
