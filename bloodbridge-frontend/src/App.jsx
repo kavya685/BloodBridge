@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import DonorLogin from "./pages/donor/Login";
 import HospitalLogin from "./pages/hospital/Login";
 import Navbar from "./components/Navbar";
+import Dashboard from "./pages/donor/Dashboard";
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -24,6 +25,11 @@ function App() {
           <Route
             path="/hospital/login"
             element={<HospitalLogin />}
+          />
+
+          <Route
+            path="/donor/dashboard"
+            element={<Dashboard />}
           />
         </Routes>
       </>
