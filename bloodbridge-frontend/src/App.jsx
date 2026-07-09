@@ -9,21 +9,24 @@ import Navbar from "./components/Navbar";
 function App() {
   return (
       <>
-    <Navbar />
-    <Routes>
-      <Route path="/" element={<Home />} />
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-      <Route
-        path="/donor/login"
-        element={<DonorLogin />}
-      />
+          <Route
+            path="/donor/login"
+            element={<DonorLogin />}
+          />
 
-      <Route
-        path="/hospital/login"
-        element={<HospitalLogin />}
-      />
-    </Routes>
-    </>
+          <Route
+            path="/hospital/login"
+            element={<HospitalLogin />}
+          />
+        </Routes>
+      </>
   );
 }
 
