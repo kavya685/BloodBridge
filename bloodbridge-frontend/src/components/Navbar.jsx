@@ -5,7 +5,8 @@ function Navbar() {
     <nav>
       <Link to="/">Home</Link> |{" "}
       <Link to="/donor/login">Donor Login</Link> |{" "}
-      <Link to="/hospital/login">Hospital Login</Link>
+      <Link to="/hospital/login">Hospital Login</Link> |{" "}
+      <Link to="/blood-requests">Blood Requests</Link>
     </nav>
   );
 }
