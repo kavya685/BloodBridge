@@ -1,13 +1,42 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getAllBloodRequests } from "../services/bloodRequestService";
+import BloodRequestCard from "../components/BloodRequestCard";
 
 function BloodRequests() {
 
+    const [bloodRequests, setBloodRequests] = useState([]);
+
     useEffect(() => {
-        console.log("Blood Requests Page Loaded");
+
+        const fetchBloodRequests = async () => {
+
+            try {
+                const response = await getAllBloodRequests();
+                setBloodRequests(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+
+        };
+
+        fetchBloodRequests();
+
     }, []);
 
     return (
-        <h1>Blood Requests</h1>
+        <div>
+            <h1>Blood Requests</h1>
+
+            {
+                bloodRequests.map((request) => (
+                    <BloodRequestCard
+                        key={request.id}
+                        request={request}
+                    />
+                ))
+            }
+
+        </div>
     );
 }
 
