@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAllBloodRequests } from "../services/bloodRequestService";
-import BloodRequestCard from "../components/BloodRequestCard";
+import { getAllBloodRequests } from "../../services/bloodRequestService";
+import BloodRequestCard from "../../components/BloodRequestCard";
 
 function BloodRequests() {
 
