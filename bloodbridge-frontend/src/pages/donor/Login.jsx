@@ -19,6 +19,7 @@ function Login() {
 
       console.log(response.data);
 
+      localStorage.setItem("token", response.data.token);
       localStorage.setItem(
           "donor",
           JSON.stringify(response.data));

@@ -1,9 +1,11 @@
-import axios from "axios";
+import API from "./api";
 
-const API = axios.create({
-  baseURL: "http://localhost:8080/api",
-});
+export const getAllBloodRequests = async () => {
+    const response = await API.get("/blood-requests");
+    return response.data;
+};
 
-export const getAllBloodRequests = () => {
-  return API.get("/blood-requests");
+export const getBloodRequestById = async (id) => {
+    const response = await API.get(`/blood-requests/${id}`);
+    return response.data;
 };
