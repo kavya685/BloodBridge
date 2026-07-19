@@ -12,7 +12,7 @@ function BloodRequests() {
 
             try {
                 const response = await getAllBloodRequests();
-                setBloodRequests(response.data);
+                setBloodRequests(response);
             } catch (error) {
                 console.error(error);
             }

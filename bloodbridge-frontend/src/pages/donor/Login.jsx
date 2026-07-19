@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { donorLogin } from "../../services/authService";
+import { donorLogin } from "../../services/donor/loginService";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -66,6 +66,13 @@ function Login() {
           Login
         </button>
       </form>
+
+      <p>
+          Don't have an account?
+          <button onClick={() => navigate("/donor/register")}>
+              Register
+          </button>
+      </p>
     </div>
   );
 }

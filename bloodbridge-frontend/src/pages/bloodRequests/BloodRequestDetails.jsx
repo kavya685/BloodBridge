@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { getBloodRequestById } from "../../services/bloodRequestService";
+import { applyForBloodRequest } from "../../services/donationApplicationService";
 
 
 function BloodRequestDetails() {
@@ -18,6 +19,15 @@ function BloodRequestDetails() {
                  };
              fetchBloodRequest();
              }, [id]);
+
+        const handleApply = async() => {
+            try {
+                await applyForBloodRequest(bloodRequest.id);
+                alert("Application Submitted Successfully!")
+            } catch(error) {
+                alert(error.response?.data?.message || "Failed to apply.");
+            }
+        }
 
     if (!bloodRequest) {
         return <h2>Loading...</h2>;
@@ -42,6 +52,10 @@ function BloodRequestDetails() {
                 <p><strong>Created At:</strong> {bloodRequest.createdAt}</p>
 
                 <p><strong>Expires At:</strong> {bloodRequest.expiresAt}</p>
+
+                <button onClick={handleApply}>
+                    Apply
+                </button>
             </div>
         );
 }
