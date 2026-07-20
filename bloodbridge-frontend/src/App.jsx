@@ -4,7 +4,8 @@ import Home from "./pages/Home";
 import DonorLogin from "./pages/donor/Login";
 import HospitalLogin from "./pages/hospital/Login";
 import Navbar from "./components/Navbar";
-import Dashboard from "./pages/donor/Dashboard";
+import donorDashboard from "./pages/donor/Dashboard";
+import hospitalDashboard from "./pages/hospital/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BloodRequests from "./pages/bloodRequests/BloodRequests";
 import BloodRequestDetails from "./pages/bloodRequests/BloodRequestDetails";
@@ -35,9 +36,18 @@ function App() {
             path="/donor/dashboard"
             element={
                     <ProtectedRoute>
-                        <Dashboard />
+                        <donorDashboard />
                     </ProtectedRoute>
                 }
+          />
+
+          <Route
+            path="/hospital/dashboard"
+            element={
+                    <ProtectedRoute>
+                        <hospitalDashboard />
+                    </ProtectedRoute>
+                  }
           />
 
           <Route

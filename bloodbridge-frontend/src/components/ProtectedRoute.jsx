@@ -2,10 +2,10 @@ import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
 
-    const donor = localStorage.getItem("donor");
+    const user = localStorage.getItem("role");
 
-    if (!donor) {
-        return <Navigate to="/donor/login" />;
+    if (!user) {
+        return <Navigate to={`/${role}/login`} />;
     }
 
     return children;

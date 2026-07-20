@@ -1,0 +1,26 @@
+import { useNavigate } from "react-router-dom";
+
+function Dashboard() {
+
+    const donor = JSON.parse(localStorage.getItem("hospital"));
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("hospital");
+        navigate("/hospital/login");
+    };
+
+    return (
+        <div>
+            <h1>Hospital Dashboard</h1>
+
+            <h3>Welcome {hospital.fullName}</h3>
+
+            <button onClick={handleLogout}>
+                Logout
+            </button>
+        </div>
+    );
+}
+
+export default Dashboard;
