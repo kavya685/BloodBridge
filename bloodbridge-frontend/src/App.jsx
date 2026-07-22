@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import BloodRequests from "./pages/bloodRequests/BloodRequests";
 import BloodRequestDetails from "./pages/bloodRequests/BloodRequestDetails";
 import DonorRegister from "./pages/donor/Register";
+import HospitalRegister from "./pages/hospital/Register"
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -63,6 +64,11 @@ function App() {
             <Route
              path="/donor/register"
              element={<DonorRegister />}
+            />
+
+            <Route
+             path="/hospital/register"
+             element={<HospitalRegister />}
             />
         </Routes>
       </>

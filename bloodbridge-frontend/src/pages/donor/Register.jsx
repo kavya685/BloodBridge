@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { donorRegister } from "../../services/donor/registerService";
 
 function Register() {
+
     const [fullName, setFullName] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [email, setEmail] = useState("");
@@ -16,8 +17,8 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
         if (
             !fullName ||
@@ -55,6 +56,7 @@ function Register() {
             alert("Registration Successful! Please log in.");
 
             navigate("/donor/login");
+
         } catch (error) {
             console.error(error);
             alert("Registration Failed!");
@@ -62,118 +64,189 @@ function Register() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
+            <h1>Donor Registration</h1>
 
-            <h2>Donor Registration</h2>
+            <form onSubmit={handleSubmit}>
 
-            <label>Full Name</label>
-            <input
-                type="text"
-                placeholder="Enter your full name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-            />
+                <div>
+                    <label>Full Name</label>
+                    <br />
+                    <input
+                        type="text"
+                        placeholder="Enter your full name"
+                        value={fullName}
+                        onChange={(event) =>
+                            setFullName(event.target.value)
+                        }
+                    />
+                </div>
 
-            <label>Date of Birth</label>
-            <input
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-            />
+                <br />
 
-            <label>Email</label>
-            <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <label>Password</label>
-            <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <label>Contact Number</label>
-            <input
-                type="tel"
-                placeholder="Enter your contact number"
-                value={contactNumber}
-                onChange={(e) => setContactNumber(e.target.value)}
-            />
-
-            <label>City</label>
-            <input
-                type="text"
-                placeholder="Enter your city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-            />
-
-            <label>Blood Group</label>
-            <select
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-            >
-                <option value="">Select Blood Group</option>
-                <option value="A_POSITIVE">A+</option>
-                <option value="A_NEGATIVE">A-</option>
-                <option value="B_POSITIVE">B+</option>
-                <option value="B_NEGATIVE">B-</option>
-                <option value="AB_POSITIVE">AB+</option>
-                <option value="AB_NEGATIVE">AB-</option>
-                <option value="O_POSITIVE">O+</option>
-                <option value="O_NEGATIVE">O-</option>
-            </select>
-
-            <label>Are you currently available to donate?</label>
-            <select
-                value={available}
-                onChange={(e) => setAvailable(e.target.value === "true")}
-            >
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
-            </select>
-
-            <label>Have you donated blood before?</label>
-
-            <label>
-                <input
-                    type="radio"
-                    checked={hasDonatedBefore === true}
-                    onChange={() => setHasDonatedBefore(true)}
-                />
-                Yes
-            </label>
-
-            <label>
-                <input
-                    type="radio"
-                    checked={hasDonatedBefore === false}
-                    onChange={() => setHasDonatedBefore(false)}
-                />
-                No
-            </label>
-
-            {hasDonatedBefore && (
-                <>
-                    <label>Last Donation Date</label>
+                <div>
+                    <label>Date of Birth</label>
+                    <br />
                     <input
                         type="date"
-                        value={lastDonationDate}
-                        onChange={(e) => setLastDonationDate(e.target.value)}
+                        value={dateOfBirth}
+                        onChange={(event) =>
+                            setDateOfBirth(event.target.value)
+                        }
                     />
-                </>
-            )}
+                </div>
 
-            <button type="submit">
-                Register
-            </button>
+                <br />
 
-        </form>
+                <div>
+                    <label>Email</label>
+                    <br />
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(event) =>
+                            setEmail(event.target.value)
+                        }
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Password</label>
+                    <br />
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(event) =>
+                            setPassword(event.target.value)
+                        }
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Contact Number</label>
+                    <br />
+                    <input
+                        type="tel"
+                        placeholder="Enter your contact number"
+                        value={contactNumber}
+                        onChange={(event) =>
+                            setContactNumber(event.target.value)
+                        }
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label>City</label>
+                    <br />
+                    <input
+                        type="text"
+                        placeholder="Enter your city"
+                        value={city}
+                        onChange={(event) =>
+                            setCity(event.target.value)
+                        }
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Blood Group</label>
+                    <br />
+                    <select
+                        value={bloodGroup}
+                        onChange={(event) =>
+                            setBloodGroup(event.target.value)
+                        }
+                    >
+                        <option value="">Select Blood Group</option>
+                        <option value="A_POSITIVE">A+</option>
+                        <option value="A_NEGATIVE">A-</option>
+                        <option value="B_POSITIVE">B+</option>
+                        <option value="B_NEGATIVE">B-</option>
+                        <option value="AB_POSITIVE">AB+</option>
+                        <option value="AB_NEGATIVE">AB-</option>
+                        <option value="O_POSITIVE">O+</option>
+                        <option value="O_NEGATIVE">O-</option>
+                    </select>
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Are you currently available to donate?</label>
+                    <br />
+                    <select
+                        value={available}
+                        onChange={(event) =>
+                            setAvailable(event.target.value === "true")
+                        }
+                    >
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
+                    </select>
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Have you donated blood before?</label>
+
+                    <br />
+
+                    <label>
+                        <input
+                            type="radio"
+                            checked={hasDonatedBefore === true}
+                            onChange={() => setHasDonatedBefore(true)}
+                        />
+                        Yes
+                    </label>
+
+                    <br />
+
+                    <label>
+                        <input
+                            type="radio"
+                            checked={hasDonatedBefore === false}
+                            onChange={() => setHasDonatedBefore(false)}
+                        />
+                        No
+                    </label>
+                </div>
+
+                <br />
+
+                {hasDonatedBefore && (
+                    <div>
+                        <label>Last Donation Date</label>
+                        <br />
+                        <input
+                            type="date"
+                            value={lastDonationDate}
+                            onChange={(event) =>
+                                setLastDonationDate(event.target.value)
+                            }
+                        />
+                    </div>
+                )}
+
+                <br />
+
+                <button type="submit">
+                    Register
+                </button>
+
+            </form>
+        </div>
     );
 }
 
