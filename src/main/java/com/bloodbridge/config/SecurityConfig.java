@@ -50,12 +50,6 @@ public class SecurityConfig {
                                 "/api/hospitals/login"
                         ).permitAll()
 
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/blood-requests",
-                                "/api/blood-requests/*"
-                        ).permitAll()
-
                         // ---------- Hospital ----------
                         .requestMatchers(
                                 "/api/hospitals/me",
@@ -77,6 +71,13 @@ public class SecurityConfig {
                                 "/api/donors/me",
                                 "/api/donation-applications/my"
                         ).hasRole("DONOR")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/blood-requests",
+                                "/api/blood-requests/*"
+                        ).hasRole("DONOR")
+
 
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.POST,

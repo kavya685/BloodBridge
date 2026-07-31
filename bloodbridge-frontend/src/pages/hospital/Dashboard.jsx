@@ -16,6 +16,22 @@ function Dashboard() {
 
             <h3>Welcome {hospital.fullName}</h3>
 
+            <button
+              onClick={() =>
+                  navigate("/hospital/create-blood-request")
+              }
+            >
+                  Create Blood Request
+            </button>
+
+            <button
+                onClick={() =>
+                    navigate("/hospital/my-blood-requests")
+                }
+            >
+                My Blood Requests
+            </button>
+
             <button onClick={handleLogout}>
                 Logout
             </button>

@@ -11,6 +11,7 @@ import BloodRequests from "./pages/bloodRequests/BloodRequests";
 import BloodRequestDetails from "./pages/bloodRequests/BloodRequestDetails";
 import DonorRegister from "./pages/donor/Register";
 import HospitalRegister from "./pages/hospital/Register"
+import CreateBloodRequest from "./pages/hospital/CreateBloodRequest"
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -69,6 +70,20 @@ function App() {
             <Route
              path="/hospital/register"
              element={<HospitalRegister />}
+            />
+
+            <Route
+             path="/hospital/create-blood-request"
+             element={<CreateBloodRequest />}
+            />
+
+            <Route
+             path="/hospital/my-blood-requests"
+             element={
+                <ProtectedRoute>
+                    <MyBloodRequests />
+                </ProtectedRoute>
+             }
             />
         </Routes>
       </>
