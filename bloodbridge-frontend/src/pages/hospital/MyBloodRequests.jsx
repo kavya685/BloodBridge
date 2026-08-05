@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import getMyBloodRequests from "../../services/bloodRequestService";
+import { getMyBloodRequests } from "../../services/bloodRequestService";
 
 function MyBloodRequests() {
     const [bloodRequest, setBloodRequest] = useState([]);
     useEffect(() => {
-        fetchBloodRequests();
+        fetchBloodRequest();
     }, []);
 
     const fetchBloodRequest = async () => {
@@ -21,11 +21,15 @@ function MyBloodRequests() {
     return (
             <div>
                 <h1>My Blood Requests</h1>
-                bloodRequest.map((request) => (
-                    <div key={request.id}>
-                        <h3>Blood Group: {request.bloodGroup}</h3>
-                        <p>Units Required: {request.unitsRequired}</p>
-                    ))
+                {
+                    bloodRequest.map((request) => (
+                        <div key={request.id}>
+                            <h3>Blood Group: {request.bloodGroup}</h3>
+                            <p>Units Required: {request.unitsRequired}</p>
+                        </div>
+                         )
+                     )
+                }
             </div>
         );
 }

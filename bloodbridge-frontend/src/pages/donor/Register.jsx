@@ -59,6 +59,8 @@ function Register() {
 
         } catch (error) {
             console.error(error);
+            console.log(error.response?.status);
+            console.log(error.response?.data);
             alert("Registration Failed!");
         }
     };

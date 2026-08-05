@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import createBloodRequest from "../../services/bloodRequestService";
+import { createBloodRequest } from "../../services/bloodRequestService";
 
 function CreateBloodRequest() {
     const [bloodGroup, setBloodGroup] = useState("");

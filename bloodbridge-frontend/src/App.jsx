@@ -4,14 +4,15 @@ import Home from "./pages/Home";
 import DonorLogin from "./pages/donor/Login";
 import HospitalLogin from "./pages/hospital/Login";
 import Navbar from "./components/Navbar";
-import donorDashboard from "./pages/donor/Dashboard";
-import hospitalDashboard from "./pages/hospital/Dashboard";
+import DonorDashboard from "./pages/donor/Dashboard";
+import HospitalDashboard from "./pages/hospital/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BloodRequests from "./pages/bloodRequests/BloodRequests";
 import BloodRequestDetails from "./pages/bloodRequests/BloodRequestDetails";
 import DonorRegister from "./pages/donor/Register";
 import HospitalRegister from "./pages/hospital/Register"
 import CreateBloodRequest from "./pages/hospital/CreateBloodRequest"
+import MyBloodRequests from "./pages/hospital/MyBloodRequests";
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -37,8 +38,8 @@ function App() {
           <Route
             path="/donor/dashboard"
             element={
-                    <ProtectedRoute>
-                        <donorDashboard />
+                    <ProtectedRoute role="donor">
+                        <DonorDashboard />
                     </ProtectedRoute>
                 }
           />
@@ -46,8 +47,8 @@ function App() {
           <Route
             path="/hospital/dashboard"
             element={
-                    <ProtectedRoute>
-                        <hospitalDashboard />
+                    <ProtectedRoute role="hospital">
+                        <HospitalDashboard />
                     </ProtectedRoute>
                   }
           />

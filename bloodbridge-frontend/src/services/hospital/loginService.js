@@ -1,6 +1,6 @@
 import API from "../api.js"
 
-export const hospitalLogin = (loginData) => {
-    const response = API.post("/hospital",loginData);
+export const hospitalLogin = async (loginData) => {
+    const response = await API.post("/hospitals/login",loginData);
     return response.data;
 }

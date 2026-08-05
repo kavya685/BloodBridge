@@ -15,7 +15,7 @@ export const createBloodRequest = async (request) => {
     return response.data;
 }
 
-export const getMyBloodRequests = async (request) => {
+export const getMyBloodRequests = async () => {
     const response = await API.get("/blood-requests/my");
     return response.data;
 }

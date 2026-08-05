@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
-    const donor = JSON.parse(localStorage.getItem("hospital"));
+    const hospital = JSON.parse(localStorage.getItem("hospital"));
     const navigate = useNavigate();
 
     const handleLogout = () => {
