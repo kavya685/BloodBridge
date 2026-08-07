@@ -19,6 +19,10 @@ function Dashboard() {
             <button onClick={handleLogout}>
                 Logout
             </button>
+
+            <button onClick={() => navigate("/blood-requests")}>
+                View Blood Requests
+            </button>
         </div>
     );
 }

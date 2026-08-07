@@ -1,7 +1,7 @@
 import "../styles/components/BloodRequestCard.css";
 import { useNavigate } from "react-router-dom";
 
-function BloodRequestCard({ request }) {
+function BloodRequestCard({ request, children }) {
     const navigate = useNavigate();
 
     return (
@@ -13,6 +13,8 @@ function BloodRequestCard({ request }) {
             <p>Units Required: {request.unitsRequired}</p>
 
             <p>{request.description}</p>
+
+            {children}
 
             <hr />
         </div>

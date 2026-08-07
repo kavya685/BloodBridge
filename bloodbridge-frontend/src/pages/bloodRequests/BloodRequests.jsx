@@ -29,11 +29,13 @@ function BloodRequests() {
 
             {
                 bloodRequests.map((request) => (
-                    <BloodRequestCard
-                        key={request.id}
-                        request={request}
-                    />
-                ))
+                    <div key={request.id}>
+                        <BloodRequestCard request={request}>
+                            <button>Apply</button>
+                        </BloodRequestCard>
+                    </div>
+                )
+            )
             }
 
         </div>

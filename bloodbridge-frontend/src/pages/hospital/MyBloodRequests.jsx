@@ -8,6 +8,8 @@ function MyBloodRequests() {
         fetchBloodRequest();
     }, []);
 
+    const navigate = useNavigate();
+
     const fetchBloodRequest = async () => {
             try {
                 const response = await getMyBloodRequests();
@@ -26,6 +28,9 @@ function MyBloodRequests() {
                         <div key={request.id}>
                             <h3>Blood Group: {request.bloodGroup}</h3>
                             <p>Units Required: {request.unitsRequired}</p>
+                            <button onClick={() => navigate(`/hospital/blood-requests/${request.id}/applicants`)}>
+                                                View Applicants
+                            </button>
                         </div>
                          )
                      )

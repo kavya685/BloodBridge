@@ -33,6 +33,7 @@ function CreateBloodRequest() {
                 expiresAt,
                 urgency
             });
+            alert("New Blood Request Created!");
         } catch (error) {
             console.error(error);
             alert("Failed to create blood request!");
@@ -122,10 +123,8 @@ function CreateBloodRequest() {
                         }
                     >
                         <option value="">Select Urgency</option>
-                        <option value="LOW">Low</option>
-                        <option value="MEDIUM">Medium</option>
-                        <option value="HIGH">High</option>
-                        <option value="CRITICAL">Critical</option>
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="EMERGENCY">EMERGENCY</option>
                     </select>
                 </div>
 
