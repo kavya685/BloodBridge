@@ -44,13 +44,19 @@ public class DonationApplicationController {
         return donationApplicationService.getApplicationsByBloodRequest(bloodRequestId);
     }
 
-    @PutMapping("/accept/{applicationId}")
+    @GetMapping("/applications/{donorId}")
+    public List<DonationApplicationResponse> getApplicationsByDonor(@PathVariable Long donorId)
+    {
+        return donationApplicationService.getApplicationsByDonor(donorId);
+    }
+
+    @PutMapping("/{applicationId}/accept")
     public DonationApplicationResponse acceptApplication(@PathVariable Long applicationId)
     {
         return donationApplicationService.acceptApplication(applicationId);
     }
 
-    @PutMapping("/reject/{applicationId}")
+    @PutMapping("/{applicationId}/reject")
     public DonationApplicationResponse rejectApplication(@PathVariable Long applicationId)
     {
         return donationApplicationService.rejectApplication(applicationId);

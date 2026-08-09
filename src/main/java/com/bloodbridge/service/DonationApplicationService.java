@@ -15,6 +15,8 @@ public interface DonationApplicationService {
     // before returning its applications.
     List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId);
 
+    List<DonationApplicationResponse> getApplicationsByDonor(Long donorId);
+
     // TODO: Verify that the authenticated hospital owns this application's
     // blood request before accepting/rejecting.
     DonationApplicationResponse acceptApplication(Long applicationId);

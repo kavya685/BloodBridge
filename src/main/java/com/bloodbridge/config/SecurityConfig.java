@@ -84,6 +84,11 @@ public class SecurityConfig {
                                 "/api/donation-applications"
                         ).hasRole("DONOR")
 
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/donation-applications/applications/*"
+                        ).hasRole("DONOR")
+
                         // ---------- Everything else ----------
                         .anyRequest().authenticated()
                 )
