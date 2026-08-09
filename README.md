@@ -102,12 +102,14 @@ Donor
 
 ## Tech Stack
 
-### Frontend (Planned)
+### Frontend
 
-* React
-* HTML
-* CSS
-* JavaScript
+- React
+- JavaScript
+- HTML
+- CSS
+- React Router
+- Axios
 
 ### Backend
 
@@ -128,30 +130,50 @@ Donor
 
 ## Features Implemented
 
-* Hospital registration API
-* PostgreSQL integration
-* Spring Data JPA repositories
-* Service layer architecture
-* RESTful API development
-* Constructor-based dependency injection
-* Entity relationships and foreign key mappings
-* Domain-driven data model
+### Authentication
+- Donor Registration & Login
+- Hospital Registration & Login
+- JWT Authentication
+- Role-based Authorization
+
+### Hospital
+- Create Blood Requests
+- View My Blood Requests
+- View Applicants
+- Accept / Reject Donation Applications
+
+### Donor
+- View Available Blood Requests
+- Apply for Blood Requests
+- View Application Status
+
+### Backend
+- RESTful APIs
+- Spring Security
+- Constructor-based Dependency Injection
+- Spring Data JPA
+- Entity Relationships
+- Validation
+- Exception Handling
+
+### Frontend
+- Protected Routes
+- Axios API Integration
+- React Router
+- Reusable Components
 
 ---
 
-## Roadmap
+## Future Enhancements
 
-**Phase 1 — Core Workflow**
-- Donor registration, blood request creation, application workflow, request status tracking
-
-**Phase 2 — Intelligence**  
-- Blood group compatibility matching, location-based donor filtering, request expiration handling
-
-**Phase 3 — Auth & Notifications**  
-- Authentication & authorization, email notifications, real-time WebSocket updates
-
-**Phase 4 — Frontend**  
-- React dashboard for hospitals and donors, admin panel, analytics
+- Blood Group Compatibility Matching
+- Location-based Donor Filtering
+- Email Notifications
+- Real-time Updates (WebSockets)
+- Admin Dashboard
+- Analytics Dashboard
+- Soft Delete / Account Deactivation
+- Deployment
 ---
 
 ## Getting Started
@@ -190,9 +212,3 @@ The application will start on:
 ```text
 http://localhost:8080
 ```
-
----
-
-## Project Status
-
-BloodBridge is currently under active development. The backend foundation has been implemented using Spring Boot and PostgreSQL. Current development is focused on the donor-request workflow, authentication system, and the React-based frontend experience for hospitals and donors.
