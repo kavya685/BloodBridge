@@ -19,3 +19,8 @@ export const acceptApplication = async(applicationId) => {
     const response = await API.put(`/donation-applications/${applicationId}/accept`);
     return response.data;
 }
+
+export const getApplicationsByDonor = async(donorId) => {
+    const response = await API.get(`/donation-applications/applications/${donorId}`);
+    return response.data;
+}

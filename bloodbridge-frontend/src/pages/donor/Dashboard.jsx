@@ -23,6 +23,10 @@ function Dashboard() {
             <button onClick={() => navigate("/blood-requests")}>
                 View Blood Requests
             </button>
+
+            <button onClick={() => navigate("/donor/my-applications")}>
+                My Applications
+            </button>
         </div>
     );
 }
