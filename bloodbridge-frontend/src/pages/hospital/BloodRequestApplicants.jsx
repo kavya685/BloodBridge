@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getApplicationsByBloodRequest } from "../../services/donationApplicationService";
+import { getApplicationsByBloodRequest, acceptApplication, rejectApplication } from "../../services/donationApplicationService";
 
 function BloodRequestApplicants()
 {
@@ -10,7 +10,7 @@ function BloodRequestApplicants()
   const fetchApplications = async () => {
     try {
       const data = await getApplicationsByBloodRequest(id);
-      setApplications = data;
+      setApplications(data);
     } catch(error) {
       console.log(error);
     }
@@ -19,6 +19,20 @@ function BloodRequestApplicants()
   useEffect(() => {
     fetchApplications();
   }, []);
+
+  const handleAcceptance = async (applicationId, action) => {
+    try{
+        if(action === "accept") {
+            await acceptApplication(applicationId);
+        }
+
+        else await rejectApplication(applicationId);
+
+        await fetchApplications();
+    } catch(error) {
+        console.log(error);
+    }
+  }
 
   return (
     <div>
@@ -37,13 +51,23 @@ function BloodRequestApplicants()
                     Applied At: {application.appliedAt}
                 </p>
 
-                <button>
-                    Accept
-                </button>
+                {
+                  application.status === "PENDING" && (
+                    <>
+                      <button
+                            onClick={() => handleAcceptance(application.id, "accept")}
+                        >
+                            Accept
+                        </button>
 
-                <button>
-                    Reject
-                </button>
+                        <button
+                            onClick={() => handleAcceptance(application.id, "reject")}
+                        >
+                            Reject
+                        </button>
+                    </>
+                  )
+                }
 
                 <hr />
 

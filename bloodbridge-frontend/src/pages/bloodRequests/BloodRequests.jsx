@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllBloodRequests } from "../../services/bloodRequestService";
 import BloodRequestCard from "../../components/BloodRequestCard";
+import { applyForBloodRequest } from "../../services/donationApplicationService";
 
 function BloodRequests() {
 
@@ -23,6 +24,16 @@ function BloodRequests() {
 
     }, []);
 
+    const handleApply = async (bloodRequestId) => {
+        try {
+            await applyForBloodRequest(bloodRequestId);
+            alert("Applied successfully!");
+        } catch(error) {
+            console.log(error);
+            alert("Failed to apply!")
+        }
+    }
+
     return (
         <div>
             <h1>Blood Requests</h1>
@@ -31,7 +42,7 @@ function BloodRequests() {
                 bloodRequests.map((request) => (
                     <div key={request.id}>
                         <BloodRequestCard request={request}>
-                            <button>Apply</button>
+                            <button onClick={handleApply}>Apply</button>
                         </BloodRequestCard>
                     </div>
                 )
