@@ -4,6 +4,7 @@ import com.bloodbridge.dto.donationApplication.DonationApplicationCreateRequest;
 import com.bloodbridge.dto.donationApplication.DonationApplicationResponse;
 import com.bloodbridge.service.DonationApplicationService;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,5 +61,11 @@ public class DonationApplicationController {
     public DonationApplicationResponse rejectApplication(@PathVariable Long applicationId)
     {
         return donationApplicationService.rejectApplication(applicationId);
+    }
+
+    @DeleteMapping("/{applicationId}")
+    public void deleteDonationApplication(@PathVariable Long applicationId)
+    {
+        donationApplicationService.deleteDonationApplication(applicationId);
     }
 }

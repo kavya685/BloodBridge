@@ -8,6 +8,7 @@ import com.bloodbridge.entity.Donor;
 import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.enums.BloodRequestStatus;
 import com.bloodbridge.exception.InvalidBloodRequestException;
+import com.bloodbridge.exception.InvalidDonorException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
@@ -209,5 +210,24 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
             );
         }
         return responses;
+    }
+
+    @Override
+    public void deleteDonationApplication(Long applicationId)
+    {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
+
+        DonationApplication application = donationApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
+
+        if(application.getDonor().getId() != donor.getId())
+        {
+            throw new InvalidDonorException("You can only delete your own donation applications");
+        }
+
+        donationApplicationRepository.delete(application);
     }
 }
