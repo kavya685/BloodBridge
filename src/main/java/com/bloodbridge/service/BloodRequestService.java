@@ -13,4 +13,6 @@ public interface BloodRequestService {
     List<BloodRequestResponse> getAllBloodRequests();
 
     List<BloodRequestResponse> getMyBloodRequests();
+
+    void deleteBloodRequest(Long id);
 }

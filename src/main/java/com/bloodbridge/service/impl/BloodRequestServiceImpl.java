@@ -5,6 +5,7 @@ import com.bloodbridge.dto.bloodRequest.BloodRequestResponse;
 import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.enums.BloodRequestStatus;
+import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.HospitalRepository;
@@ -144,5 +145,26 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         }
 
         return responses;
+    }
+
+    @Override
+    public void deleteBloodRequest(Long id)
+    {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        // finding hospital A
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
+        // finding hospital B
+        BloodRequest bloodRequest = bloodRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + id));
+
+        // checking if A and B is same
+        if(!bloodRequest.getHospital().getId().equals(hospital.getId()))
+        {
+            throw new InvalidBloodRequestException("You are not authorized to delete this blood request.");
+        }
+
+        bloodRequestRepository.delete(bloodRequest);
     }
 }
