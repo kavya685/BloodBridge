@@ -8,6 +8,7 @@ import com.bloodbridge.enums.BloodRequestStatus;
 import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
+import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.BloodRequestService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,12 +24,14 @@ public class BloodRequestServiceImpl implements BloodRequestService {
 
     private final BloodRequestRepository bloodRequestRepository;
     private final HospitalRepository hospitalRepository;
+    private final DonationApplicationRepository donationApplicationRepository;
 
     public BloodRequestServiceImpl(BloodRequestRepository bloodRequestRepository,
-                                   HospitalRepository hospitalRepository)
+                                   HospitalRepository hospitalRepository, DonationApplicationRepository donationApplicationRepository)
     {
         this.bloodRequestRepository = bloodRequestRepository;
         this.hospitalRepository = hospitalRepository;
+        this.donationApplicationRepository = donationApplicationRepository;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     @Override
     public List<BloodRequestResponse> getAllBloodRequests()
     {
-        List<BloodRequest> bloodRequests = bloodRequestRepository.findAll();
+        List<BloodRequest> bloodRequests = bloodRequestRepository.findByStatusNot(BloodRequestStatus.DELETED);
 
         List<BloodRequestResponse> responses = new ArrayList<>();
 
@@ -165,6 +168,15 @@ public class BloodRequestServiceImpl implements BloodRequestService {
             throw new InvalidBloodRequestException("You are not authorized to delete this blood request.");
         }
 
-        bloodRequestRepository.delete(bloodRequest);
+        if(donationApplicationRepository.existsByBloodRequestId(id))
+        {
+            bloodRequest.setStatus(BloodRequestStatus.DELETED);
+            bloodRequestRepository.save(bloodRequest);
+        }
+
+        else
+        {
+            bloodRequestRepository.delete(bloodRequest);
+        }
     }
 }

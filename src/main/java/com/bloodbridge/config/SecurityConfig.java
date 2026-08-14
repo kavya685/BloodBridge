@@ -66,6 +66,11 @@ public class SecurityConfig {
                                 "/api/donation-applications/reject/**"
                         ).hasRole("HOSPITAL")
 
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/blood-requests/**"
+                        ).hasRole("HOSPITAL")
+
                         // ---------- Donor ----------
                         .requestMatchers(
                                 "/api/donors/me",
@@ -87,6 +92,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.GET,
                                 "/api/donation-applications/applications/*"
+                        ).hasRole("DONOR")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/donation-applications/**"
                         ).hasRole("DONOR")
 
                         // ---------- Everything else ----------

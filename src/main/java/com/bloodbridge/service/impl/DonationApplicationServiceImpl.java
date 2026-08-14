@@ -228,6 +228,7 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
             throw new InvalidDonorException("You can only delete your own donation applications");
         }
 
-        donationApplicationRepository.delete(application);
+        application.setStatus(ApplicationStatus.WITHDRAWN);
+        donationApplicationRepository.save(application);
     }
 }
