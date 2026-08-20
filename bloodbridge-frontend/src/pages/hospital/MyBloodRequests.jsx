@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMyBloodRequests } from "../../services/bloodRequestService";
+import { deleteBloodRequest } from "../../services/bloodRequestService";
 
 function MyBloodRequests() {
     const [bloodRequest, setBloodRequest] = useState([]);
@@ -20,6 +21,16 @@ function MyBloodRequests() {
             }
         };
 
+    const handleDelete = async (bloodRequestId) => {
+        try {
+            await deleteBloodRequest(bloodRequestId);
+            alert("Blood Request deleted!");
+            fetchBloodRequest();
+        } catch (error) {
+            alert("Failed to delete blood request.");
+        }
+    }
+
     return (
             <div>
                 <h1>My Blood Requests</h1>
@@ -31,6 +42,7 @@ function MyBloodRequests() {
                             <button onClick={() => navigate(`/hospital/blood-requests/${request.id}/applicants`)}>
                                                 View Applicants
                             </button>
+                            <button onClick={() => handleDelete(request.id)}>Delete</button>
                         </div>
                          )
                      )

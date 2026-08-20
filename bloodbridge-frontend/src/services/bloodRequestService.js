@@ -19,3 +19,8 @@ export const getMyBloodRequests = async () => {
     const response = await API.get("/blood-requests/my");
     return response.data;
 }
+
+export const deleteBloodRequest = async (id) => {
+    const response = await API.delete(`/blood-requests/${id}`);
+    return response.data;
+}

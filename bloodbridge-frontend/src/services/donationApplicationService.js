@@ -24,3 +24,8 @@ export const getApplicationsByDonor = async(donorId) => {
     const response = await API.get(`/donation-applications/applications/${donorId}`);
     return response.data;
 }
+
+export const withdrawApplication = async(id) => {
+    const response = await API.delete(`/donation-applications/${id}`);
+    return response.data;
+}

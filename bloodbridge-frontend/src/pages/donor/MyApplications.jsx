@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getApplicationsByDonor } from "../../services/donationApplicationService";
+import { withdrawApplication } from "../../services/donationApplicationService";
 
 function MyApplications() {
 
@@ -20,6 +21,16 @@ function MyApplications() {
         fetchApplications();
     }, []);
 
+    const handleWithdraw = async (applicationId) => {
+        try {
+            await withdrawApplication(applicationId);
+            alert("Application withdrawn!");
+            fetchApplications();
+        } catch(error) {
+            alert("Failed to withdraw application.")
+        }
+    }
+
     return (
         <div>
             <h1>My Applications</h1>
@@ -39,6 +50,8 @@ function MyApplications() {
                         <p>
                             <strong>Applied At:</strong> {application.appliedAt}
                         </p>
+
+                        <button onClick={() => handleWithdraw(application.id)}>Withdraw</button>
 
                         <hr />
                     </div>
