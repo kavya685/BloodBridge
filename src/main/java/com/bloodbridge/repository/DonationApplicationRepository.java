@@ -4,6 +4,7 @@ import com.bloodbridge.dto.donationApplication.DonationApplicationResponse;
 import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.DonationApplication;
 import com.bloodbridge.entity.Donor;
+import com.bloodbridge.enums.ApplicationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,6 @@ public interface DonationApplicationRepository extends JpaRepository<DonationApp
     boolean existsByDonorAndBloodRequest(Donor donor, BloodRequest bloodRequest);
     List<DonationApplication> findByDonorId(Long donorId);
     boolean existsByBloodRequestId(Long bloodRequestId);
+    Long countByBloodRequestHospitalId(Long hospitalId);
+    Long countByBloodRequestHospitalIdAndStatus(Long hospitalId, ApplicationStatus status);
 }

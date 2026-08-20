@@ -1,13 +1,14 @@
 package com.bloodbridge.service.impl;
 
-import com.bloodbridge.dto.hospital.HospitalLoginRequest;
-import com.bloodbridge.dto.hospital.HospitalLoginResponse;
-import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
-import com.bloodbridge.dto.hospital.HospitalResponse;
+import com.bloodbridge.dto.hospital.*;
 import com.bloodbridge.entity.Hospital;
+import com.bloodbridge.enums.ApplicationStatus;
+import com.bloodbridge.enums.BloodRequestStatus;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
+import com.bloodbridge.repository.BloodRequestRepository;
+import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.HospitalService;
@@ -27,12 +28,19 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalRepository hospitalRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final BloodRequestRepository bloodRequestRepository;
+    private final DonationApplicationRepository donationApplicationRepository;
 
-    public HospitalServiceImpl(HospitalRepository hospitalRepository, PasswordEncoder passwordEncoder,
-    JwtService jwtService) {
+    public HospitalServiceImpl(HospitalRepository hospitalRepository, BloodRequestRepository bloodRequestRepository,
+                               DonationApplicationRepository donationApplicationRepository,
+                               PasswordEncoder passwordEncoder,
+                               JwtService jwtService) {
         this.hospitalRepository = hospitalRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.bloodRequestRepository = bloodRequestRepository;
+        this.donationApplicationRepository = donationApplicationRepository;
+
     }
 
     @Override
@@ -116,4 +124,37 @@ public class HospitalServiceImpl implements HospitalService {
                 .build();
     }
 
+    @Override
+    public HospitalDashboardResponse getDashboard()
+    {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
+        Long hospitalId = hospital.getId();
+
+        Long totalRequests = bloodRequestRepository.countByHospitalId(hospitalId);
+        Long openRequests = bloodRequestRepository.countByHospitalIdAndStatus(hospitalId, BloodRequestStatus.OPEN);
+        Long fulfilledRequests = bloodRequestRepository.countByHospitalIdAndStatus(hospitalId, BloodRequestStatus.FULFILLED);
+        Long deletedRequests = bloodRequestRepository.countByHospitalIdAndStatus(hospitalId, BloodRequestStatus.DELETED);
+
+        Long totalApplications = donationApplicationRepository.countByBloodRequestHospitalId(hospitalId);
+        Long pendingApplications = donationApplicationRepository.countByBloodRequestHospitalIdAndStatus(hospitalId, ApplicationStatus.PENDING);
+        Long acceptedApplications = donationApplicationRepository.countByBloodRequestHospitalIdAndStatus(hospitalId, ApplicationStatus.ACCEPTED);
+        Long  rejectedApplications= donationApplicationRepository.countByBloodRequestHospitalIdAndStatus(hospitalId, ApplicationStatus.REJECTED);
+
+        return HospitalDashboardResponse.builder()
+                .totalRequests(totalRequests)
+                .openRequests(openRequests)
+                .fulfilledRequests(fulfilledRequests)
+                .deletedRequests(deletedRequests)
+                .totalApplications(totalApplications)
+                .pendingApplications(pendingApplications)
+                .acceptedApplications(acceptedApplications)
+                .rejectedApplications(rejectedApplications)
+                .build();
+    }
 }

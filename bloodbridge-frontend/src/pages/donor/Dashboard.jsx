@@ -7,6 +7,7 @@ function Dashboard() {
 
     const handleLogout = () => {
         localStorage.removeItem("donor");
+        localStorage.removeItem("token");
         navigate("/donor/login");
     };
 

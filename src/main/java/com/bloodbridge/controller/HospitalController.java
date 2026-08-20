@@ -1,9 +1,6 @@
 package com.bloodbridge.controller;
 
-import com.bloodbridge.dto.hospital.HospitalLoginRequest;
-import com.bloodbridge.dto.hospital.HospitalLoginResponse;
-import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
-import com.bloodbridge.dto.hospital.HospitalResponse;
+import com.bloodbridge.dto.hospital.*;
 import com.bloodbridge.service.HospitalService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,4 +40,9 @@ public class HospitalController {
         return hospitalService.getHospitalById();
     }
 
+    @GetMapping("/dashboard")
+    public HospitalDashboardResponse getDashboard()
+    {
+        return hospitalService.getDashboard();
+    }
 }

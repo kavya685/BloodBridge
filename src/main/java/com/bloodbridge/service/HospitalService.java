@@ -1,9 +1,6 @@
 package com.bloodbridge.service;
 
-import com.bloodbridge.dto.hospital.HospitalLoginRequest;
-import com.bloodbridge.dto.hospital.HospitalLoginResponse;
-import com.bloodbridge.dto.hospital.HospitalRegistrationRequest;
-import com.bloodbridge.dto.hospital.HospitalResponse;
+import com.bloodbridge.dto.hospital.*;
 
 import java.util.List;
 
@@ -13,5 +10,7 @@ public interface HospitalService {
     HospitalLoginResponse loginHospital(HospitalLoginRequest request);
 
     HospitalResponse getHospitalById();
+
+    HospitalDashboardResponse getDashboard();
 
 }
