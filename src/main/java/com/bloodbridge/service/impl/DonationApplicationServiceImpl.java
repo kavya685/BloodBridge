@@ -15,6 +15,9 @@ import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.service.DonationApplicationService;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class DonationApplicationServiceImpl implements DonationApplicationService {
 
     private final DonationApplicationRepository donationApplicationRepository;
@@ -147,7 +151,23 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
 
+        if (application.getStatus() == ApplicationStatus.ACCEPTED) {
+            throw new RuntimeException("Application is already accepted");
+        }
+        
+        BloodRequest bloodRequest = application.getBloodRequest();
+        if (bloodRequest.getUnitsRequired() <= 0) {
+            throw new RuntimeException("Blood request is already fulfilled");
+        }
         application.setStatus(ApplicationStatus.ACCEPTED);
+
+        // deducting the units required because an application is accepted
+        bloodRequest.setUnitsRequired(bloodRequest.getUnitsRequired() - 1);
+        if (bloodRequest.getUnitsRequired() == 0) {
+            bloodRequest.setStatus(BloodRequestStatus.FULFILLED);
+        }
+        bloodRequestRepository.save(bloodRequest);
+        
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
 
         return DonationApplicationResponse.builder()

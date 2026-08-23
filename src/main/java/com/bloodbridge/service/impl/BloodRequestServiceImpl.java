@@ -96,7 +96,9 @@ public class BloodRequestServiceImpl implements BloodRequestService {
 
         for(BloodRequest bloodRequest : bloodRequests)
         {
-            responses.add(BloodRequestResponse.builder()
+            if(!(bloodRequest.getStatus() == BloodRequestStatus.FULFILLED))
+            {
+                responses.add(BloodRequestResponse.builder()
                     .id(bloodRequest.getId())
                     .hospitalId(bloodRequest.getHospital().getId())
                     .hospitalName(bloodRequest.getHospital().getHospitalName())
@@ -108,6 +110,7 @@ public class BloodRequestServiceImpl implements BloodRequestService {
                     .expiresAt(bloodRequest.getExpiresAt())
                     .status(bloodRequest.getStatus())
                     .build());
+            }
         }
         return responses;
     }
