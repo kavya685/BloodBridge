@@ -71,6 +71,11 @@ public class SecurityConfig {
                                 "/api/blood-requests/**"
                         ).hasRole("HOSPITAL")
 
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/blood-requests/**"
+                        ).hasRole("HOSPITAL")
+
                         // ---------- Donor ----------
                         .requestMatchers(
                                 "/api/donors/me",

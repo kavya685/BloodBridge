@@ -2,15 +2,19 @@ package com.bloodbridge.service.impl;
 
 import com.bloodbridge.dto.bloodRequest.BloodRequestCreateRequest;
 import com.bloodbridge.dto.bloodRequest.BloodRequestResponse;
+import com.bloodbridge.dto.bloodRequest.BloodRequestUpdateRequest;
 import com.bloodbridge.entity.BloodRequest;
+import com.bloodbridge.entity.Donor;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.enums.BloodRequestStatus;
 import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.DonationApplicationRepository;
+import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.BloodRequestService;
+import com.bloodbridge.util.BloodCompatibility;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +29,15 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     private final BloodRequestRepository bloodRequestRepository;
     private final HospitalRepository hospitalRepository;
     private final DonationApplicationRepository donationApplicationRepository;
+    private final DonorRepository donorRepository;
 
-    public BloodRequestServiceImpl(BloodRequestRepository bloodRequestRepository,
+    public BloodRequestServiceImpl(BloodRequestRepository bloodRequestRepository, DonorRepository donorRepository,
                                    HospitalRepository hospitalRepository, DonationApplicationRepository donationApplicationRepository)
     {
         this.bloodRequestRepository = bloodRequestRepository;
         this.hospitalRepository = hospitalRepository;
         this.donationApplicationRepository = donationApplicationRepository;
+        this.donorRepository = donorRepository;
     }
 
     @Override
@@ -90,26 +96,33 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     @Override
     public List<BloodRequestResponse> getAllBloodRequests()
     {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
+
         List<BloodRequest> bloodRequests = bloodRequestRepository.findByStatusNot(BloodRequestStatus.DELETED);
 
         List<BloodRequestResponse> responses = new ArrayList<>();
 
         for(BloodRequest bloodRequest : bloodRequests)
         {
-            if(!(bloodRequest.getStatus() == BloodRequestStatus.FULFILLED))
+            if(bloodRequest.getStatus() == BloodRequestStatus.OPEN)
             {
-                responses.add(BloodRequestResponse.builder()
-                    .id(bloodRequest.getId())
-                    .hospitalId(bloodRequest.getHospital().getId())
-                    .hospitalName(bloodRequest.getHospital().getHospitalName())
-                    .bloodGroup(bloodRequest.getBloodGroup())
-                    .unitsRequired(bloodRequest.getUnitsRequired())
-                    .description(bloodRequest.getDescription())
-                    .createdAt(bloodRequest.getCreatedAt())
-                    .urgency(bloodRequest.getUrgency())
-                    .expiresAt(bloodRequest.getExpiresAt())
-                    .status(bloodRequest.getStatus())
-                    .build());
+                if(BloodCompatibility.isCompatible(donor.getBloodGroup(), bloodRequest.getBloodGroup()))
+                {
+                    responses.add(BloodRequestResponse.builder()
+                            .id(bloodRequest.getId())
+                            .hospitalId(bloodRequest.getHospital().getId())
+                            .hospitalName(bloodRequest.getHospital().getHospitalName())
+                            .bloodGroup(bloodRequest.getBloodGroup())
+                            .unitsRequired(bloodRequest.getUnitsRequired())
+                            .description(bloodRequest.getDescription())
+                            .createdAt(bloodRequest.getCreatedAt())
+                            .urgency(bloodRequest.getUrgency())
+                            .expiresAt(bloodRequest.getExpiresAt())
+                            .status(bloodRequest.getStatus())
+                            .build());
+                }
             }
         }
         return responses;
@@ -181,5 +194,49 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         {
             bloodRequestRepository.delete(bloodRequest);
         }
+    }
+
+    @Override
+    public BloodRequestResponse updateBloodRequest(Long bloodRequestId, BloodRequestUpdateRequest request)
+    {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
+        BloodRequest bloodRequest = bloodRequestRepository.findById(bloodRequestId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Blood request not found with id: " + bloodRequestId));
+
+        if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
+            throw new RuntimeException(
+                    "You are not authorized to edit this blood request");
+        }
+
+        if (bloodRequest.getStatus() != BloodRequestStatus.OPEN) {
+            throw new RuntimeException(
+                    "Only open blood requests can be edited");
+        }
+
+        bloodRequest.setDescription(request.getDescription());
+        bloodRequest.setUrgency(request.getUrgency());
+        bloodRequest.setExpiresAt(request.getExpiresAt());
+
+        BloodRequest updatedRequest =
+                bloodRequestRepository.save(bloodRequest);
+
+        return BloodRequestResponse.builder()
+                .id(updatedRequest.getId())
+                .hospitalId(updatedRequest.getHospital().getId())
+                .hospitalName(updatedRequest.getHospital().getHospitalName())
+                .bloodGroup(updatedRequest.getBloodGroup())
+                .unitsRequired(updatedRequest.getUnitsRequired())
+                .description(updatedRequest.getDescription())
+                .createdAt(updatedRequest.getCreatedAt())
+                .urgency(updatedRequest.getUrgency())
+                .expiresAt(updatedRequest.getExpiresAt())
+                .status(updatedRequest.getStatus())
+                .build();
     }
 }

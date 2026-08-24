@@ -1,9 +1,6 @@
 package com.bloodbridge.service;
 
-import com.bloodbridge.dto.donor.DonorLoginRequest;
-import com.bloodbridge.dto.donor.DonorLoginResponse;
-import com.bloodbridge.dto.donor.DonorRegistrationRequest;
-import com.bloodbridge.dto.donor.DonorResponse;
+import com.bloodbridge.dto.donor.*;
 
 import java.util.List;
 
@@ -13,5 +10,7 @@ public interface DonorService {
     DonorLoginResponse loginDonor(DonorLoginRequest request);
 
     DonorResponse getDonorById();
+
+    DonorDashboardResponse getDashboard();
 
 }

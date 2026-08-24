@@ -1,9 +1,6 @@
 package com.bloodbridge.service.impl;
 
-import com.bloodbridge.dto.donor.DonorLoginRequest;
-import com.bloodbridge.dto.donor.DonorLoginResponse;
-import com.bloodbridge.dto.donor.DonorRegistrationRequest;
-import com.bloodbridge.dto.donor.DonorResponse;
+import com.bloodbridge.dto.donor.*;
 import com.bloodbridge.entity.Donor;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.InvalidDonorException;
@@ -150,4 +147,9 @@ public class DonorServiceImpl implements DonorService {
                 .build();
     }
 
+    @Override
+    public DonorDashboardResponse getDashboard()
+    {
+
+    }
 }
