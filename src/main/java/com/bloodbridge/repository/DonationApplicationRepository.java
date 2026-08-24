@@ -18,4 +18,6 @@ public interface DonationApplicationRepository extends JpaRepository<DonationApp
     boolean existsByBloodRequestId(Long bloodRequestId);
     Long countByBloodRequestHospitalId(Long hospitalId);
     Long countByBloodRequestHospitalIdAndStatus(Long hospitalId, ApplicationStatus status);
+    Long countByDonorId(Long donorId);
+    Long countByDonorIdAndStatus(Long donorId, ApplicationStatus status);
 }

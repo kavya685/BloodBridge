@@ -2,10 +2,12 @@ package com.bloodbridge.service.impl;
 
 import com.bloodbridge.dto.donor.*;
 import com.bloodbridge.entity.Donor;
+import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.InvalidDonorException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
+import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.DonorService;
@@ -22,15 +24,17 @@ import java.util.List;
 public class DonorServiceImpl implements DonorService {
 
     private final DonorRepository donorRepository;
+    private final DonationApplicationRepository donationApplicationRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
     public DonorServiceImpl(DonorRepository donorRepository, PasswordEncoder passwordEncoder,
-                            JwtService jwtService)
+                            JwtService jwtService, DonationApplicationRepository donationApplicationRepository)
     {
         this.donorRepository = donorRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.donationApplicationRepository = donationApplicationRepository;
     }
 
     @Override
@@ -150,6 +154,21 @@ public class DonorServiceImpl implements DonorService {
     @Override
     public DonorDashboardResponse getDashboard()
     {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
 
+        Long donorId = donor.getId();
+        Long totalApplications = donationApplicationRepository.countByDonorId(donorId);
+        Long pendingApplications = donationApplicationRepository.countByDonorIdAndStatus(donorId, ApplicationStatus.PENDING);
+        Long acceptedApplications = donationApplicationRepository.countByDonorIdAndStatus(donorId, ApplicationStatus.ACCEPTED);
+        Long rejectedApplications = donationApplicationRepository.countByDonorIdAndStatus(donorId, ApplicationStatus.REJECTED);
+
+        return DonorDashboardResponse.builder()
+                .totalApplications(totalApplications)
+                .pendingApplications(pendingApplications)
+                .acceptedApplications(acceptedApplications)
+                .rejectedApplications(rejectedApplications)
+                .build();
     }
 }

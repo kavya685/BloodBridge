@@ -1,9 +1,6 @@
 package com.bloodbridge.controller;
 
-import com.bloodbridge.dto.donor.DonorLoginRequest;
-import com.bloodbridge.dto.donor.DonorLoginResponse;
-import com.bloodbridge.dto.donor.DonorRegistrationRequest;
-import com.bloodbridge.dto.donor.DonorResponse;
+import com.bloodbridge.dto.donor.*;
 import com.bloodbridge.service.DonorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,4 +38,9 @@ public class DonorController {
         return donorService.getDonorById();
     }
 
+    @GetMapping("/dashboard")
+    public DonorDashboardResponse getDashboard()
+    {
+        return donorService.getDashboard();
+    }
 }
