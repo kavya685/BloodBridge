@@ -2,6 +2,7 @@ package com.bloodbridge.controller;
 
 import com.bloodbridge.dto.donationApplication.DonationApplicationCreateRequest;
 import com.bloodbridge.dto.donationApplication.DonationApplicationResponse;
+import com.bloodbridge.entity.DonationApplication;
 import com.bloodbridge.service.DonationApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,5 +68,11 @@ public class DonationApplicationController {
     public void deleteDonationApplication(@PathVariable Long applicationId)
     {
         donationApplicationService.deleteDonationApplication(applicationId);
+    }
+
+    @PutMapping("/{applicationId}/completed")
+    public DonationApplicationResponse completeApplication(@PathVariable Long applicationId)
+    {
+        return donationApplicationService.completeApplication(applicationId);
     }
 }

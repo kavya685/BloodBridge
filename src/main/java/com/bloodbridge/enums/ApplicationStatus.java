@@ -4,5 +4,6 @@ public enum ApplicationStatus {
     PENDING,
     ACCEPTED,
     REJECTED,
-    WITHDRAWN
+    WITHDRAWN,
+    COMPLETED
 }

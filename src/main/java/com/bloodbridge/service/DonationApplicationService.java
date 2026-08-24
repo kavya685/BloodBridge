@@ -26,4 +26,6 @@ public interface DonationApplicationService {
     List<DonationApplicationResponse> getMyApplications();
 
     void deleteDonationApplication(Long applicationId);
+
+    DonationApplicationResponse completeApplication(Long applicationId);
 }

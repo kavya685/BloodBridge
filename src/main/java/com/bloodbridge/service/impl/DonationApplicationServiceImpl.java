@@ -5,6 +5,7 @@ import com.bloodbridge.dto.donationApplication.DonationApplicationResponse;
 import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.DonationApplication;
 import com.bloodbridge.entity.Donor;
+import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.enums.BloodRequestStatus;
 import com.bloodbridge.exception.InvalidBloodRequestException;
@@ -14,6 +15,7 @@ import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
 import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.DonorRepository;
+import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.DonationApplicationService;
 
 import jakarta.transaction.Transactional;
@@ -32,14 +34,17 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     private final DonationApplicationRepository donationApplicationRepository;
     private final DonorRepository donorRepository;
     private final BloodRequestRepository bloodRequestRepository;
+    private final HospitalRepository hospitalRepository;
 
     public DonationApplicationServiceImpl (DonationApplicationRepository donationApplicationRepository,
                                            DonorRepository donorRepository,
-                                           BloodRequestRepository bloodRequestRepository)
+                                           BloodRequestRepository bloodRequestRepository,
+                                           HospitalRepository hospitalRepository)
     {
         this.donationApplicationRepository = donationApplicationRepository;
         this.donorRepository = donorRepository;
         this.bloodRequestRepository = bloodRequestRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -161,13 +166,6 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         }
         application.setStatus(ApplicationStatus.ACCEPTED);
 
-        // deducting the units required because an application is accepted
-        bloodRequest.setUnitsRequired(bloodRequest.getUnitsRequired() - 1);
-        if (bloodRequest.getUnitsRequired() == 0) {
-            bloodRequest.setStatus(BloodRequestStatus.FULFILLED);
-        }
-        bloodRequestRepository.save(bloodRequest);
-        
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
 
         return DonationApplicationResponse.builder()
@@ -250,5 +248,59 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
 
         application.setStatus(ApplicationStatus.WITHDRAWN);
         donationApplicationRepository.save(application);
+    }
+
+    @Override
+    @Transactional
+    public DonationApplicationResponse completeApplication(Long applicationId)
+    {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Hospital not found with email: " + email));
+
+        DonationApplication application =
+                donationApplicationRepository.findById(applicationId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Donation application not found with id: "
+                                                + applicationId));
+
+        if (application.getStatus() != ApplicationStatus.ACCEPTED) {
+            throw new RuntimeException(
+                    "Only accepted applications can be completed");
+        }
+
+        BloodRequest bloodRequest = application.getBloodRequest();
+
+        if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
+            throw new RuntimeException(
+                    "You are not authorized to complete this application");
+        }
+
+        application.setStatus(ApplicationStatus.COMPLETED);
+
+        bloodRequest.setUnitsRequired(bloodRequest.getUnitsRequired() - 1);
+        if(bloodRequest.getUnitsRequired() == 0)
+        {
+            bloodRequest.setStatus(BloodRequestStatus.FULFILLED);
+        }
+        bloodRequestRepository.save(bloodRequest);
+
+        DonationApplication updatedApplication =
+                donationApplicationRepository.save(application);
+
+        return DonationApplicationResponse.builder()
+                .id(updatedApplication.getId())
+                .donorId(updatedApplication.getDonor().getId())
+                .donorName(updatedApplication.getDonor().getFullName())
+                .bloodRequestId(updatedApplication.getBloodRequest().getId())
+                .status(updatedApplication.getStatus())
+                .appliedAt(updatedApplication.getAppliedAt())
+                .build();
     }
 }
