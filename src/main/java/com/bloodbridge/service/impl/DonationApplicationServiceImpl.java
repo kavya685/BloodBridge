@@ -23,6 +23,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -283,6 +284,10 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         }
 
         application.setStatus(ApplicationStatus.COMPLETED);
+
+        Donor donor = application.getDonor();
+        donor.setLastDonationDate(LocalDate.now());
+        donorRepository.save(donor);
 
         bloodRequest.setUnitsRequired(bloodRequest.getUnitsRequired() - 1);
         if(bloodRequest.getUnitsRequired() == 0)

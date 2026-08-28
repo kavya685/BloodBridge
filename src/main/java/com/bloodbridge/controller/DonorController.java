@@ -43,4 +43,10 @@ public class DonorController {
     {
         return donorService.getDashboard();
     }
+
+    @GetMapping("/eligibility")
+    public DonorEligibilityResponse getEligibility()
+    {
+        return donorService.getEligibility();
+    }
 }

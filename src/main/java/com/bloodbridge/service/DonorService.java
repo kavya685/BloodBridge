@@ -13,4 +13,6 @@ public interface DonorService {
 
     DonorDashboardResponse getDashboard();
 
+    DonorEligibilityResponse getEligibility();
+
 }

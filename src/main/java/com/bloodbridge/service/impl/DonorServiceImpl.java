@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,6 +170,45 @@ public class DonorServiceImpl implements DonorService {
                 .pendingApplications(pendingApplications)
                 .acceptedApplications(acceptedApplications)
                 .rejectedApplications(rejectedApplications)
+                .build();
+    }
+
+    @Override
+    public DonorEligibilityResponse getEligibility()
+    {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
+
+        if(donor.getLastDonationDate() == null)
+        {
+            return DonorEligibilityResponse.builder()
+                    .eligible(true)
+                    .nextEligible(null)
+                    .daysRemaining(0)
+                    .build();
+        }
+
+        LocalDate nextEligibleDate =
+                donor.getLastDonationDate().plusDays(56);
+
+        LocalDate today = LocalDate.now();
+
+        boolean eligible = !today.isBefore(nextEligibleDate);
+
+        if(eligible)
+        {
+            return DonorEligibilityResponse.builder()
+                    .eligible(true)
+                    .daysRemaining(0)
+                    .nextEligible(null)
+                    .build();
+        }
+
+        return DonorEligibilityResponse.builder()
+                .eligible(false)
+                .nextEligible(nextEligibleDate)
+                .daysRemaining(ChronoUnit.DAYS.between(today, nextEligibleDate))
                 .build();
     }
 }
