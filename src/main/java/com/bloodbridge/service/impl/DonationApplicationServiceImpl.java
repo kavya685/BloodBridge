@@ -18,6 +18,7 @@ import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.DonationApplicationService;
 
+import com.bloodbridge.util.BloodCompatibility;
 import jakarta.transaction.Transactional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -76,6 +77,27 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         {
             throw new ResourceAlreadyExistsException(
                     "You have already applied for this blood request");
+        }
+
+        // Blood compatibility
+        if (!BloodCompatibility.isCompatible(
+                donor.getBloodGroup(),
+                bloodRequest.getBloodGroup())) {
+
+            throw new InvalidBloodRequestException(
+                    "Your blood group is not compatible with this request");
+        }
+
+        // 56-day eligibility check
+        if (donor.getLastDonationDate() != null) {
+
+            LocalDate nextEligibleDate =
+                    donor.getLastDonationDate().plusDays(56);
+
+            if (LocalDate.now().isBefore(nextEligibleDate)) {
+                throw new RuntimeException(
+                        "You are not eligible to donate yet");
+            }
         }
 
         DonationApplication donationApplication = DonationApplication.builder()
