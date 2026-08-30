@@ -1,0 +1,10 @@
+package com.bloodbridge.enums;
+
+public enum NotificationType {
+    NEW_BLOOD_REQUEST,
+    APPLICATION_RECEIVED,
+    APPLICATION_ACCEPTED,
+    APPLICATION_REJECTED,
+    DONATION_COMPLETED,
+    BLOOD_REQUEST_FULFILLED
+}

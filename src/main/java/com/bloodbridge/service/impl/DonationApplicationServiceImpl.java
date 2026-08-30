@@ -8,6 +8,7 @@ import com.bloodbridge.entity.Donor;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.enums.BloodRequestStatus;
+import com.bloodbridge.enums.NotificationType;
 import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.InvalidDonorException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
@@ -18,6 +19,7 @@ import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.DonationApplicationService;
 
+import com.bloodbridge.service.NotificationService;
 import com.bloodbridge.util.BloodCompatibility;
 import jakarta.transaction.Transactional;
 
@@ -37,16 +39,19 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     private final DonorRepository donorRepository;
     private final BloodRequestRepository bloodRequestRepository;
     private final HospitalRepository hospitalRepository;
+    private final NotificationService notificationService;
 
     public DonationApplicationServiceImpl (DonationApplicationRepository donationApplicationRepository,
                                            DonorRepository donorRepository,
                                            BloodRequestRepository bloodRequestRepository,
-                                           HospitalRepository hospitalRepository)
+                                           HospitalRepository hospitalRepository,
+                                           NotificationService notificationService)
     {
         this.donationApplicationRepository = donationApplicationRepository;
         this.donorRepository = donorRepository;
         this.bloodRequestRepository = bloodRequestRepository;
         this.hospitalRepository = hospitalRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -108,6 +113,12 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                         .build();
 
         DonationApplication savedRequest = donationApplicationRepository.save(donationApplication);
+
+        notificationService.createForHospital(
+                bloodRequest.getHospital(),
+                "A donor has applied to your blood request.",
+                NotificationType.APPLICATION_RECEIVED
+        );
 
         return DonationApplicationResponse.builder()
                 .id(savedRequest.getId())
@@ -191,6 +202,12 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
 
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
 
+        notificationService.createForDonor(
+                application.getDonor(),
+                "Your blood donation application has been accepted.",
+                NotificationType.APPLICATION_ACCEPTED
+        );
+
         return DonationApplicationResponse.builder()
                 .id(updatedApplication.getId())
                 .donorId(updatedApplication.getDonor().getId())
@@ -209,6 +226,12 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
 
         application.setStatus(ApplicationStatus.REJECTED);
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
+
+        notificationService.createForDonor(
+                application.getDonor(),
+                "Your blood donation application has been rejected.",
+                NotificationType.APPLICATION_REJECTED
+        );
 
         return DonationApplicationResponse.builder()
                 .id(updatedApplication.getId())
@@ -320,6 +343,12 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
 
         DonationApplication updatedApplication =
                 donationApplicationRepository.save(application);
+
+        notificationService.createForDonor(
+                application.getDonor(),
+                "Your blood donation has been completed.",
+                NotificationType.DONATION_COMPLETED
+        );
 
         return DonationApplicationResponse.builder()
                 .id(updatedApplication.getId())
