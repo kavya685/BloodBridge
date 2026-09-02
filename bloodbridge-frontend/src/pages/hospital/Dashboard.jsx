@@ -16,9 +16,9 @@ function Dashboard() {
         try {
             const response = await hospitalDashboard();
             setDashboard(response);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
-            alert("Failed to load dashboard.")
+            alert("Failed to load dashboard.");
         }
     }
 
