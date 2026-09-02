@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface BloodRequestRepository extends JpaRepository<BloodRequest, Long> {
     List<BloodRequest> findByHospitalId(Long hospitalId);
+    List<BloodRequest> findByHospitalIdAndStatusNot(Long hospitalId, BloodRequestStatus status);
     List<BloodRequest> findByStatusNot(BloodRequestStatus status);
     long countByHospitalId(Long HospitalId);
     long countByHospitalIdAndStatus(Long HospitalId, BloodRequestStatus status);

@@ -135,7 +135,7 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         Hospital hospital = hospitalRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
 
-        List<BloodRequest> bloodRequests = bloodRequestRepository.findByHospitalId(hospital.getId());
+        List<BloodRequest> bloodRequests = bloodRequestRepository.findByHospitalIdAndStatusNot(hospital.getId(), BloodRequestStatus.DELETED);
 
         if (bloodRequests.isEmpty())
         {
