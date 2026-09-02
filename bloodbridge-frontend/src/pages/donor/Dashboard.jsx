@@ -63,6 +63,8 @@ function Dashboard() {
                 My Applications
             </button>
 
+            <button onClick={() => navigate("/donor/notifications")}>Notifications</button>
+
             <div>
                 <h2>Dashboard Statistics</h2>
 
