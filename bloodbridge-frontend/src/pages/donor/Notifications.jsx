@@ -25,7 +25,7 @@ function Notifications() {
         {
             notifications.map((notification) => (
                 <div key={notification.id}>
-                    <strong>{notification.createdAt}</strong>
+                    <strong>{notification.createdAt}</strong> <br/>
                     <strong>Message: </strong> <p>{notification.message}</p>
                 </div>
             ))

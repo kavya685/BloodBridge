@@ -57,6 +57,14 @@ function Dashboard() {
                 Logout
             </button>
 
+            <button
+                onClick={() =>
+                    navigate("/hospital/notifications")
+                }
+            >
+                Notifications
+            </button>
+
             <div>
                 <h2>Dashboard Statistics</h2>
 
