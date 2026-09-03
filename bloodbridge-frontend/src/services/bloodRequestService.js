@@ -24,3 +24,8 @@ export const deleteBloodRequest = async (id) => {
     const response = await API.delete(`/blood-requests/${id}`);
     return response.data;
 }
+
+export const editBloodRequest = async (id, request) => {
+    const response = await API.put(`/blood-requests/${id}`, request);
+    return response.data;
+}

@@ -42,6 +42,9 @@ function MyBloodRequests() {
                             <button onClick={() => navigate(`/hospital/blood-requests/${request.id}/applicants`)}>
                                                 View Applicants
                             </button>
+                            <button onClick={() => navigate(`/hospital/edit-blood-request/${request.id}`, {
+                                state : {request}
+                            })}>Edit</button>
                             <button onClick={() => handleDelete(request.id)}>Delete</button>
                         </div>
                          )
