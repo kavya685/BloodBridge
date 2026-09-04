@@ -29,3 +29,8 @@ export const withdrawApplication = async(id) => {
     const response = await API.delete(`/donation-applications/${id}`);
     return response.data;
 }
+
+export const completeApplication = async(id) => {
+    const response = await API.put(`/donation-applications/${id}/completed`);
+    return response.data;
+}

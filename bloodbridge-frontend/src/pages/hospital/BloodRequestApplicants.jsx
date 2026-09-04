@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getApplicationsByBloodRequest, acceptApplication, rejectApplication } from "../../services/donationApplicationService";
+import {
+    getApplicationsByBloodRequest,
+    acceptApplication,
+    rejectApplication,
+    completeApplication
+} from "../../services/donationApplicationService";
 
 function BloodRequestApplicants()
 {
@@ -31,6 +36,17 @@ function BloodRequestApplicants()
         await fetchApplications();
     } catch(error) {
         console.log(error);
+    }
+  }
+
+  const handleCompletion = async (applicationId) => {
+    try {
+        const response = await completeApplication(applicationId);
+        alert("Application completed!");
+        fetchApplications();
+    } catch (error) {
+        console.log(error);
+        alert("Failed to complete application.");
     }
   }
 
@@ -66,13 +82,17 @@ function BloodRequestApplicants()
                             Reject
                         </button>
                     </>
-                  )
-                }
+                  )}
 
-                <hr />
-
+                {application.status === "ACCEPTED" && (
+                    <button
+                        onClick={() => handleCompletion(application.id)}
+                    >
+                        Complete
+                    </button>
+                )}
             </div>
-        ))}
+         ))}
     </div>
   );
 }
