@@ -1,12 +1,335 @@
 .home {
+    min-height: calc(100vh - 64px);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero-section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+
+    min-height: 560px;
+    padding: 80px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-badge {
+    display: inline-block;
+
+    padding: 8px 14px;
+    margin-bottom: 22px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: 20px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.hero-content h1 {
+    margin-bottom: 20px;
+
+    font-size: 56px;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+}
+
+.hero-content h1 span {
+    display: block;
+    color: var(--primary);
+}
+
+.hero-content p {
+    max-width: 520px;
+    margin-bottom: 30px;
+
+    color: var(--text-secondary);
+
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.primary-button,
+.secondary-button,
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 20px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: all 0.2s ease;
+}
+
+.primary-button {
+    background: var(--primary);
+    color: white;
+}
+
+.primary-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.secondary-button {
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border: 1px solid var(--border);
+}
+
+.secondary-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+
+/* =========================
+   HERO VISUAL
+========================= */
+
+.hero-visual {
+    width: 360px;
+    height: 360px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+
+    border-radius: 50%;
+}
+
+.blood-drop {
+    width: 210px;
+    height: 210px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary);
+    color: white;
+
+    border-radius: 50% 50% 50% 10%;
+
+    transform: rotate(-45deg);
+
+    font-size: 70px;
+
+    box-shadow: var(--shadow-md);
+}
+
+.blood-drop::first-letter {
+    transform: rotate(45deg);
+}
+
+
+/* =========================
+   HOW IT WORKS
+========================= */
+
+.how-section {
+    background: var(--surface);
+
+    padding: 80px 24px;
+}
+
+.section-heading {
+    max-width: 650px;
+    margin: 0 auto 45px;
+
     text-align: center;
-    margin-top: 50px;
 }
 
-.home h1 {
-    color: red;
+.section-heading > span {
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
 }
 
-.home p {
-    font-size: 20px;
+.section-heading h2 {
+    margin: 10px 0;
+
+    font-size: 34px;
+}
+
+.section-heading p {
+    color: var(--text-secondary);
+}
+
+
+.steps {
+    max-width: var(--max-width);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.step-card {
+    padding: 30px;
+
+    background: var(--background);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    transition: all 0.2s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.step-number {
+    margin-bottom: 20px;
+
+    color: var(--primary);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.step-card h3 {
+    margin-bottom: 10px;
+
+    font-size: 19px;
+}
+
+.step-card p {
+    margin-bottom: 0;
+
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+
+/* =========================
+   CTA
+========================= */
+
+.cta-section {
+    max-width: 900px;
+    margin: 70px auto;
+
+    padding: 60px 30px;
+
+    text-align: center;
+
+    background: var(--primary);
+    color: white;
+
+    border-radius: var(--radius-lg);
+}
+
+.cta-section h2 {
+    margin-bottom: 10px;
+
+    font-size: 32px;
+}
+
+.cta-section p {
+    margin-bottom: 25px;
+
+    opacity: 0.9;
+}
+
+.cta-button {
+    background: white;
+    color: var(--primary);
+}
+
+.cta-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+    .hero-section {
+        min-height: auto;
+        padding: 60px 24px;
+
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        width: 280px;
+        height: 280px;
+    }
+
+    .blood-drop {
+        width: 160px;
+        height: 160px;
+        font-size: 50px;
+    }
+
+    .steps {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .hero-content h1 {
+        font-size: 40px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
 }
