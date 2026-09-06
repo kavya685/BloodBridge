@@ -1,12 +1,473 @@
 .home {
+    min-height: calc(100vh - 64px);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero-section {
+    max-width: var(--max-width);
+    min-height: 600px;
+
+    margin: 0 auto;
+    padding: 80px 24px;
+
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 70px;
+}
+
+.hero-content {
+    max-width: 620px;
+}
+
+.hero-eyebrow,
+.section-eyebrow {
+    margin-bottom: 16px;
+
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.hero-content h1 {
+    margin-bottom: 24px;
+
+    font-size: 60px;
+    line-height: 1.05;
+    letter-spacing: -2px;
+}
+
+.hero-content h1 span {
+    color: var(--primary);
+}
+
+.hero-description {
+    max-width: 540px;
+
+    margin-bottom: 30px;
+
+    color: var(--text-secondary);
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 18px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.primary-button {
+    background: var(--primary);
+    color: white;
+}
+
+.primary-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.secondary-button {
+    background: var(--surface);
+
+    color: var(--text-primary);
+
+    border: 1px solid var(--border);
+}
+
+.secondary-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+
+/* =========================
+   REQUEST PREVIEW
+========================= */
+
+.hero-preview {
+    padding: 26px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+.preview-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.preview-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.preview-header h3 {
+    margin: 0;
+
+    font-size: 18px;
+}
+
+.live-indicator {
+    color: var(--success);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.request-preview {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 17px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.blood-group {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.request-info {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    gap: 3px;
+}
+
+.request-info strong {
+    font-size: 14px;
+}
+
+.request-info span {
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+.urgent-badge,
+.open-badge {
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.urgent-badge {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.open-badge {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.preview-link {
+    display: inline-block;
+
+    margin-top: 18px;
+
+    color: var(--primary);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   ROLES
+========================= */
+
+.roles-section {
+    padding: 85px 24px;
+
+    background: var(--surface-muted);
+}
+
+.section-intro {
+    max-width: 700px;
+
+    margin: 0 auto 40px;
+}
+
+.section-intro h2 {
+    margin: 0;
+
+    font-size: 34px;
+    letter-spacing: -0.5px;
+}
+
+.role-grid {
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.role-card {
+    padding: 32px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.role-number {
+    margin-bottom: 30px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.role-card h3 {
+    margin-bottom: 10px;
+
+    font-size: 23px;
+}
+
+.role-card > p {
+    margin-bottom: 22px;
+
+    color: var(--text-secondary);
+
+    line-height: 1.6;
+}
+
+.role-card ul {
+    margin: 0 0 25px;
+    padding: 0;
+
+    list-style: none;
+}
+
+.role-card li {
+    padding: 9px 0;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+}
+
+.role-card li:last-child {
+    border-bottom: 1px solid var(--border);
+}
+
+.role-card a {
+    color: var(--primary);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   PROCESS
+========================= */
+
+.process-section {
+    max-width: var(--max-width);
+
+    margin: 0 auto;
+
+    padding: 90px 24px;
+}
+
+.centered {
     text-align: center;
-    margin-top: 50px;
 }
 
-.home h1 {
-    color: red;
+.process-flow {
+    display: flex;
+    align-items: center;
+
+    max-width: 900px;
+
+    margin: 55px auto 0;
 }
 
-.home p {
-    font-size: 20px;
+.process-step {
+    flex: 1;
+}
+
+.process-step span {
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.process-step h3 {
+    margin: 9px 0 6px;
+
+    font-size: 19px;
+}
+
+.process-step p {
+    margin: 0;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.process-line {
+    width: 70px;
+    height: 1px;
+
+    margin: 0 20px;
+
+    background: var(--border-strong);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 850px) {
+
+    .hero-section {
+        grid-template-columns: 1fr;
+
+        gap: 45px;
+    }
+
+    .hero-content {
+        max-width: 700px;
+    }
+
+    .hero-content h1 {
+        font-size: 48px;
+    }
+
+    .role-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .hero-section {
+        padding: 55px 18px;
+    }
+
+    .hero-content h1 {
+        font-size: 40px;
+        letter-spacing: -1px;
+    }
+
+    .hero-description {
+        font-size: 15px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+    .hero-preview {
+        padding: 20px;
+    }
+
+    .roles-section,
+    .process-section {
+        padding: 65px 18px;
+    }
+
+    .section-intro h2 {
+        font-size: 28px;
+    }
+
+    .process-flow {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .process-line {
+        width: 1px;
+        height: 30px;
+
+        margin: 0 0 0 6px;
+    }
 }

@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { hospitalDashboard } from "../../services/hospital/dashboardService";
 import { useEffect, useState } from "react";
+import "../../styles/Dashboard.css";
 
 function Dashboard() {
-
     const hospital = JSON.parse(localStorage.getItem("hospital"));
     const navigate = useNavigate();
+
     const [dashboard, setDashboard] = useState(null);
 
     useEffect(() => {
@@ -20,7 +21,7 @@ function Dashboard() {
             console.error(error);
             alert("Failed to load dashboard.");
         }
-    }
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("hospital");
@@ -29,55 +30,232 @@ function Dashboard() {
     };
 
     if (!dashboard) {
-        return <h2>Loading...</h2>;
+        return (
+            <div className="dashboard-loading">
+                <p>Loading dashboard...</p>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <h1>Hospital Dashboard</h1>
-            <h3>Welcome {hospital.fullName}</h3>
+        <div className="dashboard-page">
 
-            <button
-              onClick={() =>
-                  navigate("/hospital/create-blood-request")
-              }
-            >
-                  Create Blood Request
-            </button>
+            {/* Dashboard Header */}
+            <section className="dashboard-header">
 
-            <button
-                onClick={() =>
-                    navigate("/hospital/my-blood-requests")
-                }
-            >
-                My Blood Requests
-            </button>
+                <div className="dashboard-heading">
 
-            <button onClick={handleLogout}>
-                Logout
-            </button>
+                    <p className="dashboard-label">
+                        HOSPITAL DASHBOARD
+                    </p>
 
-            <button
-                onClick={() =>
-                    navigate("/hospital/notifications")
-                }
-            >
-                Notifications
-            </button>
+                    <h1>
+                        Welcome, {hospital.fullName}
+                    </h1>
 
-            <div>
-                <h2>Dashboard Statistics</h2>
+                    <p className="dashboard-subtitle">
+                        Monitor your blood requests and donor applications
+                        from one place.
+                    </p>
 
-                <p>Total Requests: {dashboard.totalRequests}</p>
-                <p>Open Requests: {dashboard.openRequests}</p>
-                <p>Fulfilled Requests: {dashboard.fulfilledRequests}</p>
-                <p>Deleted Requests: {dashboard.deletedRequests}</p>
+                </div>
 
-                <p>Total Applications: {dashboard.totalApplications}</p>
-                <p>Pending Applications: {dashboard.pendingApplications}</p>
-                <p>Accepted Applications: {dashboard.acceptedApplications}</p>
-                <p>Rejected Applications: {dashboard.rejectedApplications}</p>
+                <div className="dashboard-header-actions">
+
+                    <button
+                        className="secondary-button"
+                        onClick={() =>
+                            navigate("/hospital/notifications")
+                        }
+                    >
+                        Notifications
+                    </button>
+
+                    <button
+                        className="primary-button"
+                        onClick={() =>
+                            navigate("/hospital/create-blood-request")
+                        }
+                    >
+                        Create Request
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            {/* Blood Request Statistics */}
+            <section className="dashboard-section">
+
+                <div className="section-title">
+                    <h2>Blood Requests</h2>
+
+                    <p>
+                        Overview of your blood requests.
+                    </p>
+                </div>
+
+                <div className="stats-grid">
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Total Requests
+                        </p>
+
+                        <h3>
+                            {dashboard.totalRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Open Requests
+                        </p>
+
+                        <h3>
+                            {dashboard.openRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Fulfilled
+                        </p>
+
+                        <h3>
+                            {dashboard.fulfilledRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Deleted
+                        </p>
+
+                        <h3>
+                            {dashboard.deletedRequests}
+                        </h3>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* Application Statistics */}
+            <section className="dashboard-section">
+
+                <div className="section-title">
+                    <h2>Donation Applications</h2>
+
+                    <p>
+                        Track applications received for your requests.
+                    </p>
+                </div>
+
+                <div className="stats-grid">
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Total Applications
+                        </p>
+
+                        <h3>
+                            {dashboard.totalApplications}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Pending
+                        </p>
+
+                        <h3>
+                            {dashboard.pendingApplications}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Accepted
+                        </p>
+
+                        <h3>
+                            {dashboard.acceptedApplications}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p className="stat-label">
+                            Rejected
+                        </p>
+
+                        <h3>
+                            {dashboard.rejectedApplications}
+                        </h3>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* Quick Actions */}
+            <section className="quick-actions">
+
+                <div>
+                    <p className="quick-actions-label">
+                        QUICK ACTIONS
+                    </p>
+
+                    <h2>
+                        Manage your hospital activity
+                    </h2>
+
+                    <p>
+                        Create new blood requests or review the requests
+                        you've already created.
+                    </p>
+                </div>
+
+                <div className="quick-action-buttons">
+
+                    <button
+                        className="primary-button"
+                        onClick={() =>
+                            navigate("/hospital/create-blood-request")
+                        }
+                    >
+                        Create Blood Request
+                    </button>
+
+                    <button
+                        className="outline-button"
+                        onClick={() =>
+                            navigate("/hospital/my-blood-requests")
+                        }
+                    >
+                        View My Requests
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            {/* Logout */}
+            <div className="logout-container">
+
+                <button
+                    className="logout-button"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
+
             </div>
+
         </div>
     );
 }
