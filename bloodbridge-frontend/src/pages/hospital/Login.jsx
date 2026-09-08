@@ -1,16 +1,16 @@
-import { useState } from "react"
-import { hospitalLogin } from "../../services/hospital/loginService"
-import { useNavigate } from "react-router-dom"
-
+import { useState } from "react";
+import { hospitalLogin } from "../../services/hospital/loginService";
+import { useNavigate } from "react-router-dom";
+import "../../styles/Auth.css";
 
 function Login() {
-    const[email, setEmail] = useState("");
-    const[password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("Handle Submit Called");
 
         try {
             const response = await hospitalLogin({
@@ -21,50 +21,103 @@ function Login() {
             console.log(response);
 
             localStorage.setItem("token", response.token);
+
             localStorage.setItem(
                 "hospital",
-                JSON.stringify(response));
+                JSON.stringify(response)
+            );
 
-                navigate("/hospital/dashboard");
+            navigate("/hospital/dashboard");
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <div>
-            <h1>Hospital Login</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email</label>
-                    <br />
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
+        <div className="auth-page">
+
+            <div className="auth-card">
+
+                <div className="auth-header">
+                    <div className="auth-brand-mark">♥</div>
+
+                    <p className="auth-label">
+                        HOSPITAL PORTAL
+                    </p>
+
+                    <h1>Welcome back</h1>
+
+                    <p>
+                        Sign in to manage your blood requests
+                        and donor applications.
+                    </p>
                 </div>
 
-                <br />
+                <form
+                    className="auth-form"
+                    onSubmit={handleSubmit}
+                >
 
-                <div>
-                    <label>Password</label>
-                    <br />
-                    <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
+                    <div className="auth-field">
+                        <label htmlFor="email">
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    <div className="auth-field">
+                        <label htmlFor="password">
+                            Password
+                        </label>
+
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="auth-submit"
+                    >
+                        Sign In
+                    </button>
+
+                </form>
+
+                <div className="auth-footer">
+                    <span>
+                        Don't have a hospital account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/hospital/register")
+                        }
+                    >
+                        Register
+                    </button>
                 </div>
 
-                <br />
+            </div>
 
-                <button type="submit">
-                    Login
-                </button>
-            </form>
         </div>
     );
 }

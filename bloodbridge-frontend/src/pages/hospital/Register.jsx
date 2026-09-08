@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { hospitalRegister } from "../../services/hospital/registerService";
+import "../../styles/Auth.css";
 
 function Register() {
     const [hospitalName, setHospitalName] = useState("");
@@ -50,120 +51,175 @@ function Register() {
     };
 
     return (
-        <div>
-            <h1>Hospital Registration</h1>
+        <div className="auth-page auth-register-page">
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Hospital Name</label>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter hospital name"
-                        value={hospitalName}
-                        onChange={(event) =>
-                            setHospitalName(event.target.value)
-                        }
-                    />
+            <div className="auth-card auth-card-wide">
+
+                <div className="auth-header">
+                    <div className="auth-brand-mark">♥</div>
+
+                    <p className="auth-label">
+                        HOSPITAL REGISTRATION
+                    </p>
+
+                    <h1>Create your account</h1>
+
+                    <p>
+                        Register your hospital to start managing
+                        blood requests through BloodBridge.
+                    </p>
                 </div>
 
-                <br />
+                <form
+                    className="auth-form"
+                    onSubmit={handleSubmit}
+                >
 
-                <div>
-                    <label>Contact Number</label>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter contact number"
-                        value={contactNumber}
-                        onChange={(event) =>
-                            setContactNumber(event.target.value)
+                    <div className="auth-form-grid">
+
+                        <div className="auth-field">
+                            <label htmlFor="hospitalName">
+                                Hospital Name
+                            </label>
+
+                            <input
+                                id="hospitalName"
+                                type="text"
+                                placeholder="Enter hospital name"
+                                value={hospitalName}
+                                onChange={(event) =>
+                                    setHospitalName(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="contactNumber">
+                                Contact Number
+                            </label>
+
+                            <input
+                                id="contactNumber"
+                                type="text"
+                                placeholder="Enter contact number"
+                                value={contactNumber}
+                                onChange={(event) =>
+                                    setContactNumber(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="email">
+                                Email
+                            </label>
+
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="email@gmail.com"
+                                value={email}
+                                onChange={(event) =>
+                                    setEmail(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="password">
+                                Password
+                            </label>
+
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Minimum 8 characters"
+                                value={password}
+                                onChange={(event) =>
+                                    setPassword(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="city">
+                                City
+                            </label>
+
+                            <input
+                                id="city"
+                                type="text"
+                                placeholder="Enter your city"
+                                value={city}
+                                onChange={(event) =>
+                                    setCity(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="registrationNumber">
+                                Registration Number
+                            </label>
+
+                            <input
+                                id="registrationNumber"
+                                type="text"
+                                placeholder="Enter registration number"
+                                value={registrationNumber}
+                                onChange={(event) =>
+                                    setRegistrationNumber(
+                                        event.target.value
+                                    )
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field auth-field-full">
+                            <label htmlFor="address">
+                                Address
+                            </label>
+
+                            <textarea
+                                id="address"
+                                placeholder="Enter hospital address"
+                                value={address}
+                                onChange={(event) =>
+                                    setAddress(event.target.value)
+                                }
+                            />
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="auth-submit"
+                    >
+                        Create Hospital Account
+                    </button>
+
+                </form>
+
+                <div className="auth-footer">
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/hospital/login")
                         }
-                    />
+                    >
+                        Sign In
+                    </button>
                 </div>
 
-                <br />
+            </div>
 
-                <div>
-                    <label>Email</label>
-                    <br />
-                    <input
-                        type="email"
-                        placeholder="email@gmail.com"
-                        value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
-                        }
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <label>Password</label>
-                    <br />
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
-                        }
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <label>City</label>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter your city"
-                        value={city}
-                        onChange={(event) =>
-                            setCity(event.target.value)
-                        }
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <label>Address</label>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter your address"
-                        value={address}
-                        onChange={(event) =>
-                            setAddress(event.target.value)
-                        }
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <label>Registration Number</label>
-                    <br />
-                    <input
-                        type="text"
-                        placeholder="Enter your registration number"
-                        value={registrationNumber}
-                        onChange={(event) =>
-                            setRegistrationNumber(event.target.value)
-                        }
-                    />
-                </div>
-
-                <br />
-
-                <button type="submit">
-                    Register
-                </button>
-            </form>
         </div>
-    )
+    );
 }
 
 export default Register;
