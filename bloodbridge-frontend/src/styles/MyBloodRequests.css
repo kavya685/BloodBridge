@@ -1,0 +1,398 @@
+.my-requests-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 45px 24px 60px;
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
+.my-requests-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 40px;
+}
+
+.page-label {
+    margin-bottom: 9px;
+
+    color: var(--primary);
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.my-requests-header h1 {
+    margin-bottom: 8px;
+
+    font-size: 34px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+    margin-bottom: 0;
+
+    color: var(--text-secondary);
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+.primary-button,
+.secondary-button,
+.delete-button {
+    padding: 10px 15px;
+
+    border-radius: var(--radius-sm);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+}
+
+.primary-button {
+    border: 1px solid var(--primary);
+
+    background: var(--primary);
+    color: white;
+}
+
+.primary-button:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+
+    transform: translateY(-1px);
+}
+
+.secondary-button {
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.secondary-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.delete-button {
+    border: 1px solid var(--danger);
+
+    background: transparent;
+    color: var(--danger);
+}
+
+.delete-button:hover {
+    background: var(--danger-light);
+}
+
+
+/* =========================
+   REQUEST LIST
+   ========================= */
+
+.request-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+
+/* =========================
+   REQUEST CARD
+   ========================= */
+
+.blood-request-card {
+    padding: 24px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.blood-request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================
+   CARD HEADER
+   ========================= */
+
+.request-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.blood-group-block {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+.blood-group {
+    min-width: 110px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: var(--radius-sm);
+
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+.request-units {
+    margin-bottom: 3px;
+
+    color: var(--text-primary);
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.request-created {
+    margin-bottom: 0;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   STATUS
+   ========================= */
+
+.request-status {
+    padding: 6px 10px;
+
+    background: var(--success-light);
+    color: var(--success);
+
+    border-radius: var(--radius-sm);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   DESCRIPTION
+   ========================= */
+
+.request-description {
+    max-width: 800px;
+
+    margin: 18px 0;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   DETAILS
+   ========================= */
+
+.request-details {
+    display: flex;
+
+    gap: 45px;
+
+    margin-bottom: 20px;
+}
+
+.request-detail {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.request-detail span {
+    color: var(--text-muted);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.request-detail strong {
+    color: var(--text-primary);
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   ACTIONS
+   ========================= */
+
+.request-card-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+
+.empty-state {
+    padding: 70px 30px;
+
+    text-align: center;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-state-mark {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: var(--radius-sm);
+
+    font-size: 22px;
+}
+
+.empty-state h2 {
+    margin-bottom: 8px;
+
+    font-size: 21px;
+}
+
+.empty-state p {
+    max-width: 480px;
+
+    margin: 0 auto 22px;
+
+    color: var(--text-secondary);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 700px) {
+
+    .my-requests-page {
+        padding: 30px 18px 45px;
+    }
+
+    .my-requests-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .my-requests-header .primary-button {
+        width: 100%;
+    }
+
+    .request-card-header {
+        flex-direction: column;
+    }
+
+    .request-details {
+        gap: 25px;
+    }
+
+    .request-card-actions {
+        flex-wrap: wrap;
+    }
+
+    .request-card-actions button {
+        flex: 1;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .blood-request-card {
+        padding: 20px;
+    }
+
+    .request-card-actions {
+        flex-direction: column;
+    }
+
+    .request-card-actions button {
+        width: 100%;
+    }
+}
