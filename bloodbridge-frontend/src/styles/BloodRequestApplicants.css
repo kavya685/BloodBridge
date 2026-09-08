@@ -1,0 +1,331 @@
+.applicants-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+}
+
+/* Header */
+
+.applicants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.page-label {
+    margin-bottom: 8px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.applicants-header h1 {
+    margin-bottom: 8px;
+    font-size: 32px;
+}
+
+.page-subtitle {
+    margin-bottom: 0;
+    color: var(--text-secondary);
+}
+
+/* Summary */
+
+.applicants-summary {
+    margin-bottom: 24px;
+}
+
+.applicants-summary > div {
+    width: 220px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.applicants-summary strong {
+    font-size: 28px;
+}
+
+/* Applicant list */
+
+.applicants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.applicant-card {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.applicant-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.applicant-identity {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.applicant-avatar {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    border-radius: 50%;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.applicant-identity h2 {
+    margin-bottom: 3px;
+    font-size: 18px;
+}
+
+.applicant-identity p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* Status */
+
+.application-status {
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.status-pending {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.status-accepted {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.status-rejected {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.status-completed {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+/* Details */
+
+.applicant-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 16px;
+
+    margin-top: 22px;
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border);
+}
+
+.applicant-detail span {
+    display: block;
+    margin-bottom: 4px;
+
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.applicant-detail strong {
+    font-size: 14px;
+}
+
+/* Actions */
+
+.applicant-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 22px;
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+}
+
+.accept-button,
+.reject-button,
+.complete-button {
+    padding: 10px 16px;
+
+    border: none;
+    border-radius: var(--radius-sm);
+
+    font-weight: 600;
+}
+
+.accept-button {
+    background: var(--success);
+    color: white;
+}
+
+.reject-button {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.complete-button {
+    background: var(--primary);
+    color: white;
+}
+
+.accept-button:hover,
+.complete-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.reject-button:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Final messages */
+
+.completed-message {
+    margin-top: 20px;
+    padding: 12px 14px;
+
+    background: var(--success-light);
+    color: var(--success);
+
+    border-radius: var(--radius-sm);
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.rejected-message {
+    margin-top: 20px;
+    padding: 12px 14px;
+
+    background: var(--danger-light);
+    color: var(--danger);
+
+    border-radius: var(--radius-sm);
+
+    font-size: 14px;
+}
+
+/* Empty state */
+
+.applicants-empty {
+    padding: 60px 24px;
+
+    text-align: center;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.empty-icon {
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--primary-light);
+
+    border-radius: 50%;
+
+    font-size: 22px;
+}
+
+.applicants-empty h2 {
+    margin-bottom: 8px;
+}
+
+.applicants-empty p {
+    margin-bottom: 0;
+    color: var(--text-secondary);
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+    .applicants-page {
+        padding: 28px 16px 40px;
+    }
+
+    .applicants-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .applicants-header h1 {
+        font-size: 27px;
+    }
+
+    .applicants-summary > div {
+        width: 100%;
+    }
+
+    .applicant-card {
+        padding: 18px;
+    }
+
+    .applicant-card-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .applicant-details {
+        grid-template-columns: 1fr;
+    }
+
+    .applicant-actions {
+        flex-direction: column;
+    }
+
+    .applicant-actions button {
+        width: 100%;
+    }
+}
