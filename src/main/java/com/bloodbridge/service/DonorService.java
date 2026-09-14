@@ -15,4 +15,7 @@ public interface DonorService {
 
     DonorEligibilityResponse getEligibility();
 
+    void changePassword(DonorChangePasswordRequest request);
+
+    void changePasswordRequest(DonorChangePasswordRequest request);
 }

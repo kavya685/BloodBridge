@@ -73,7 +73,7 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.PUT,
-                                "/api/blood-requests/**"
+                                "/api/blood-requests/**", "/api/hospitals/change-password"
                         ).hasRole("HOSPITAL")
 
                         .requestMatchers(
@@ -107,6 +107,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/donation-applications/**"
+                        ).hasRole("DONOR")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "api/donors/change-password"
                         ).hasRole("DONOR")
 
                         // ---------- Everything else ----------

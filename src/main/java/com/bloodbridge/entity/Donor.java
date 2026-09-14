@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "donors")
@@ -55,4 +56,11 @@ public class Donor {
     private Boolean available;
 
     private LocalDate lastDonationDate;
+
+    private int failedLoginAttempts;
+
+    private LocalDateTime lockedUntil;
+
+    @Column(nullable = false)
+    private LocalDateTime passwordExpiration;
 }

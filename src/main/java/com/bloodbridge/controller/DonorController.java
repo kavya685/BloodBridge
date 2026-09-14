@@ -3,11 +3,7 @@ package com.bloodbridge.controller;
 import com.bloodbridge.dto.donor.*;
 import com.bloodbridge.service.DonorService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/donors")
@@ -48,5 +44,17 @@ public class DonorController {
     public DonorEligibilityResponse getEligibility()
     {
         return donorService.getEligibility();
+    }
+
+    @PutMapping("/change-password")
+    public void changePassword(@Valid @RequestBody DonorChangePasswordRequest request) {
+
+        donorService.changePassword(request);
+    }
+
+    @PutMapping("change-password-request")
+    public void changePasswordRequest(@Valid @RequestBody DonorChangePasswordRequest request)
+    {
+        donorService.changePasswordRequest(request);
     }
 }

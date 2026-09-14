@@ -30,9 +30,16 @@ public class DonorRegistrationRequest {
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8,
+    @Size(min = 8, max = 64,
             message = "Password must be at least 8 characters long")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$",
+            message = "Password must contain uppercase, lowercase, number and special character"
+    )
     private String password;
+
+    @NotBlank(message = "Confirm password is required")
+    private String confirmPassword;
 
     @NotBlank(message = "Phone number is required")
     @Pattern(

@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "hospitals")
 @Getter
@@ -43,4 +45,10 @@ public class Hospital {
     @Column(unique = true)
     private String registrationNumber;
 
+    private int failedLoginAttempts;
+
+    private LocalDateTime lockedUntil;
+
+    @Column(nullable = false)
+    private LocalDateTime passwordExpiration;
 }
