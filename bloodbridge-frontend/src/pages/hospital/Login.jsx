@@ -90,6 +90,15 @@ function Login() {
                             }
                             required
                         />
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                navigate("/hospital/forgot-password")
+                            }
+                        >
+                            Forgot password?
+                        </button>
                     </div>
 
                     <button

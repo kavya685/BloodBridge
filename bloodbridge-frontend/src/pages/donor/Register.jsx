@@ -8,6 +8,7 @@ function Register() {
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [contactNumber, setContactNumber] = useState("");
     const [bloodGroup, setBloodGroup] = useState("");
     const [city, setCity] = useState("");
@@ -25,6 +26,7 @@ function Register() {
             !dateOfBirth ||
             !email ||
             !password ||
+            !confirmPassword ||
             !contactNumber ||
             !bloodGroup ||
             !city
@@ -43,6 +45,7 @@ function Register() {
             dateOfBirth,
             email,
             password,
+            confirmPassword,
             contactNumber,
             bloodGroup,
             city,
@@ -124,6 +127,21 @@ function Register() {
                         value={password}
                         onChange={(event) =>
                             setPassword(event.target.value)
+                        }
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label>Confirm Password</label>
+                    <br />
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        value={confirmPassword}
+                        onChange={(event) =>
+                            setConfirmPassword(event.target.value)
                         }
                     />
                 </div>

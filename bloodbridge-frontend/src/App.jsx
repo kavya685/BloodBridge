@@ -18,6 +18,7 @@ import MyApplications from "./pages/donor/MyApplications";
 import DonorNotifications from "./pages/donor/Notifications";
 import HospitalNotifications from "./pages/hospital/Notifications";
 import EditBloodRequest from "./pages/hospital/EditBloodRequest.jsx";
+import ForgotPassword from "./pages/hospital/forgotPassword/ForgotPassword.jsx"
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -140,6 +141,14 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
+            <Route
+                path="/hospital/forgot-password"
+                element={
+                        <ForgotPassword />
+                }
+            />
+
         </Routes>
       </>
   );

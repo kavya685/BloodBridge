@@ -8,6 +8,7 @@ function Register() {
     const [contactNumber, setContactNumber] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [city, setCity] = useState("");
     const [address, setAddress] = useState("");
     const [registrationNumber, setRegistrationNumber] = useState("");
@@ -22,6 +23,7 @@ function Register() {
             !contactNumber ||
             !email ||
             !password ||
+            !confirmPassword ||
             !city ||
             !address ||
             !registrationNumber
@@ -36,6 +38,7 @@ function Register() {
                 contactNumber,
                 email,
                 password,
+                confirmPassword,
                 city,
                 address,
                 registrationNumber
@@ -137,6 +140,22 @@ function Register() {
                                 value={password}
                                 onChange={(event) =>
                                     setPassword(event.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="confirmpassword">
+                                Confirm Password
+                            </label>
+
+                            <input
+                                id="confirmpassword"
+                                type="password"
+                                placeholder="Minimum 8 characters"
+                                value={confirmPassword}
+                                onChange={(event) =>
+                                    setConfirmPassword(event.target.value)
                                 }
                             />
                         </div>
