@@ -2,31 +2,43 @@ package com.bloodbridge.controller;
 
 import com.bloodbridge.dto.password.ResetPasswordRequest;
 import com.bloodbridge.service.ForgotPasswordOTPService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/forgot-password")
+@RequestMapping("/api/forgot-password")
 public class ForgotPasswordController {
 
     private final ForgotPasswordOTPService forgotPasswordOTPService;
 
-    public ForgotPasswordController(ForgotPasswordOTPService forgotPasswordOTPService) {
+    public ForgotPasswordController(
+            ForgotPasswordOTPService forgotPasswordOTPService) {
         this.forgotPasswordOTPService = forgotPasswordOTPService;
     }
 
     @PostMapping("/send-otp")
-    public LocalDateTime sendOTP(String email)
-    {
+    public LocalDateTime sendOTP(@RequestParam String email) {
+
         return forgotPasswordOTPService.sendOTP(email);
     }
 
+    @PostMapping("/verify-otp")
+    public boolean verifyOTP(
+            @RequestParam String email,
+            @RequestParam String otp) {
+
+        return forgotPasswordOTPService.verifyOTP(email, otp);
+    }
+
     @PostMapping("/reset-password")
-    public void resetPassword(ResetPasswordRequest request)
-    {
-        forgotPasswordOTPService.resetPassword(request);
+    public void resetPassword(
+            @RequestBody ResetPasswordRequest request) {
+
+        forgotPasswordOTPService.resetPassword(
+                request.getEmail(),
+                request.getNewPassword(),
+                request.getConfirmPassword()
+        );
     }
 }

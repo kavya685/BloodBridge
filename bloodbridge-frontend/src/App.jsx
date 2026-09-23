@@ -19,6 +19,8 @@ import DonorNotifications from "./pages/donor/Notifications";
 import HospitalNotifications from "./pages/hospital/Notifications";
 import EditBloodRequest from "./pages/hospital/EditBloodRequest.jsx";
 import ForgotPassword from "./pages/hospital/forgotPassword/ForgotPassword.jsx"
+import VerifyOTP from "./pages/hospital/forgotPassword/VerifyOTP.jsx";
+import ResetPassword from "./pages/hospital/forgotPassword/ResetPassword.jsx";
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -147,6 +149,16 @@ function App() {
                 element={
                         <ForgotPassword />
                 }
+            />
+
+            <Route
+                path="/hospital/verify-otp"
+                element={<VerifyOTP />}
+            />
+
+            <Route
+                path="/hospital/reset-password"
+                element={<ResetPassword />}
             />
 
         </Routes>

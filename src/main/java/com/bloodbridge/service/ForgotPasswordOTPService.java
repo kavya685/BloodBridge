@@ -7,5 +7,6 @@ import java.time.LocalDateTime;
 public interface ForgotPasswordOTPService {
     String generateOTP();
     LocalDateTime sendOTP(String email);
-    void resetPassword(ResetPasswordRequest request);
+    boolean verifyOTP(String email, String otp);
+    void resetPassword(String email, String password, String confirmPassword);
 }

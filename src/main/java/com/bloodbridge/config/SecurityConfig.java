@@ -47,7 +47,8 @@ public class SecurityConfig {
                                 "/api/donors",
                                 "/api/donors/login",
                                 "/api/hospitals",
-                                "/api/hospitals/login"
+                                "/api/hospitals/login",
+                                "/api/forgot-password/**"
                         ).permitAll()
 
                         // ---------- Hospital ----------
@@ -111,7 +112,7 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.PUT,
-                                "api/donors/change-password"
+                                "/api/donors/change-password"
                         ).hasRole("DONOR")
 
                         // ---------- Everything else ----------

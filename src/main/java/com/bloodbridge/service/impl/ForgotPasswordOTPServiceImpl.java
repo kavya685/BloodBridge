@@ -12,13 +12,17 @@ import com.bloodbridge.repository.ForgotPasswordOTPRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.repository.PasswordHistoryRepository;
 import com.bloodbridge.service.ForgotPasswordOTPService;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
 
     private final DonorRepository donorRepository;
@@ -26,16 +30,19 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
     private final ForgotPasswordOTPRepository forgotPasswordOTPRepository;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
     public ForgotPasswordOTPServiceImpl(DonorRepository donorRepository, HospitalRepository hospitalRepository,
                                  ForgotPasswordOTPRepository forgotPasswordOTPRepository,
                                         PasswordHistoryRepository passwordHistoryRepository,
-                                        PasswordEncoder passwordEncoder) {
+                                        PasswordEncoder passwordEncoder,
+                                        JavaMailSender mailSender) {
         this.donorRepository = donorRepository;
         this.hospitalRepository = hospitalRepository;
         this.forgotPasswordOTPRepository = forgotPasswordOTPRepository;
         this.passwordHistoryRepository = passwordHistoryRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -63,43 +70,41 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
         forgotPasswordOTPRepository.save(forgotPasswordOTP);
 
         // send to email
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("BloodBridge - Password Reset OTP");
+        message.setText(
+                "Hello,\n\n" +
+                        "Your BloodBridge password reset OTP is: " + forgotPasswordOTP.getOtp() + "\n\n" +
+                        "This OTP is valid for 5 minutes.\n\n" +
+                        "If you did not request a password reset, please ignore this email.\n\n" +
+                        "Regards,\n" +
+                        "BloodBridge Team"
+        );
+        mailSender.send(message);
 
         return forgotPasswordOTP.getExpiresAt();
     }
 
     @Override
-    public void resetPassword(ResetPasswordRequest request)
+    public void resetPassword(String email,
+                              String password,
+                              String confirmPassword)
     {
-        ForgotPasswordOTP forgotPasswordOTP = forgotPasswordOTPRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid or expired OTP"));
-
-        LocalDateTime now = LocalDateTime.now();
-
-        if(forgotPasswordOTP.getExpiresAt().isBefore(now))
-        {
-            throw new InvalidCredentialsException(
-                    "OTP has expired. Please request a new OTP.");
-        }
-
-        if(!forgotPasswordOTP.getOtp().equals(request.getOtp()))
-        {
-            throw new InvalidCredentialsException("Invalid OTP");
-        }
-
-        if(!request.getNewPassword().equals(request.getConfirmPassword()))
+        if(!password.equals(confirmPassword))
         {
             throw new IllegalArgumentException("Passwords do not match");
         }
 
-        Optional<Donor> donor = donorRepository.findByEmail(request.getEmail());
-        Optional<Hospital> hospital = hospitalRepository.findByEmail(request.getEmail());
+        Optional<Donor> donor = donorRepository.findByEmail(email);
+        Optional<Hospital> hospital = hospitalRepository.findByEmail(email);
 
         if(donor.isPresent())
         {
             Donor d = donor.get();
 
             if(passwordEncoder.matches(
-                    request.getNewPassword(),
+                    password,
                     d.getPassword()))
             {
                 throw new InvalidCredentialsException(
@@ -114,7 +119,7 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
             for (PasswordHistory oldPassword : history) {
 
                 if (passwordEncoder.matches(
-                        request.getNewPassword(),
+                        password,
                         oldPassword.getPassword())) {
 
                     throw new InvalidCredentialsException(
@@ -130,7 +135,7 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
                     .build();
 
             passwordHistoryRepository.save(oldPassword);
-            d.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            d.setPassword(passwordEncoder.encode(password));
             d.setPasswordExpiration(LocalDateTime.now().plusDays(30));
             donorRepository.save(d);
         }
@@ -139,7 +144,7 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
             Hospital h = hospital.get();
 
             if(passwordEncoder.matches(
-                    request.getNewPassword(),
+                    password,
                     h.getPassword()))
             {
                 throw new InvalidCredentialsException(
@@ -154,7 +159,7 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
             for (PasswordHistory oldPassword : history) {
 
                 if (passwordEncoder.matches(
-                        request.getNewPassword(),
+                        password,
                         oldPassword.getPassword())) {
 
                     throw new InvalidCredentialsException(
@@ -170,10 +175,32 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
                     .build();
 
             passwordHistoryRepository.save(oldPassword);
-            h.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            h.setPassword(passwordEncoder.encode(password));
             h.setPasswordExpiration(LocalDateTime.now().plusDays(30));
             hospitalRepository.save(h);
         }
+    }
+
+    @Override
+    public boolean verifyOTP(String email, String otp)
+    {
+        ForgotPasswordOTP forgotPasswordOTP = forgotPasswordOTPRepository.findByEmail(email)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid or expired OTP"));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if(forgotPasswordOTP.getExpiresAt().isBefore(now))
+        {
+            throw new InvalidCredentialsException(
+                    "OTP has expired. Please request a new OTP.");
+        }
+
+        if(!forgotPasswordOTP.getOtp().equals(otp))
+        {
+            throw new InvalidCredentialsException("Invalid OTP");
+        }
+
         forgotPasswordOTPRepository.delete(forgotPasswordOTP);
+        return true;
     }
 }

@@ -1,10 +1,11 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {sendOTP} from "../../../services/passwordService.js";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { sendOTP } from "../../../services/passwordService.js";
+import "../../../styles/Auth.css";
 
 function ForgotPassword() {
-    const [email, setEmail] = useState("");
 
+    const [email, setEmail] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -12,29 +13,102 @@ function ForgotPassword() {
 
         try {
             const response = await sendOTP(email);
-            navigate("/hospital/reset-password", {
+
+            navigate("/hospital/verify-otp", {
                 state: {
-                    email: email,
-                    expiresAt: response.expiresAt
+                    email,
+                    expiresAt: response
                 }
             });
+
         } catch (error) {
             console.log(error);
-            alert("OTP not sent, try again.")
+
+            alert(
+                error.response?.data ||
+                "OTP not sent. Please try again."
+            );
         }
-    }
+    };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Enter email, will send otp</h2>
-            <label htmlFor="email">Enter email: </label>
-            <input type="email" id="email"
-                   value={email}
-                   onChange={(event) => setEmail(event.target.value)}
-                   required
-            />
-            <button>Send OTP</button>
-        </form>
+        <div className="auth-page">
+
+            <div className="auth-card">
+
+                <div className="auth-header">
+
+                    <div className="auth-brand-mark">
+                        ♥
+                    </div>
+
+                    <p className="auth-label">
+                        HOSPITAL PORTAL
+                    </p>
+
+                    <h1>Forgot password?</h1>
+
+                    <p>
+                        Enter your registered email and
+                        we'll send you an OTP to reset
+                        your password.
+                    </p>
+
+                </div>
+
+                <form
+                    className="auth-form"
+                    onSubmit={handleSubmit}
+                >
+
+                    <div className="auth-field">
+
+                        <label htmlFor="email">
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="auth-submit"
+                    >
+                        Send OTP
+                    </button>
+
+                </form>
+
+                <div className="auth-footer">
+
+                    <span>
+                        Remember your password?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/hospital/login")
+                        }
+                    >
+                        Back to Login
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
     );
 }
 

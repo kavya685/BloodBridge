@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { resetPassword } from "../../../services/passwordService.js";
+import { verifyOTP } from "../../../services/passwordService.js";
 import "../../../styles/Auth.css";
 
-function ResetPassword() {
+function VerifyOTP() {
 
     const location = useLocation();
     const navigate = useNavigate();
 
     const { email } = location.state || {};
 
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [otp, setOtp] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,29 +21,27 @@ function ResetPassword() {
             return;
         }
 
-        if (newPassword !== confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
-
         try {
+            const response = await verifyOTP(email, otp);
 
-            await resetPassword(
-                email,
-                newPassword,
-                confirmPassword
-            );
+            if (response === true) {
 
-            alert("Password reset successfully.");
+                navigate("/hospital/reset-password", {
+                    state: {
+                        email
+                    }
+                });
 
-            navigate("/hospital/login");
+            } else {
+                alert("Invalid OTP.");
+            }
 
         } catch (error) {
             console.log(error);
 
             alert(
                 error.response?.data ||
-                "Password reset failed. Please try again."
+                "Invalid or expired OTP."
             );
         }
     };
@@ -64,11 +61,11 @@ function ResetPassword() {
                         HOSPITAL PORTAL
                     </p>
 
-                    <h1>Reset Password</h1>
+                    <h1>Verify OTP</h1>
 
                     <p>
-                        Create a new password for your
-                        BloodBridge account.
+                        Enter the 6-digit OTP sent to your
+                        registered email address.
                     </p>
 
                 </div>
@@ -80,37 +77,20 @@ function ResetPassword() {
 
                     <div className="auth-field">
 
-                        <label htmlFor="newPassword">
-                            New Password
+                        <label htmlFor="otp">
+                            OTP
                         </label>
 
                         <input
-                            id="newPassword"
-                            type="password"
-                            placeholder="Enter new password"
-                            value={newPassword}
+                            id="otp"
+                            type="text"
+                            placeholder="Enter 6-digit OTP"
+                            value={otp}
                             onChange={(event) =>
-                                setNewPassword(event.target.value)
+                                setOtp(event.target.value)
                             }
-                            required
-                        />
-
-                    </div>
-
-                    <div className="auth-field">
-
-                        <label htmlFor="confirmPassword">
-                            Confirm Password
-                        </label>
-
-                        <input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Confirm new password"
-                            value={confirmPassword}
-                            onChange={(event) =>
-                                setConfirmPassword(event.target.value)
-                            }
+                            maxLength="6"
+                            inputMode="numeric"
                             required
                         />
 
@@ -120,7 +100,7 @@ function ResetPassword() {
                         type="submit"
                         className="auth-submit"
                     >
-                        Reset Password
+                        Verify OTP
                     </button>
 
                 </form>
@@ -128,16 +108,16 @@ function ResetPassword() {
                 <div className="auth-footer">
 
                     <span>
-                        Remember your password?
+                        Didn't receive the OTP?
                     </span>
 
                     <button
                         type="button"
                         onClick={() =>
-                            navigate("/hospital/login")
+                            navigate("/hospital/forgot-password")
                         }
                     >
-                        Back to Login
+                        Try Again
                     </button>
 
                 </div>
@@ -148,4 +128,4 @@ function ResetPassword() {
     );
 }
 
-export default ResetPassword;
+export default VerifyOTP;
