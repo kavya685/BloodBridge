@@ -1,19 +1,50 @@
 import { useEffect, useState } from "react";
-import { getApplicationsByDonor } from "../../services/donationApplicationService";
-import { withdrawApplication } from "../../services/donationApplicationService";
+import {
+    getApplicationsByDonor,
+    withdrawApplication
+} from "../../services/donationApplicationService";
+import "../../styles/Dashboard.css";
 
 function MyApplications() {
 
     const [applications, setApplications] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [actionLoading, setActionLoading] = useState(false);
 
     const fetchApplications = async () => {
-        try {
-            const donor = JSON.parse(localStorage.getItem("donor"));
 
-            const data = await getApplicationsByDonor(donor.id);
-            setApplications(data);
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const donor = JSON.parse(
+                localStorage.getItem("donor")
+            );
+
+            if (!donor) {
+                setError("Donor information not found.");
+                return;
+            }
+
+            const data =
+                await getApplicationsByDonor(donor.id);
+
+            setApplications(data || []);
+
         } catch (error) {
-            console.log(error);
+
+            console.error(error);
+
+            setError(
+                error.response?.data ||
+                "Unable to load your applications. Please try again."
+            );
+
+        } finally {
+
+            setLoading(false);
         }
     };
 
@@ -22,41 +53,193 @@ function MyApplications() {
     }, []);
 
     const handleWithdraw = async (applicationId) => {
+
         try {
+
+            setActionLoading(true);
+            setError("");
+
             await withdrawApplication(applicationId);
-            alert("Application withdrawn!");
-            fetchApplications();
-        } catch(error) {
-            alert("Failed to withdraw application.")
+
+            await fetchApplications();
+
+        } catch (error) {
+
+            console.error(error);
+
+            setError(
+                error.response?.data ||
+                "Failed to withdraw application."
+            );
+
+        } finally {
+
+            setActionLoading(false);
         }
+    };
+
+    if (loading) {
+
+        return (
+            <div className="dashboard-loading">
+                <p>Loading your applications...</p>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <h1>My Applications</h1>
+        <div className="dashboard-page">
 
-            {
-                applications.map((application) => (
-                    <div key={application.id}>
+            <section className="dashboard-header">
 
-                        <p>
-                            <strong>Blood Request ID:</strong> {application.bloodRequestId}
-                        </p>
+                <div className="dashboard-heading">
 
-                        <p>
-                            <strong>Status:</strong> {application.status}
-                        </p>
+                    <p className="dashboard-label">
+                        DONOR PORTAL
+                    </p>
 
-                        <p>
-                            <strong>Applied At:</strong> {application.appliedAt}
-                        </p>
+                    <h1>
+                        My Applications
+                    </h1>
 
-                        <button onClick={() => handleWithdraw(application.id)}>Withdraw</button>
+                    <p className="dashboard-subtitle">
+                        Track the blood requests you have applied for.
+                    </p>
 
-                        <hr />
-                    </div>
-                ))
-            }
+                </div>
+
+                <button
+                    className="secondary-button"
+                    onClick={fetchApplications}
+                >
+                    Refresh
+                </button>
+
+            </section>
+
+
+            {error && (
+
+                <div className="dashboard-error">
+                    <p>{error}</p>
+
+                    <button
+                        className="secondary-button"
+                        onClick={fetchApplications}
+                    >
+                        Try Again
+                    </button>
+                </div>
+
+            )}
+
+
+            {!error && applications.length === 0 && (
+
+                <div className="stat-card">
+
+                    <h3>
+                        No applications yet
+                    </h3>
+
+                    <p>
+                        You haven't applied to any blood requests.
+                    </p>
+
+                    <button
+                        className="primary-button"
+                        onClick={() =>
+                            window.location.href =
+                                "/blood-requests"
+                        }
+                    >
+                        Browse Blood Requests
+                    </button>
+
+                </div>
+
+            )}
+
+
+            {applications.length > 0 && (
+
+                <div className="stats-grid">
+
+                    {applications.map((application) => (
+
+                        <div
+                            className="stat-card"
+                            key={application.id}
+                        >
+
+                            <p className="stat-label">
+                                BLOOD REQUEST #{application.bloodRequestId}
+                            </p>
+
+                            <h3>
+                                {application.status}
+                            </h3>
+
+                            <p>
+                                Applied At:{" "}
+                                {application.appliedAt
+                                    ? new Date(
+                                        application.appliedAt
+                                    ).toLocaleString()
+                                    : "N/A"
+                                }
+                            </p>
+
+                            {application.status === "PENDING" && (
+
+                                <button
+                                    className="secondary-button"
+                                    disabled={actionLoading}
+                                    onClick={() =>
+                                        handleWithdraw(
+                                            application.id
+                                        )
+                                    }
+                                >
+                                    {actionLoading
+                                        ? "Withdrawing..."
+                                        : "Withdraw Application"
+                                    }
+                                </button>
+
+                            )}
+
+                            {application.status === "ACCEPTED" && (
+                                <p>
+                                    Your application has been accepted.
+                                </p>
+                            )}
+
+                            {application.status === "REJECTED" && (
+                                <p>
+                                    This application was rejected by the hospital.
+                                </p>
+                            )}
+
+                            {application.status === "COMPLETED" && (
+                                <p>
+                                    Your donation has been completed.
+                                </p>
+                            )}
+
+                            {application.status === "WITHDRAWN" && (
+                                <p>
+                                    You withdrew this application.
+                                </p>
+                            )}
+
+                        </div>
+
+                    ))}
+
+                </div>
+
+            )}
 
         </div>
     );

@@ -17,4 +17,6 @@ public interface HospitalService {
     void changePassword(HospitalChangePasswordRequest request);
 
     void changePasswordRequest(HospitalChangePasswordRequest request);
+
+    HospitalResponse updateProfile(HospitalProfileUpdateRequest request);
 }

@@ -52,4 +52,11 @@ public class HospitalController {
 
         hospitalService.changePasswordRequest(request);
     }
+
+    @PutMapping("/me")
+    public HospitalResponse updateProfile(
+            @Valid @RequestBody HospitalProfileUpdateRequest request) {
+
+        return hospitalService.updateProfile(request);
+    }
 }

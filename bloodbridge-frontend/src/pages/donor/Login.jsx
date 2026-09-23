@@ -1,80 +1,152 @@
 import { useState } from "react";
 import { donorLogin } from "../../services/donor/loginService";
 import { useNavigate } from "react-router-dom";
+import "../../styles/Auth.css";
 
 function Login() {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log("Handle Submit Called");
-    try {
-      const response = await donorLogin({
-        email,
-        password,
-      });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-      console.log(response.data);
+    const navigate = useNavigate();
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem(
-          "donor",
-          JSON.stringify(response.data));
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-      navigate("/donor/dashboard");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        try {
+            const response = await donorLogin({
+                email,
+                password,
+            });
 
-  return (
-    <div>
-      <h2>Donor Login</h2>
+            console.log(response);
 
-      <form onSubmit={handleSubmit}
-      >
-        <div>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
+            localStorage.setItem("token", response.token);
+
+            localStorage.setItem(
+                "donor",
+                JSON.stringify(response)
+            );
+
+            navigate("/donor/dashboard");
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
+        <div className="auth-page">
+
+            <div className="auth-card">
+
+                <div className="auth-header">
+
+                    <div className="auth-brand-mark">
+                        ♥
+                    </div>
+
+                    <p className="auth-label">
+                        DONOR PORTAL
+                    </p>
+
+                    <h1>
+                        Welcome back
+                    </h1>
+
+                    <p>
+                        Sign in to find blood requests
+                        and manage your donations.
+                    </p>
+
+                </div>
+
+                {error && (
+                    <div className="auth-error">
+                        {error}
+                    </div>
+                )}
+
+                <form
+                    className="auth-form"
+                    onSubmit={handleSubmit}
+                >
+
+                    <div className="auth-field">
+
+                        <label htmlFor="email">
+                            Email
+                        </label>
+
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(event) =>
+                                setEmail(event.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+                    <div className="auth-field">
+
+                        <label htmlFor="password">
+                            Password
+                        </label>
+
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="auth-submit"
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Signing in..."
+                            : "Sign In"
+                        }
+                    </button>
+
+                </form>
+
+                <div className="auth-footer">
+
+                    <span>
+                        Don't have a donor account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/donor/register")
+                        }
+                    >
+                        Register
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
-
-        <br />
-
-        <div>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-
-        <br />
-
-        <button type="submit">
-          Login
-        </button>
-      </form>
-
-      <p>
-          Don't have an account?
-          <button onClick={() => navigate("/donor/register")}>
-              Register
-          </button>
-      </p>
-    </div>
-  );
+    );
 }
 
 export default Login;

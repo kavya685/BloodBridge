@@ -353,4 +353,35 @@ public class HospitalServiceImpl implements HospitalService {
 
         hospitalRepository.save(hospital);
     }
+
+    @Override
+    public HospitalResponse updateProfile(
+            HospitalProfileUpdateRequest request) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Hospital not found"));
+
+        hospital.setHospitalName(request.getHospitalName());
+        hospital.setContactNumber(request.getContactNumber());
+        hospital.setCity(request.getCity());
+        hospital.setAddress(request.getAddress());
+
+        Hospital updatedHospital = hospitalRepository.save(hospital);
+
+        return HospitalResponse.builder()
+                .id(updatedHospital.getId())
+                .hospitalName(updatedHospital.getHospitalName())
+                .email(updatedHospital.getEmail())
+                .contactNumber(updatedHospital.getContactNumber())
+                .city(updatedHospital.getCity())
+                .address(updatedHospital.getAddress())
+                .registrationNumber(updatedHospital.getRegistrationNumber())
+                .build();
+    }
 }

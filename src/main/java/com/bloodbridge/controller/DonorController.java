@@ -57,4 +57,11 @@ public class DonorController {
     {
         donorService.changePasswordRequest(request);
     }
+
+    @PutMapping("/me")
+    public DonorResponse updateProfile(
+            @Valid @RequestBody DonorProfileUpdateRequest request) {
+
+        return donorService.updateProfile(request);
+    }
 }

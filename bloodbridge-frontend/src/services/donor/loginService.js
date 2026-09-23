@@ -1,6 +1,7 @@
-import API from "../api"
+import API from "../api";
 
-export const donorLogin = (loginData) => {
-  // this returns response not response.data
-  return API.post("/donors/login", loginData);
+export const donorLogin = async (loginData) => {
+  const response = await API.post("/donors/login", loginData);
+
+  return response.data;
 };

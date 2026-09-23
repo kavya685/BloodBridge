@@ -378,4 +378,39 @@ public class DonorServiceImpl implements DonorService {
         donor.setPasswordExpiration(LocalDateTime.now().plusDays(30));
         donorRepository.save(donor);
     }
+
+    @Override
+    public DonorResponse updateProfile(DonorProfileUpdateRequest request) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Donor not found"));
+
+        donor.setFullName(request.getFullName());
+        donor.setContactNumber(request.getContactNumber());
+        donor.setCity(request.getCity());
+
+        if (request.getAvailable() != null) {
+            donor.setAvailable(request.getAvailable());
+        }
+
+        Donor updatedDonor = donorRepository.save(donor);
+
+        return DonorResponse.builder()
+                .id(updatedDonor.getId())
+                .fullName(updatedDonor.getFullName())
+                .dateOfBirth(updatedDonor.getDateOfBirth())
+                .email(updatedDonor.getEmail())
+                .contactNumber(updatedDonor.getContactNumber())
+                .bloodGroup(updatedDonor.getBloodGroup())
+                .city(updatedDonor.getCity())
+                .available(updatedDonor.getAvailable())
+                .lastDonationDate(updatedDonor.getLastDonationDate())
+                .build();
+    }
 }

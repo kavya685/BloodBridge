@@ -18,4 +18,6 @@ public interface DonorService {
     void changePassword(DonorChangePasswordRequest request);
 
     void changePasswordRequest(DonorChangePasswordRequest request);
+
+    DonorResponse updateProfile(DonorProfileUpdateRequest request);
 }
