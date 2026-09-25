@@ -1,11 +1,8 @@
 package com.bloodbridge.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.bloodbridge.enums.AccountStatus;
+import com.bloodbridge.enums.HospitalRegistrationStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,4 +48,13 @@ public class Hospital {
 
     @Column(nullable = false)
     private LocalDateTime passwordExpiration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HospitalRegistrationStatus registrationStatus =
+            HospitalRegistrationStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 }

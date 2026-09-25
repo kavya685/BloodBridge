@@ -3,8 +3,10 @@ package com.bloodbridge.service.impl;
 import com.bloodbridge.dto.hospital.*;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.entity.PasswordHistory;
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.enums.BloodRequestStatus;
+import com.bloodbridge.enums.HospitalRegistrationStatus;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.ResourceAlreadyExistsException;
 import com.bloodbridge.exception.ResourceNotFoundException;
@@ -72,6 +74,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .address(request.getAddress())
                 .registrationNumber(request.getRegistrationNumber())
                 .passwordExpiration(LocalDateTime.now().plusDays(30))
+                .registrationStatus(HospitalRegistrationStatus.PENDING)
                 .build();
         Hospital savedHospital = hospitalRepository.save(hospital);
 
@@ -91,6 +94,20 @@ public class HospitalServiceImpl implements HospitalService {
     {
         Hospital hospital = hospitalRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if (hospital.getAccountStatus() == AccountStatus.SUSPENDED) {
+            throw new InvalidCredentialsException(
+                    "Your account has been suspended"
+            );
+        }
+
+        if (hospital.getRegistrationStatus()
+                != HospitalRegistrationStatus.ACCEPTED) {
+
+            throw new InvalidCredentialsException(
+                    "Hospital registration has not been accepted"
+            );
+        }
 
         LocalDateTime now = LocalDateTime.now();
 

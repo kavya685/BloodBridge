@@ -16,4 +16,8 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequest, Long
     long countByHospitalId(Long HospitalId);
     long countByHospitalIdAndStatus(Long HospitalId, BloodRequestStatus status);
     List<BloodRequest> findByStatusAndExpiresAtBefore(BloodRequestStatus status, LocalDateTime now);
+    long countBy();
+    long countByStatus(
+            BloodRequestStatus status);
+
 }

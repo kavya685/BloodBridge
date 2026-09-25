@@ -4,6 +4,7 @@ import com.bloodbridge.dto.donor.*;
 import com.bloodbridge.entity.Donor;
 import com.bloodbridge.entity.Hospital;
 import com.bloodbridge.entity.PasswordHistory;
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.ApplicationStatus;
 import com.bloodbridge.exception.InvalidCredentialsException;
 import com.bloodbridge.exception.InvalidDonorException;
@@ -119,6 +120,12 @@ public class DonorServiceImpl implements DonorService {
     {
         Donor donor = donorRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if (donor.getAccountStatus() == AccountStatus.SUSPENDED) {
+            throw new InvalidCredentialsException(
+                    "Your account has been suspended"
+            );
+        }
 
         LocalDateTime now = LocalDateTime.now();
 

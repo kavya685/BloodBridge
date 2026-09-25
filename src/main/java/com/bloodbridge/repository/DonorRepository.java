@@ -13,4 +13,6 @@ public interface DonorRepository extends JpaRepository<Donor, Long> {
     boolean existsByContactNumber(String contactNumber);
 
     Optional<Donor> findByEmail(String email);
+
+    long countBy();
 }

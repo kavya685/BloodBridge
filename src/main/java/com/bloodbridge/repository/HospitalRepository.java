@@ -15,4 +15,6 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     boolean existsByRegistrationNumber(String registrationNumber);
 
     Optional<Hospital> findByEmail(String email);
+
+    long countBy();
 }

@@ -1,5 +1,6 @@
 package com.bloodbridge.entity;
 
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.BloodGroup;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,4 +64,8 @@ public class Donor {
 
     @Column(nullable = false)
     private LocalDateTime passwordExpiration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 }
