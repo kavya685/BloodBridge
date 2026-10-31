@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,4 +28,18 @@ public class DonationApplicationResponse {
     private ApplicationStatus status;
 
     private LocalDateTime appliedAt;
+
+    private String hospitalName;
+
+    private String bloodGroup;
+
+    private Integer unitsRequired;
+
+    private String remarks;
+
+    private Boolean donorEligible;
+
+    private LocalDate nextEligibleDate;
+
+    private Long cooldownDaysRemaining;
 }

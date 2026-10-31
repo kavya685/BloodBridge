@@ -37,4 +37,10 @@ public class BloodRequestResponse {
     private Long hospitalId;
 
     private String hospitalName;
+
+    private String hospitalCity;
+
+    private String hospitalContactNumber;
+
+    private String hospitalAddress;
 }

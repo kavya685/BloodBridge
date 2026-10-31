@@ -1,5 +1,6 @@
 package com.bloodbridge.dto.bloodRequest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.bloodbridge.enums.UrgencyLevel;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -23,5 +24,6 @@ public class BloodRequestUpdateRequest {
 
     @NotNull
     @Future
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm[:ss]")
     private LocalDateTime expiresAt;
 }

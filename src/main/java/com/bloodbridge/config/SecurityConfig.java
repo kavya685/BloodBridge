@@ -44,6 +44,7 @@ public class SecurityConfig {
 
                         // ---------- Public ----------
                         .requestMatchers(
+                                "/error",
                                 "/api/donors",
                                 "/api/donors/login",
                                 "/api/hospitals",
@@ -52,10 +53,19 @@ public class SecurityConfig {
                                 "/api/admin/login"
                         ).permitAll()
 
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/blood-requests",
+                                "/api/blood-requests/*"
+                        ).permitAll()
+
                         // ---------- Hospital ----------
                         .requestMatchers(
                                 "/api/hospitals/me",
-                                "/api/blood-requests/my"
+                                "/api/hospitals/my",
+                                "/api/hospitals/change-password",
+                                "/api/blood-requests/my",
+                                "/api/notifications/hospital"
                         ).hasRole("HOSPITAL")
 
                         .requestMatchers(
@@ -75,7 +85,8 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.PUT,
-                                "/api/blood-requests/**", "/api/hospitals/change-password"
+                                "/api/blood-requests/**",
+                                "/api/hospitals/change-password"
                         ).hasRole("HOSPITAL")
 
                         .requestMatchers(
@@ -86,13 +97,10 @@ public class SecurityConfig {
                         // ---------- Donor ----------
                         .requestMatchers(
                                 "/api/donors/me",
-                                "/api/donation-applications/my"
-                        ).hasRole("DONOR")
-
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/blood-requests",
-                                "/api/blood-requests/*"
+                                "/api/donors/my",
+                                "/api/donors/change-password",
+                                "/api/donation-applications/my",
+                                "/api/notifications/donor"
                         ).hasRole("DONOR")
 
 
@@ -115,6 +123,12 @@ public class SecurityConfig {
                                 HttpMethod.PUT,
                                 "/api/donors/change-password"
                         ).hasRole("DONOR")
+
+                        // ---------- Notifications ----------
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/notifications/**"
+                        ).hasAnyRole("DONOR", "HOSPITAL")
 
                         // ---------- Admin ----------
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

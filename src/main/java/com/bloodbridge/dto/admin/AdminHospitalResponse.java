@@ -1,5 +1,6 @@
 package com.bloodbridge.dto.admin;
 
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.HospitalRegistrationStatus;
 import lombok.*;
 
@@ -18,4 +19,5 @@ public class AdminHospitalResponse {
     private String address;
     private String registrationNumber;
     private HospitalRegistrationStatus registrationStatus;
+    private AccountStatus accountStatus;
 }

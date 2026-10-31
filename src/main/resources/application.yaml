@@ -1,11 +1,13 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: bloodbridge
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/bloodbridge
-    username: postgres
-    password: radhe
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/bloodbridge}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:radhe}
 
   jpa:
     hibernate:

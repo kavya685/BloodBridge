@@ -3,6 +3,7 @@ package com.bloodbridge.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,11 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "BloodBridgeSuperSecretKeyForJwtAuthentication2026BloodBridge";
+    private final SecretKey secretKey;
 
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(
-            Base64.getEncoder().encode(SECRET.getBytes())
-    );
+    public JwtService(@Value("${JWT_SECRET:BloodBridgeSuperSecretKeyForJwtAuthentication2026BloodBridgeSecureRandomKey}") String secret) {
+        this.secretKey = Keys.hmacShaKeyFor(Base64.getEncoder().encode(secret.getBytes()));
+    }
 
     public String generateToken(String email)
     {

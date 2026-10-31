@@ -65,6 +65,7 @@ public class Donor {
     @Column(nullable = false)
     private LocalDateTime passwordExpiration;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus accountStatus = AccountStatus.ACTIVE;

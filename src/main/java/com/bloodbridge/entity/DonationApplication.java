@@ -46,4 +46,7 @@ public class DonationApplication {
     @ManyToOne
     @JoinColumn(name = "blood_request_id", nullable = false)
     private BloodRequest bloodRequest;
+
+    @Column(name = "remarks")
+    private String remarks;
 }

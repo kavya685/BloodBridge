@@ -1,5 +1,6 @@
 package com.bloodbridge.dto.admin;
 
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.BloodGroup;
 import lombok.*;
 
@@ -20,4 +21,5 @@ public class AdminDonorResponse {
     private String city;
     private Boolean available;
     private LocalDate lastDonationDate;
+    private AccountStatus accountStatus;
 }

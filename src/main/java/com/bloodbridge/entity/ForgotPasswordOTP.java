@@ -24,4 +24,9 @@ public class ForgotPasswordOTP {
     private String otp;
 
     private LocalDateTime expiresAt;
+
+    @Builder.Default
+    private int failedAttempts = 0;
+
+    private LocalDateTime lastSentAt;
 }

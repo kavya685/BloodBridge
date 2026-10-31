@@ -14,5 +14,7 @@ public interface DonorRepository extends JpaRepository<Donor, Long> {
 
     Optional<Donor> findByEmail(String email);
 
+    java.util.List<Donor> findByCityIgnoreCase(String city);
+
     long countBy();
 }

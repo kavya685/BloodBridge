@@ -49,11 +49,13 @@ public class Hospital {
     @Column(nullable = false)
     private LocalDateTime passwordExpiration;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private HospitalRegistrationStatus registrationStatus =
             HospitalRegistrationStatus.PENDING;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
