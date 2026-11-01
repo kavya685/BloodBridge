@@ -52,12 +52,6 @@ public class DonorController {
         donorService.changePassword(request);
     }
 
-    @PutMapping("change-password-request")
-    public void changePasswordRequest(@Valid @RequestBody DonorChangePasswordRequest request)
-    {
-        donorService.changePasswordRequest(request);
-    }
-
     @PutMapping("/me")
     public DonorResponse updateProfile(
             @Valid @RequestBody DonorProfileUpdateRequest request) {

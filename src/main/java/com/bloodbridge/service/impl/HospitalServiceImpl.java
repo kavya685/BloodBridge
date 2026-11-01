@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class HospitalServiceImpl implements HospitalService {
                 .registrationNumber(request.getRegistrationNumber())
                 .passwordExpiration(LocalDateTime.now().plusDays(30))
                 .registrationStatus(HospitalRegistrationStatus.PENDING)
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
         Hospital savedHospital = hospitalRepository.save(hospital);
 
@@ -111,10 +113,15 @@ public class HospitalServiceImpl implements HospitalService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if(hospital.getLockedUntil() != null && hospital.getLockedUntil().isAfter(now))
-        {
-            throw new InvalidCredentialsException(
-                    "Account is temporarily locked. Please try again later.");
+        if (hospital.getLockedUntil() != null) {
+            if (hospital.getLockedUntil().isAfter(now)) {
+                throw new InvalidCredentialsException(
+                        "Account is temporarily locked. Please try again later.");
+            } else {
+                hospital.setFailedLoginAttempts(0);
+                hospital.setLockedUntil(null);
+                hospitalRepository.save(hospital);
+            }
         }
 
         if(!passwordEncoder.matches(request.getPassword(), hospital.getPassword()))
@@ -221,6 +228,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
+    @Transactional
     public void changePassword(HospitalChangePasswordRequest request) {
 
         String email = SecurityContextHolder.getContext()
@@ -235,7 +243,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         if(hospital.getLockedUntil() != null && hospital.getLockedUntil().isAfter(now))
         {
-            throw new InvalidCredentialsException(
+            throw new IllegalArgumentException(
                     "Account is temporarily locked. Please try again later.");
         }
 
@@ -252,14 +260,14 @@ public class HospitalServiceImpl implements HospitalService {
 
                 hospitalRepository.save(hospital);
 
-                throw new InvalidCredentialsException(
+                throw new IllegalArgumentException(
                         "Account locked for 15 minutes due to multiple failed login attempts."
                 );
             }
 
             hospitalRepository.save(hospital);
 
-            throw new InvalidCredentialsException("Invalid email or password");
+            throw new IllegalArgumentException("Current password is incorrect");
         }
 
         if (!request.getNewPassword()
@@ -303,70 +311,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         hospital.setPassword(passwordEncoder.encode(request.getNewPassword()));
         hospital.setPasswordExpiration(LocalDateTime.now().plusDays(30));
-
-        hospitalRepository.save(hospital);
-    }
-
-    @Override
-    public void changePasswordRequest(HospitalChangePasswordRequest request)
-    {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-
-        Hospital hospital = hospitalRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Hospital not found"));
-
-        if (!passwordEncoder.matches(
-                request.getCurrentPassword(),
-                hospital.getPassword())) {
-
-            throw new InvalidCredentialsException(
-                    "Current password is incorrect"
-            );
-        }
-
-        if (!request.getNewPassword()
-                .equals(request.getConfirmPassword())) {
-
-            throw new IllegalArgumentException(
-                    "Passwords do not match");
-        }
-
-        if (passwordEncoder.matches(
-                request.getNewPassword(),
-                hospital.getPassword())) {
-
-            throw new IllegalArgumentException(
-                    "New password must be different from current password");
-        }
-
-        List<PasswordHistory> history =
-                passwordHistoryRepository
-                        .findTop3ByHospitalIdOrderByChangedAtDesc(
-                                hospital.getId());
-
-        for (PasswordHistory oldPassword : history) {
-
-            if (passwordEncoder.matches(
-                    request.getNewPassword(),
-                    oldPassword.getPassword())) {
-
-                throw new IllegalArgumentException(
-                        "You cannot reuse one of your last 3 passwords");
-            }
-        }
-
-        PasswordHistory oldPassword = PasswordHistory.builder()
-                .password(hospital.getPassword())
-                .changedAt(LocalDateTime.now())
-                .hospital(hospital)
-                .build();
-
-        passwordHistoryRepository.save(oldPassword);
-        hospital.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        hospital.setPasswordExpiration(LocalDateTime.now().plusDays(30));
+        hospital.setFailedLoginAttempts(0);
 
         hospitalRepository.save(hospital);
     }

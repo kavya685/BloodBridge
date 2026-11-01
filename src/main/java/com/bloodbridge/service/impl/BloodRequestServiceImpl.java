@@ -6,7 +6,9 @@ import com.bloodbridge.dto.bloodRequest.BloodRequestUpdateRequest;
 import com.bloodbridge.entity.BloodRequest;
 import com.bloodbridge.entity.Donor;
 import com.bloodbridge.entity.Hospital;
+import com.bloodbridge.enums.AccountStatus;
 import com.bloodbridge.enums.BloodRequestStatus;
+import com.bloodbridge.enums.NotificationType;
 import com.bloodbridge.exception.InvalidBloodRequestException;
 import com.bloodbridge.exception.ResourceNotFoundException;
 import com.bloodbridge.repository.BloodRequestRepository;
@@ -14,6 +16,7 @@ import com.bloodbridge.repository.DonationApplicationRepository;
 import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.BloodRequestService;
+import com.bloodbridge.service.NotificationService;
 import com.bloodbridge.util.BloodCompatibility;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,14 +33,17 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     private final HospitalRepository hospitalRepository;
     private final DonationApplicationRepository donationApplicationRepository;
     private final DonorRepository donorRepository;
+    private final NotificationService notificationService;
 
     public BloodRequestServiceImpl(BloodRequestRepository bloodRequestRepository, DonorRepository donorRepository,
-                                   HospitalRepository hospitalRepository, DonationApplicationRepository donationApplicationRepository)
+                                   HospitalRepository hospitalRepository, DonationApplicationRepository donationApplicationRepository,
+                                   NotificationService notificationService)
     {
         this.bloodRequestRepository = bloodRequestRepository;
         this.hospitalRepository = hospitalRepository;
         this.donationApplicationRepository = donationApplicationRepository;
         this.donorRepository = donorRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -59,30 +65,34 @@ public class BloodRequestServiceImpl implements BloodRequestService {
 
         BloodRequest savedRequest = bloodRequestRepository.save(bloodRequest);
 
-        return BloodRequestResponse.builder()
-                .hospitalId(savedRequest.getHospital().getId())
-                .hospitalName(savedRequest.getHospital().getHospitalName())
-                .bloodGroup(savedRequest.getBloodGroup())
-                .unitsRequired(savedRequest.getUnitsRequired())
-                .description(savedRequest.getDescription())
-                .createdAt(savedRequest.getCreatedAt())
-                .urgency(savedRequest.getUrgency())
-                .expiresAt(savedRequest.getExpiresAt())
-                .status(savedRequest.getStatus())
-                .id(savedRequest.getId())
-                .build();
+        // Notify active, available, compatible donors in the same city
+        if (hospital.getCity() != null) {
+            List<Donor> nearbyDonors = donorRepository.findByCityIgnoreCase(hospital.getCity());
+            for (Donor d : nearbyDonors) {
+                if (d.getAccountStatus() == AccountStatus.ACTIVE
+                        && Boolean.TRUE.equals(d.getAvailable())
+                        && BloodCompatibility.isCompatible(d.getBloodGroup(), savedRequest.getBloodGroup())) {
+
+                    notificationService.createForDonor(
+                            d,
+                            "Urgent: New blood request for " + savedRequest.getBloodGroup() + " at " + hospital.getHospitalName() + " in " + hospital.getCity() + ".",
+                            NotificationType.NEW_BLOOD_REQUEST
+                    );
+                }
+            }
+        }
+
+        return mapToResponse(savedRequest);
     }
 
-    @Override
-    public BloodRequestResponse getBloodRequestById(Long id)
-    {
-        BloodRequest request = bloodRequestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + id));
-
+    private BloodRequestResponse mapToResponse(BloodRequest request) {
         return BloodRequestResponse.builder()
                 .id(request.getId())
                 .hospitalId(request.getHospital().getId())
                 .hospitalName(request.getHospital().getHospitalName())
+                .hospitalCity(request.getHospital().getCity())
+                .hospitalContactNumber(request.getHospital().getContactNumber())
+                .hospitalAddress(request.getHospital().getAddress())
                 .bloodGroup(request.getBloodGroup())
                 .unitsRequired(request.getUnitsRequired())
                 .description(request.getDescription())
@@ -94,12 +104,17 @@ public class BloodRequestServiceImpl implements BloodRequestService {
     }
 
     @Override
+    public BloodRequestResponse getBloodRequestById(Long id)
+    {
+        BloodRequest request = bloodRequestRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + id));
+
+        return mapToResponse(request);
+    }
+
+    @Override
     public List<BloodRequestResponse> getAllBloodRequests()
     {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Donor donor = donorRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
-
         List<BloodRequest> bloodRequests = bloodRequestRepository.findByStatusNot(BloodRequestStatus.DELETED);
 
         List<BloodRequestResponse> responses = new ArrayList<>();
@@ -108,21 +123,7 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         {
             if(bloodRequest.getStatus() == BloodRequestStatus.OPEN)
             {
-                if(BloodCompatibility.isCompatible(donor.getBloodGroup(), bloodRequest.getBloodGroup()))
-                {
-                    responses.add(BloodRequestResponse.builder()
-                            .id(bloodRequest.getId())
-                            .hospitalId(bloodRequest.getHospital().getId())
-                            .hospitalName(bloodRequest.getHospital().getHospitalName())
-                            .bloodGroup(bloodRequest.getBloodGroup())
-                            .unitsRequired(bloodRequest.getUnitsRequired())
-                            .description(bloodRequest.getDescription())
-                            .createdAt(bloodRequest.getCreatedAt())
-                            .urgency(bloodRequest.getUrgency())
-                            .expiresAt(bloodRequest.getExpiresAt())
-                            .status(bloodRequest.getStatus())
-                            .build());
-                }
+                responses.add(mapToResponse(bloodRequest));
             }
         }
         return responses;
@@ -137,30 +138,11 @@ public class BloodRequestServiceImpl implements BloodRequestService {
 
         List<BloodRequest> bloodRequests = bloodRequestRepository.findByHospitalIdAndStatusNot(hospital.getId(), BloodRequestStatus.DELETED);
 
-        if (bloodRequests.isEmpty())
-        {
-            throw new ResourceNotFoundException(
-                    "No blood requests found for hospital with id: " + hospital.getId());
-        }
-
         List<BloodRequestResponse> responses = new ArrayList<>();
 
         for (BloodRequest bloodRequest : bloodRequests)
         {
-            responses.add(
-                    BloodRequestResponse.builder()
-                            .id(bloodRequest.getId())
-                            .bloodGroup(bloodRequest.getBloodGroup())
-                            .unitsRequired(bloodRequest.getUnitsRequired())
-                            .description(bloodRequest.getDescription())
-                            .createdAt(bloodRequest.getCreatedAt())
-                            .expiresAt(bloodRequest.getExpiresAt())
-                            .urgency(bloodRequest.getUrgency())
-                            .status(bloodRequest.getStatus())
-                            .hospitalId(bloodRequest.getHospital().getId())
-                            .hospitalName(bloodRequest.getHospital().getHospitalName())
-                            .build()
-            );
+            responses.add(mapToResponse(bloodRequest));
         }
 
         return responses;
@@ -226,17 +208,6 @@ public class BloodRequestServiceImpl implements BloodRequestService {
         BloodRequest updatedRequest =
                 bloodRequestRepository.save(bloodRequest);
 
-        return BloodRequestResponse.builder()
-                .id(updatedRequest.getId())
-                .hospitalId(updatedRequest.getHospital().getId())
-                .hospitalName(updatedRequest.getHospital().getHospitalName())
-                .bloodGroup(updatedRequest.getBloodGroup())
-                .unitsRequired(updatedRequest.getUnitsRequired())
-                .description(updatedRequest.getDescription())
-                .createdAt(updatedRequest.getCreatedAt())
-                .urgency(updatedRequest.getUrgency())
-                .expiresAt(updatedRequest.getExpiresAt())
-                .status(updatedRequest.getStatus())
-                .build();
+        return mapToResponse(updatedRequest);
     }
 }

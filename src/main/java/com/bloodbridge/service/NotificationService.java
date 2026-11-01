@@ -12,4 +12,6 @@ public interface NotificationService {
     void createForHospital(Hospital hospital, String message, NotificationType type);
     List<NotificationResponse> getDonorNotifications();
     List<NotificationResponse> getHospitalNotifications();
+    void markAsRead(Long id);
+    void markAllAsRead();
 }

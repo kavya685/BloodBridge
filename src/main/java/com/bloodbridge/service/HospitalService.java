@@ -1,6 +1,5 @@
 package com.bloodbridge.service;
 
-import com.bloodbridge.dto.donor.DonorChangePasswordRequest;
 import com.bloodbridge.dto.hospital.*;
 
 import java.util.List;
@@ -15,8 +14,6 @@ public interface HospitalService {
     HospitalDashboardResponse getDashboard();
 
     void changePassword(HospitalChangePasswordRequest request);
-
-    void changePasswordRequest(HospitalChangePasswordRequest request);
 
     HospitalResponse updateProfile(HospitalProfileUpdateRequest request);
 }

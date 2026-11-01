@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,11 +62,23 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
             throw new ResourceNotFoundException("No account found with this email");
         }
 
-        ForgotPasswordOTP forgotPasswordOTP = ForgotPasswordOTP.builder()
-                .email(email)
-                .expiresAt(LocalDateTime.now().plusMinutes(5))
-                .otp(generateOTP())
-                .build();
+        Optional<ForgotPasswordOTP> existingOtpOpt = forgotPasswordOTPRepository.findByEmail(email);
+        if (existingOtpOpt.isPresent()) {
+            ForgotPasswordOTP existing = existingOtpOpt.get();
+            if (existing.getLastSentAt() != null && existing.getLastSentAt().plusSeconds(60).isAfter(LocalDateTime.now())) {
+                long waitSeconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), existing.getLastSentAt().plusSeconds(60));
+                throw new InvalidCredentialsException("Please wait " + waitSeconds + " second(s) before requesting another OTP.");
+            }
+        }
+
+        ForgotPasswordOTP forgotPasswordOTP = existingOtpOpt
+                .orElse(ForgotPasswordOTP.builder().email(email).build());
+
+        String rawOtp = generateOTP();
+        forgotPasswordOTP.setOtp(passwordEncoder.encode(rawOtp));
+        forgotPasswordOTP.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+        forgotPasswordOTP.setFailedAttempts(0);
+        forgotPasswordOTP.setLastSentAt(LocalDateTime.now());
 
         forgotPasswordOTPRepository.save(forgotPasswordOTP);
 
@@ -75,7 +88,7 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
         message.setSubject("BloodBridge - Password Reset OTP");
         message.setText(
                 "Hello,\n\n" +
-                        "Your BloodBridge password reset OTP is: " + forgotPasswordOTP.getOtp() + "\n\n" +
+                        "Your BloodBridge password reset OTP is: " + rawOtp + "\n\n" +
                         "This OTP is valid for 5 minutes.\n\n" +
                         "If you did not request a password reset, please ignore this email.\n\n" +
                         "Regards,\n" +
@@ -191,13 +204,23 @@ public class ForgotPasswordOTPServiceImpl implements ForgotPasswordOTPService {
 
         if(forgotPasswordOTP.getExpiresAt().isBefore(now))
         {
+            forgotPasswordOTPRepository.delete(forgotPasswordOTP);
             throw new InvalidCredentialsException(
                     "OTP has expired. Please request a new OTP.");
         }
 
-        if(!forgotPasswordOTP.getOtp().equals(otp))
+        if(!passwordEncoder.matches(otp, forgotPasswordOTP.getOtp()))
         {
-            throw new InvalidCredentialsException("Invalid OTP");
+            int attempts = forgotPasswordOTP.getFailedAttempts() + 1;
+            forgotPasswordOTP.setFailedAttempts(attempts);
+            if(attempts >= 5)
+            {
+                forgotPasswordOTPRepository.delete(forgotPasswordOTP);
+                throw new InvalidCredentialsException("Maximum OTP verification attempts exceeded. Please request a new OTP.");
+            }
+            forgotPasswordOTPRepository.save(forgotPasswordOTP);
+            int remaining = 5 - attempts;
+            throw new InvalidCredentialsException("Invalid OTP. " + remaining + " attempt(s) remaining.");
         }
 
         forgotPasswordOTPRepository.delete(forgotPasswordOTP);

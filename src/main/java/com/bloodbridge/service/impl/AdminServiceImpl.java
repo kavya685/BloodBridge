@@ -28,6 +28,8 @@ import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.AdminService;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,7 @@ public class AdminServiceImpl implements AdminService {
     private final DonorRepository donorRepository;
     private final HospitalRepository hospitalRepository;
     private final BloodRequestRepository bloodRequestRepository;
+    private final JavaMailSender mailSender;
 
     public AdminServiceImpl(
             AdminRepository adminRepository,
@@ -51,7 +54,8 @@ public class AdminServiceImpl implements AdminService {
             JwtService jwtService,
             DonorRepository donorRepository,
             HospitalRepository hospitalRepository,
-            BloodRequestRepository bloodRequestRepository) {
+            BloodRequestRepository bloodRequestRepository,
+            JavaMailSender mailSender) {
 
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
@@ -60,6 +64,7 @@ public class AdminServiceImpl implements AdminService {
         this.donorRepository = donorRepository;
         this.hospitalRepository = hospitalRepository;
         this.bloodRequestRepository = bloodRequestRepository;
+        this.mailSender = mailSender;
     }
 
     // ---------------- ADMIN LOGIN ----------------
@@ -191,6 +196,8 @@ public class AdminServiceImpl implements AdminService {
                 .lastDonationDate(
                         donor.getLastDonationDate())
 
+                .accountStatus(donor.getAccountStatus())
+
                 .build();
     }
 
@@ -243,6 +250,8 @@ public class AdminServiceImpl implements AdminService {
                         hospital.getRegistrationNumber())
 
                 .registrationStatus(hospital.getRegistrationStatus())
+
+                .accountStatus(hospital.getAccountStatus())
 
                 .build();
     }
@@ -372,6 +381,25 @@ public class AdminServiceImpl implements AdminService {
         );
 
         hospitalRepository.save(hospital);
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(hospital.getEmail());
+            message.setSubject("BloodBridge - Registration Approved");
+            message.setText(
+                    "Dear " + hospital.getHospitalName() + " Team,\n\n" +
+                    "Your registration request for BloodBridge has been approved by our admin team!\n\n" +
+                    "You can now log in to the BloodBridge Hospital Portal using your registered email and password at:\n" +
+                    "http://localhost:5173/hospital/login\n\n" +
+                    "Once logged in, you can start posting urgent blood requests and managing donor applications.\n\n" +
+                    "Thank you for being part of BloodBridge.\n\n" +
+                    "Warm regards,\n" +
+                    "The BloodBridge Team"
+            );
+            mailSender.send(message);
+        } catch (Exception ex) {
+            System.err.println("Warning: Failed to send approval email to " + hospital.getEmail() + ": " + ex.getMessage());
+        }
 
         return "Hospital registration accepted successfully";
     }

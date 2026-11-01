@@ -2,9 +2,7 @@ package com.bloodbridge.controller;
 
 import com.bloodbridge.dto.notification.NotificationResponse;
 import com.bloodbridge.service.NotificationService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +27,17 @@ public class NotificationController {
     public List<NotificationResponse> getHospitalNotifications()
     {
         return notificationService.getHospitalNotifications();
+    }
+
+    @PutMapping("/{id}/read")
+    public void markAsRead(@PathVariable Long id)
+    {
+        notificationService.markAsRead(id);
+    }
+
+    @PutMapping("/mark-all-read")
+    public void markAllAsRead()
+    {
+        notificationService.markAllAsRead();
     }
 }

@@ -20,6 +20,7 @@ import com.bloodbridge.repository.HospitalRepository;
 import com.bloodbridge.service.DonationApplicationService;
 
 import com.bloodbridge.service.NotificationService;
+import com.bloodbridge.util.AppConstants;
 import com.bloodbridge.util.BloodCompatibility;
 import jakarta.transaction.Transactional;
 
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,15 +95,15 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                     "Your blood group is not compatible with this request");
         }
 
-        // 56-day eligibility check
+        // 90-day eligibility check
         if (donor.getLastDonationDate() != null) {
-
             LocalDate nextEligibleDate =
-                    donor.getLastDonationDate().plusDays(56);
+                    donor.getLastDonationDate().plusDays(AppConstants.DONATION_GAP_DAYS);
 
             if (LocalDate.now().isBefore(nextEligibleDate)) {
-                throw new RuntimeException(
-                        "You are not eligible to donate yet");
+                long daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), nextEligibleDate);
+                throw new InvalidDonorException(
+                        "You are not eligible to donate yet. Medical cooldown is active for " + daysRemaining + " more day(s) until " + nextEligibleDate);
             }
         }
 
@@ -120,13 +122,51 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                 NotificationType.APPLICATION_RECEIVED
         );
 
+        return mapToResponse(savedRequest);
+    }
+
+    private DonationApplicationResponse mapToResponse(DonationApplication application) {
+        String hospitalName = null;
+        String bloodGroup = null;
+        Integer unitsRequired = null;
+
+        if (application.getBloodRequest() != null) {
+            if (application.getBloodRequest().getHospital() != null) {
+                hospitalName = application.getBloodRequest().getHospital().getHospitalName();
+            }
+            if (application.getBloodRequest().getBloodGroup() != null) {
+                bloodGroup = application.getBloodRequest().getBloodGroup().name();
+            }
+            unitsRequired = application.getBloodRequest().getUnitsRequired();
+        }
+
+        Donor donor = application.getDonor();
+        boolean donorEligible = true;
+        LocalDate nextEligibleDate = null;
+        Long cooldownDaysRemaining = 0L;
+
+        if (donor != null && donor.getLastDonationDate() != null) {
+            nextEligibleDate = donor.getLastDonationDate().plusDays(AppConstants.DONATION_GAP_DAYS);
+            if (LocalDate.now().isBefore(nextEligibleDate)) {
+                donorEligible = false;
+                cooldownDaysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), nextEligibleDate);
+            }
+        }
+
         return DonationApplicationResponse.builder()
-                .id(savedRequest.getId())
-                .bloodRequestId(savedRequest.getBloodRequest().getId())
-                .donorId(savedRequest.getDonor().getId())
-                .donorName(savedRequest.getDonor().getFullName())
-                .status(savedRequest.getStatus())
-                .appliedAt(savedRequest.getAppliedAt())
+                .id(application.getId())
+                .donorId(donor != null ? donor.getId() : null)
+                .donorName(donor != null ? donor.getFullName() : null)
+                .bloodRequestId(application.getBloodRequest() != null ? application.getBloodRequest().getId() : null)
+                .hospitalName(hospitalName)
+                .bloodGroup(bloodGroup)
+                .unitsRequired(unitsRequired)
+                .status(application.getStatus())
+                .appliedAt(application.getAppliedAt())
+                .remarks(application.getRemarks())
+                .donorEligible(donorEligible)
+                .nextEligibleDate(nextEligibleDate)
+                .cooldownDaysRemaining(cooldownDaysRemaining)
                 .build();
     }
 
@@ -136,50 +176,46 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         DonationApplication donationApplication = donationApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + id));
 
-        return DonationApplicationResponse.builder()
-                .id(donationApplication.getId())
-                .bloodRequestId(donationApplication.getBloodRequest().getId())
-                .donorId(donationApplication.getDonor().getId())
-                .donorName(donationApplication.getDonor().getFullName())
-                .status(donationApplication.getStatus())
-                .appliedAt(donationApplication.getAppliedAt())
-                .build();
+        return mapToResponse(donationApplication);
     }
 
     @Override
     public List<DonationApplicationResponse> getApplicationsByBloodRequest(Long bloodRequestId) {
+        BloodRequest bloodRequest = bloodRequestRepository.findById(bloodRequestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Blood request not found with id: " + bloodRequestId));
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            Hospital hospital = hospitalRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+            if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
+                throw new InvalidBloodRequestException("You are not authorized to view applications for this blood request");
+            }
+        }
+
         List<DonationApplication> applications = donationApplicationRepository.findByBloodRequestId(bloodRequestId);
         List<DonationApplicationResponse> responses = new ArrayList<>();
 
         for (DonationApplication application : applications) {
-            responses.add(
-                    DonationApplicationResponse.builder()
-                            .id(application.getId())
-                            .donorId(application.getDonor().getId())
-                            .donorName(application.getDonor().getFullName())
-                            .bloodRequestId(application.getBloodRequest().getId())
-                            .status(application.getStatus())
-                            .appliedAt(application.getAppliedAt())
-                            .build());
+            responses.add(mapToResponse(application));
         }
         return responses;
     }
 
     @Override
     public List<DonationApplicationResponse> getApplicationsByDonor(Long donorId) {
-        List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donorId);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Donor donor = donorRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with email: " + email));
+
+        List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donor.getId());
         List<DonationApplicationResponse> responses = new ArrayList<>();
 
         for (DonationApplication application : applications) {
-            responses.add(
-                    DonationApplicationResponse.builder()
-                            .id(application.getId())
-                            .donorId(application.getDonor().getId())
-                            .donorName(application.getDonor().getFullName())
-                            .bloodRequestId(application.getBloodRequest().getId())
-                            .status(application.getStatus())
-                            .appliedAt(application.getAppliedAt())
-                            .build());
+            responses.add(mapToResponse(application));
         }
         return responses;
     }
@@ -187,42 +223,67 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
     @Override
     public DonationApplicationResponse acceptApplication(Long applicationId)
     {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
 
-        if (application.getStatus() == ApplicationStatus.ACCEPTED) {
-            throw new RuntimeException("Application is already accepted");
+        BloodRequest bloodRequest = application.getBloodRequest();
+        if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
+            throw new InvalidBloodRequestException("You are not authorized to manage this application");
+        }
+
+        if (application.getStatus() != ApplicationStatus.PENDING) {
+            throw new InvalidBloodRequestException("Only pending applications can be accepted");
         }
         
-        BloodRequest bloodRequest = application.getBloodRequest();
         if (bloodRequest.getUnitsRequired() <= 0) {
-            throw new RuntimeException("Blood request is already fulfilled");
+            throw new InvalidBloodRequestException("Blood request is already fulfilled");
         }
+
+        Donor donor = application.getDonor();
+        if (donor.getLastDonationDate() != null) {
+            LocalDate nextEligibleDate = donor.getLastDonationDate().plusDays(AppConstants.DONATION_GAP_DAYS);
+            if (LocalDate.now().isBefore(nextEligibleDate)) {
+                long daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), nextEligibleDate);
+                throw new InvalidDonorException(
+                        "Cannot accept application: Donor recently completed a blood donation and is currently in medical cooldown for " + daysRemaining + " more day(s) until " + nextEligibleDate);
+            }
+        }
+
         application.setStatus(ApplicationStatus.ACCEPTED);
 
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
 
         notificationService.createForDonor(
-                application.getDonor(),
+                donor,
                 "Your blood donation application has been accepted.",
                 NotificationType.APPLICATION_ACCEPTED
         );
 
-        return DonationApplicationResponse.builder()
-                .id(updatedApplication.getId())
-                .donorId(updatedApplication.getDonor().getId())
-                .donorName(updatedApplication.getDonor().getFullName())
-                .bloodRequestId(updatedApplication.getBloodRequest().getId())
-                .status(updatedApplication.getStatus())
-                .appliedAt(updatedApplication.getAppliedAt())
-                .build();
+        return mapToResponse(updatedApplication);
     }
 
     @Override
     public DonationApplicationResponse rejectApplication(Long applicationId)
     {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Hospital hospital = hospitalRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found with email: " + email));
+
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
+
+        BloodRequest bloodRequest = application.getBloodRequest();
+        if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
+            throw new InvalidBloodRequestException("You are not authorized to manage this application");
+        }
+
+        if (application.getStatus() != ApplicationStatus.PENDING) {
+            throw new InvalidBloodRequestException("Only pending applications can be rejected");
+        }
 
         application.setStatus(ApplicationStatus.REJECTED);
         DonationApplication updatedApplication = donationApplicationRepository.save(application);
@@ -233,14 +294,7 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                 NotificationType.APPLICATION_REJECTED
         );
 
-        return DonationApplicationResponse.builder()
-                .id(updatedApplication.getId())
-                .donorId(updatedApplication.getDonor().getId())
-                .donorName(updatedApplication.getDonor().getFullName())
-                .bloodRequestId(updatedApplication.getBloodRequest().getId())
-                .status(updatedApplication.getStatus())
-                .appliedAt(updatedApplication.getAppliedAt())
-                .build();
+        return mapToResponse(updatedApplication);
     }
 
     @Override
@@ -254,24 +308,10 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         // Spring Data JPA returns an empty List.
         List<DonationApplication> applications = donationApplicationRepository.findByDonorId(donor.getId());
 
-        if(applications.isEmpty())
-        {
-            throw new ResourceNotFoundException("No donation applications found for donor with id: " + donor.getId());
-        }
-
         List<DonationApplicationResponse> responses = new ArrayList<>();
         for(DonationApplication application : applications)
         {
-            responses.add(
-                    DonationApplicationResponse.builder()
-                            .id(application.getId())
-                            .donorId(application.getDonor().getId())
-                            .donorName(application.getDonor().getFullName())
-                            .bloodRequestId(application.getBloodRequest().getId())
-                            .status(application.getStatus())
-                            .appliedAt(application.getAppliedAt())
-                            .build()
-            );
+            responses.add(mapToResponse(application));
         }
         return responses;
     }
@@ -287,9 +327,14 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Donation application not found with id: " + applicationId));
 
-        if(application.getDonor().getId() != donor.getId())
+        if(!application.getDonor().getId().equals(donor.getId()))
         {
             throw new InvalidDonorException("You can only delete your own donation applications");
+        }
+
+        if(application.getStatus() != ApplicationStatus.PENDING)
+        {
+            throw new InvalidBloodRequestException("Only pending applications can be withdrawn");
         }
 
         application.setStatus(ApplicationStatus.WITHDRAWN);
@@ -317,20 +362,31 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
                                                 + applicationId));
 
         if (application.getStatus() != ApplicationStatus.ACCEPTED) {
-            throw new RuntimeException(
+            throw new InvalidBloodRequestException(
                     "Only accepted applications can be completed");
         }
 
         BloodRequest bloodRequest = application.getBloodRequest();
 
         if (!bloodRequest.getHospital().getId().equals(hospital.getId())) {
-            throw new RuntimeException(
+            throw new InvalidBloodRequestException(
                     "You are not authorized to complete this application");
+        }
+
+        Donor donor = application.getDonor();
+
+        // Check if donor is currently in medical cooldown
+        if (donor.getLastDonationDate() != null) {
+            LocalDate nextEligibleDate = donor.getLastDonationDate().plusDays(AppConstants.DONATION_GAP_DAYS);
+            if (LocalDate.now().isBefore(nextEligibleDate)) {
+                long daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), nextEligibleDate);
+                throw new InvalidDonorException(
+                        "Cannot complete donation. Donor recently completed a blood donation and is currently in medical cooldown for " + daysRemaining + " more day(s) until " + nextEligibleDate);
+            }
         }
 
         application.setStatus(ApplicationStatus.COMPLETED);
 
-        Donor donor = application.getDonor();
         donor.setLastDonationDate(LocalDate.now());
         donorRepository.save(donor);
 
@@ -338,25 +394,50 @@ public class DonationApplicationServiceImpl implements DonationApplicationServic
         if(bloodRequest.getUnitsRequired() == 0)
         {
             bloodRequest.setStatus(BloodRequestStatus.FULFILLED);
+            notificationService.createForHospital(
+                    hospital,
+                    "Blood request #" + bloodRequest.getId() + " has been completely fulfilled! All required units have been donated.",
+                    NotificationType.BLOOD_REQUEST_FULFILLED
+            );
         }
         bloodRequestRepository.save(bloodRequest);
 
         DonationApplication updatedApplication =
                 donationApplicationRepository.save(application);
 
+        // Auto-close / auto-reject all OTHER active applications (PENDING or ACCEPTED) of this donor
+        List<DonationApplication> otherApplications = donationApplicationRepository.findByDonorId(donor.getId());
+        long autoClosedCount = 0;
+        for (DonationApplication otherApp : otherApplications) {
+            if (!otherApp.getId().equals(application.getId()) &&
+                    (otherApp.getStatus() == ApplicationStatus.PENDING || otherApp.getStatus() == ApplicationStatus.ACCEPTED)) {
+
+                otherApp.setStatus(ApplicationStatus.REJECTED);
+                otherApp.setRemarks("Auto-closed: Donor completed a blood donation elsewhere and has entered a " + AppConstants.DONATION_GAP_DAYS + "-day medical cooldown.");
+                donationApplicationRepository.save(otherApp);
+                autoClosedCount++;
+
+                if (otherApp.getBloodRequest() != null && otherApp.getBloodRequest().getHospital() != null) {
+                    notificationService.createForHospital(
+                            otherApp.getBloodRequest().getHospital(),
+                            "Application by " + donor.getFullName() + " for blood request #" + otherApp.getBloodRequest().getId() + " was auto-closed as donor completed donation elsewhere and entered medical cooldown.",
+                            NotificationType.APPLICATION_REJECTED
+                    );
+                }
+            }
+        }
+
+        String donorCompletionMsg = "Your blood donation has been completed.";
+        if (autoClosedCount > 0) {
+            donorCompletionMsg += " " + autoClosedCount + " other active application(s) were automatically closed because you have entered a " + AppConstants.DONATION_GAP_DAYS + "-day medical cooldown.";
+        }
+
         notificationService.createForDonor(
-                application.getDonor(),
-                "Your blood donation has been completed.",
+                donor,
+                donorCompletionMsg,
                 NotificationType.DONATION_COMPLETED
         );
 
-        return DonationApplicationResponse.builder()
-                .id(updatedApplication.getId())
-                .donorId(updatedApplication.getDonor().getId())
-                .donorName(updatedApplication.getDonor().getFullName())
-                .bloodRequestId(updatedApplication.getBloodRequest().getId())
-                .status(updatedApplication.getStatus())
-                .appliedAt(updatedApplication.getAppliedAt())
-                .build();
+        return mapToResponse(updatedApplication);
     }
 }

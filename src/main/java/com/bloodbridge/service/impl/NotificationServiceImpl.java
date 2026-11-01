@@ -12,12 +12,15 @@ import com.bloodbridge.repository.NotificationRepository;
 import com.bloodbridge.service.NotificationService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final DonorRepository donorRepository;
@@ -106,5 +109,36 @@ public class NotificationServiceImpl implements NotificationService {
             );
         }
         return response;
+    }
+
+    @Override
+    public void markAsRead(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + id));
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
+
+    @Override
+    public void markAllAsRead() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Donor> donorOpt = donorRepository.findByEmail(email);
+        if (donorOpt.isPresent()) {
+            List<Notification> notifications = notificationRepository.findByDonorIdOrderByCreatedAtDesc(donorOpt.get().getId());
+            for (Notification n : notifications) {
+                n.setRead(true);
+            }
+            notificationRepository.saveAll(notifications);
+            return;
+        }
+
+        Optional<Hospital> hospitalOpt = hospitalRepository.findByEmail(email);
+        if (hospitalOpt.isPresent()) {
+            List<Notification> notifications = notificationRepository.findByHospitalIdOrderByCreatedAtDesc(hospitalOpt.get().getId());
+            for (Notification n : notifications) {
+                n.setRead(true);
+            }
+            notificationRepository.saveAll(notifications);
+        }
     }
 }

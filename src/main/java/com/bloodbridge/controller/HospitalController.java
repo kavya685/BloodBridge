@@ -47,12 +47,6 @@ public class HospitalController {
         hospitalService.changePassword(request);
     }
 
-    @PutMapping("/change-password-request")
-    public void changePasswordRequest(@Valid @RequestBody HospitalChangePasswordRequest request) {
-
-        hospitalService.changePasswordRequest(request);
-    }
-
     @PutMapping("/me")
     public HospitalResponse updateProfile(
             @Valid @RequestBody HospitalProfileUpdateRequest request) {

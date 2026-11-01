@@ -15,9 +15,11 @@ import com.bloodbridge.repository.DonorRepository;
 import com.bloodbridge.repository.PasswordHistoryRepository;
 import com.bloodbridge.security.JwtService;
 import com.bloodbridge.service.DonorService;
+import com.bloodbridge.util.AppConstants;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -98,6 +100,7 @@ public class DonorServiceImpl implements DonorService {
                 .available(request.getAvailable())
                 .lastDonationDate(request.getLastDonationDate())
                 .passwordExpiration(LocalDateTime.now().plusDays(30))
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
 
         Donor savedDonor = donorRepository.save(donor);
@@ -129,10 +132,15 @@ public class DonorServiceImpl implements DonorService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if(donor.getLockedUntil() != null && donor.getLockedUntil().isAfter(now))
-        {
-            throw new InvalidCredentialsException(
-                    "Account is temporarily locked. Please try again later.");
+        if (donor.getLockedUntil() != null) {
+            if (donor.getLockedUntil().isAfter(now)) {
+                throw new InvalidCredentialsException(
+                        "Account is temporarily locked. Please try again later.");
+            } else {
+                donor.setFailedLoginAttempts(0);
+                donor.setLockedUntil(null);
+                donorRepository.save(donor);
+            }
         }
 
         if(!passwordEncoder.matches(request.getPassword(), donor.getPassword()))
@@ -246,7 +254,7 @@ public class DonorServiceImpl implements DonorService {
         }
 
         LocalDate nextEligibleDate =
-                donor.getLastDonationDate().plusDays(56);
+                donor.getLastDonationDate().plusDays(AppConstants.DONATION_GAP_DAYS);
 
         LocalDate today = LocalDate.now();
 
@@ -269,6 +277,7 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
+    @Transactional
     public void changePassword(
             DonorChangePasswordRequest request) {
 
@@ -284,7 +293,7 @@ public class DonorServiceImpl implements DonorService {
                 request.getCurrentPassword(),
                 donor.getPassword())) {
 
-            throw new InvalidCredentialsException(
+            throw new IllegalArgumentException(
                     "Current password is incorrect"
             );
         }
@@ -292,8 +301,17 @@ public class DonorServiceImpl implements DonorService {
         if (!request.getNewPassword()
                 .equals(request.getConfirmPassword())) {
 
-            throw new InvalidCredentialsException(
+            throw new IllegalArgumentException(
                     "Passwords do not match"
+            );
+        }
+
+        if (passwordEncoder.matches(
+                request.getNewPassword(),
+                donor.getPassword())) {
+
+            throw new IllegalArgumentException(
+                    "New password must be different from current password"
             );
         }
 
@@ -307,7 +325,7 @@ public class DonorServiceImpl implements DonorService {
                     request.getNewPassword(),
                     oldPassword.getPassword())) {
 
-                throw new InvalidCredentialsException(
+                throw new IllegalArgumentException(
                         "You cannot reuse one of your last 3 passwords"
                 );
             }
@@ -326,63 +344,9 @@ public class DonorServiceImpl implements DonorService {
                         request.getNewPassword()
                 )
         );
-
-        donorRepository.save(donor);
-    }
-
-    @Override
-    public void changePasswordRequest(DonorChangePasswordRequest request)
-    {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-
-        Donor donor = donorRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Donor not found"));
-
-        if (!passwordEncoder.matches(
-                request.getCurrentPassword(),
-                donor.getPassword())) {
-
-            throw new InvalidCredentialsException(
-                    "Current password is incorrect"
-            );
-        }
-
-        if (!request.getNewPassword()
-                .equals(request.getConfirmPassword())) {
-
-            throw new InvalidCredentialsException(
-                    "Passwords do not match"
-            );
-        }
-
-        List<PasswordHistory> history =
-                passwordHistoryRepository
-                        .findTop3ByDonorIdOrderByChangedAtDesc(donor.getId());
-
-        for (PasswordHistory oldPassword : history) {
-
-            if (passwordEncoder.matches(
-                    request.getNewPassword(),
-                    oldPassword.getPassword())) {
-
-                throw new InvalidCredentialsException(
-                        "You cannot reuse one of your last 3 passwords"
-                );
-            }
-        }
-
-        PasswordHistory oldPassword = PasswordHistory.builder()
-                .password(donor.getPassword())
-                .changedAt(LocalDateTime.now())
-                .donor(donor)
-                .build();
-
-        passwordHistoryRepository.save(oldPassword);
-        donor.setPassword(passwordEncoder.encode(request.getNewPassword()));
         donor.setPasswordExpiration(LocalDateTime.now().plusDays(30));
+        donor.setFailedLoginAttempts(0);
+
         donorRepository.save(donor);
     }
 
