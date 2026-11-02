@@ -1,6 +1,6 @@
 @import "./variables.css";
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
 }
 
@@ -12,19 +12,22 @@ body {
     margin: 0;
     background: var(--background);
     color: var(--text-primary);
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.5;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
 }
 
-button,
-input,
-select,
-textarea {
+button, input, select, textarea {
     font: inherit;
+    color: inherit;
 }
 
 button {
     cursor: pointer;
+    border: none;
+    background: none;
 }
 
 a {
@@ -32,10 +35,465 @@ a {
     text-decoration: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-p {
+h1, h2, h3, h4, h5, h6, p {
     margin-top: 0;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-muted);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Common UI Utility Classes */
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.badge-critical {
+    background: var(--urgency-critical-bg);
+    color: var(--urgency-critical);
+    border: 1px solid var(--urgency-critical-border);
+}
+
+.badge-high {
+    background: var(--urgency-high-bg);
+    color: var(--urgency-high);
+    border: 1px solid var(--urgency-high-border);
+}
+
+.badge-medium {
+    background: var(--urgency-medium-bg);
+    color: var(--urgency-medium);
+    border: 1px solid var(--urgency-medium-border);
+}
+
+.badge-low {
+    background: var(--urgency-low-bg);
+    color: var(--urgency-low);
+    border: 1px solid var(--urgency-low-border);
+}
+
+.badge-success {
+    background: var(--success-light);
+    color: var(--success-dark);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-warning {
+    background: var(--warning-light);
+    color: var(--warning-dark);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.badge-danger {
+    background: var(--danger-light);
+    color: var(--danger-dark);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Pulsing Status Dot */
+.pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: currentColor;
+    display: inline-block;
+    position: relative;
+}
+
+.pulse-dot::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    background-color: inherit;
+    animation: pulse 1.8s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    opacity: 0.7;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+    }
+    70% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+/* Common Buttons */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--primary);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.925rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.925rem;
+    transition: var(--transition-base);
+}
+
+.btn-secondary:hover {
+    background: var(--surface-muted);
+    border-color: var(--text-muted);
+}
+
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--danger);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: var(--transition-base);
+}
+
+.btn-danger:hover {
+    background: var(--danger-dark);
+}
+
+/* Modern Card Container */
+.card-modern {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+}
+
+.card-modern:hover {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-md);
+}
+
+/* Modern Table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-xs);
+}
+
+.table-modern {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table-modern th {
+    background: var(--surface-muted);
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.table-modern td {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.table-modern tr:last-child td {
+    border-bottom: none;
+}
+
+.table-modern tbody tr:hover {
+    background: var(--surface-muted);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    color: var(--text-muted);
+}
+
+.empty-state h3 {
+    margin-bottom: 6px;
+    font-size: 1.15rem;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    max-width: 400px;
+    margin: 0 auto 16px auto;
+    color: var(--text-muted);
+}
+
+/* Floating Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    max-width: 90vw;
+}
+
+.toast-notification {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md, 8px);
+    font-size: 0.925rem;
+    font-weight: 600;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(8px);
+    max-width: 460px;
+}
+
+.toast-notification.success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.toast-notification.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.toast-notification.warning {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.toast-notification.info {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.toast-close-btn {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: 0.6;
+    padding: 2px 6px;
+    color: inherit;
+    border-radius: 4px;
+    transition: opacity 0.15s ease;
+}
+
+.toast-close-btn:hover {
+    opacity: 1;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ============================================================
+   GLOBAL PRINT STYLES FOR DOCUMENTATION & PDF EXPORT
+   ============================================================ */
+@media print {
+    /* Preserve navbar with logo and tabs for authentic website presentation */
+    .navbar {
+        display: block !important;
+        visibility: visible !important;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        margin-bottom: 16px !important;
+        padding: 0 !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    .navbar * {
+        visibility: visible !important;
+    }
+
+    .navbar-container {
+        display: flex !important;
+        visibility: visible !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 10px 16px !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .navbar-links {
+        display: flex !important;
+        visibility: visible !important;
+        gap: 8px !important;
+    }
+
+    .navbar-brand,
+    .brand-logo-mark,
+    .brand-text,
+    .navbar-link,
+    .role-tag {
+        display: inline-flex !important;
+        visibility: visible !important;
+    }
+
+    .navbar-logout-button,
+    .auth-buttons,
+    .navbar-dropdown,
+    .toast-container,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Force background colors, badges, and card borders to print crisply */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    html, body {
+        background: #ffffff !important;
+        color: #1a202c !important;
+        min-height: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+        width: 1280px !important;
+        min-width: 1280px !important;
+        zoom: 80% !important;
+    }
+
+    #root {
+        width: 1280px !important;
+        min-width: 1280px !important;
+    }
+
+    /* Full-width desktop showcase layout in landscape */
+    .dashboard-page,
+    .requests-feed-page,
+    .notifications-page,
+    .admin-dashboard,
+    .my-requests-page,
+    .my-applications-page,
+    .profile-page,
+    .auth-page,
+    .home-page {
+        padding: 0 !important;
+        max-width: 1240px !important;
+        width: 1240px !important;
+        margin: 0 auto !important;
+    }
+
+    /* Prevent awkward card splits across page breaks */
+    .stat-card,
+    .request-card,
+    .notification-card,
+    .admin-stat-card,
+    .auth-card,
+    .dashboard-section,
+    .table-container {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 6mm 8mm;
+    }
 }

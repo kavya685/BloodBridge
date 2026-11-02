@@ -1,42 +1,110 @@
 :root {
-    /* Brand */
-    --primary: #c62828;
-    --primary-dark: #a61c1c;
-    --primary-light: #fdecec;
+    /* Primary Accent: Vibrant Red (#E53E3E) */
+    --primary: #e53e3e;
+    --primary-dark: #c53030;
+    --primary-darker: #9b2c2c;
+    --primary-light: #fed7d7;
+    --primary-subtle: #fff5f5;
+    --primary-glow: rgba(229, 62, 62, 0.18);
 
-    /* Backgrounds */
-    --background: #f8f9fb;
+    /* Secondary Accent: Medical Blue (#2B6CB0) */
+    --secondary: #2b6cb0;
+    --secondary-dark: #2c5282;
+    --secondary-darker: #2a4365;
+    --secondary-light: #bee3f8;
+    --secondary-subtle: #ebf8ff;
+    --secondary-glow: rgba(43, 108, 176, 0.18);
+
+    /* Base Background: Crisp White (#FFFFFF) */
+    --background: #ffffff;
     --surface: #ffffff;
-    --surface-muted: #f3f4f6;
+    --surface-card: #ffffff;
+    --surface-elevated: #ffffff;
 
-    /* Text */
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
+    /* Section Background: Light Slate (#F7FAFC) */
+    --surface-muted: #f7fafc;
+    --section-bg: #f7fafc;
 
-    /* Borders */
-    --border: #e5e7eb;
-    --border-strong: #d1d5db;
+    /* Primary Text: Charcoal Gray (#2D3748) */
+    --text-primary: #2d3748;
 
-    /* Status */
-    --success: #2e7d32;
-    --success-light: #e8f5e9;
+    /* Secondary Text: Muted Gray (#718096) */
+    --text-secondary: #718096;
+    --text-muted: #a0aec0;
+    --text-inverse: #ffffff;
 
-    --warning: #ed6c02;
-    --warning-light: #fff3e0;
+    /* Borders & Dividers */
+    --border: #e2e8f0;
+    --border-strong: #cbd5e0;
+    --border-accent: #fed7d7;
+    --border-secondary: #bee3f8;
 
-    --danger: #d32f2f;
-    --danger-light: #ffebee;
+    /* Success Tone: Soft Green (#38A169) */
+    --success: #38a169;
+    --success-dark: #2f855a;
+    --success-light: #f0fff4;
+    --success-border: #c6f6d5;
 
-    /* Border radius */
+    /* Warning Tone */
+    --warning: #dd6b20;
+    --warning-dark: #c05621;
+    --warning-light: #fffaf0;
+    --warning-border: #feebc8;
+
+    /* Danger / Critical Tone */
+    --danger: #e53e3e;
+    --danger-dark: #c53030;
+    --danger-light: #fff5f5;
+    --danger-border: #fed7d7;
+
+    /* Info / Medical Tone (aligned with Medical Blue #2B6CB0) */
+    --info: #2b6cb0;
+    --info-dark: #2c5282;
+    --info-light: #ebf8ff;
+    --info-border: #bee3f8;
+
+    /* Medical Urgency Levels */
+    --urgency-critical: #e53e3e;
+    --urgency-critical-bg: #fff5f5;
+    --urgency-critical-border: #fed7d7;
+
+    --urgency-high: #dd6b20;
+    --urgency-high-bg: #fffaf0;
+    --urgency-high-border: #feebc8;
+
+    --urgency-medium: #2b6cb0;
+    --urgency-medium-bg: #ebf8ff;
+    --urgency-medium-border: #bee3f8;
+
+    --urgency-low: #718096;
+    --urgency-low-bg: #f7fafc;
+    --urgency-low-border: #e2e8f0;
+
+    /* Typography */
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Radii */
+    --radius-xs: 4px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
 
-    /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    /* Modern Soft Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(45, 55, 72, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(45, 55, 72, 0.08), 0 1px 2px -1px rgba(45, 55, 72, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(45, 55, 72, 0.08), 0 2px 4px -2px rgba(45, 55, 72, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(45, 55, 72, 0.08), 0 4px 6px -4px rgba(45, 55, 72, 0.03);
+    --shadow-xl: 0 20px 25px -5px rgba(45, 55, 72, 0.1), 0 8px 10px -6px rgba(45, 55, 72, 0.04);
+    --shadow-glow: 0 0 20px rgba(229, 62, 62, 0.18);
+    --shadow-glow-blue: 0 0 20px rgba(43, 108, 176, 0.18);
+
+    /* Animation & Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Layout */
-    --max-width: 1200px;
+    --max-width: 1240px;
 }

@@ -23,16 +23,17 @@ API.interceptors.request.use(
 
 
 API.interceptors.response.use(
-
     (response) => response,
 
     (error) => {
+        const url = error.config?.url || "";
+        const isAuthCheck = url.includes("/login") || url.includes("/change-password");
 
-        if (error.response?.status === 401) {
-
+        if (error.response?.status === 401 && !isAuthCheck) {
             localStorage.removeItem("token");
             localStorage.removeItem("donor");
             localStorage.removeItem("hospital");
+            localStorage.removeItem("admin");
 
             window.location.href = "/";
         }
