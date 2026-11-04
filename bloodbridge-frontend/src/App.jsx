@@ -21,6 +21,11 @@ import EditBloodRequest from "./pages/hospital/EditBloodRequest.jsx";
 import ForgotPassword from "./pages/hospital/forgotPassword/ForgotPassword.jsx"
 import VerifyOTP from "./pages/hospital/forgotPassword/VerifyOTP.jsx";
 import ResetPassword from "./pages/hospital/forgotPassword/ResetPassword.jsx";
+import DonorForgotPassword from "./pages/donor/forgotPassword/ForgotPassword.jsx";
+import DonorVerifyOTP from "./pages/donor/forgotPassword/VerifyOTP.jsx";
+import DonorResetPassword from "./pages/donor/forgotPassword/ResetPassword.jsx";
+import DonorProfile from "./pages/donor/Profile";
+import HospitalProfile from "./pages/hospital/Profile";
 
 // react router takes care of which component to display when url changes
 function App() {
@@ -159,6 +164,41 @@ function App() {
             <Route
                 path="/hospital/reset-password"
                 element={<ResetPassword />}
+            />
+
+            {/* Donor Password Reset Routes */}
+            <Route
+                path="/donor/forgot-password"
+                element={<DonorForgotPassword />}
+            />
+
+            <Route
+                path="/donor/verify-otp"
+                element={<DonorVerifyOTP />}
+            />
+
+            <Route
+                path="/donor/reset-password"
+                element={<DonorResetPassword />}
+            />
+
+            {/* Profile Routes */}
+            <Route
+                path="/donor/profile"
+                element={
+                    <ProtectedRoute role="donor">
+                        <DonorProfile />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/hospital/profile"
+                element={
+                    <ProtectedRoute role="hospital">
+                        <HospitalProfile />
+                    </ProtectedRoute>
+                }
             />
 
         </Routes>

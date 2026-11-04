@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { donorLogin } from "../../services/donor/loginService";
-import { useNavigate } from "react-router-dom";
+import PasswordInput from "../../components/PasswordInput";
+import Toast from "../../components/Toast";
+import { IconBloodDrop } from "../../components/icons/Icons";
 import "../../styles/Auth.css";
 
 function Login() {
@@ -9,20 +12,27 @@ function Login() {
     const [password, setPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const registered = location.state?.registered;
+
+    const [toast, setToast] = useState(
+        registered
+            ? { text: "Account registered successfully! You can now log in.", type: "success" }
+            : null
+    );
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setToast(null);
+        setLoading(true);
 
         try {
             const response = await donorLogin({
                 email,
                 password,
             });
-
-            console.log(response);
 
             localStorage.setItem("token", response.token);
 
@@ -33,20 +43,30 @@ function Login() {
 
             navigate("/donor/dashboard");
 
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
+            const msg = err.response?.data;
+            if (typeof msg === "string" && msg.length > 0) {
+                setToast({ text: msg, type: "error" });
+            } else {
+                setToast({ text: "Invalid email or password. Please try again.", type: "error" });
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
             <div className="auth-card">
 
                 <div className="auth-header">
 
-                    <div className="auth-brand-mark">
-                        ♥
+                    <div className="auth-brand-mark" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IconBloodDrop size={24} color="var(--primary)" />
                     </div>
 
                     <p className="auth-label">
@@ -63,12 +83,6 @@ function Login() {
                     </p>
 
                 </div>
-
-                {error && (
-                    <div className="auth-error">
-                        {error}
-                    </div>
-                )}
 
                 <form
                     className="auth-form"
@@ -100,9 +114,8 @@ function Login() {
                             Password
                         </label>
 
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             placeholder="Enter your password"
                             value={password}
                             onChange={(event) =>
@@ -111,6 +124,14 @@ function Login() {
                             required
                         />
 
+                        <button
+                            type="button"
+                            onClick={() =>
+                                navigate("/donor/forgot-password")
+                            }
+                        >
+                            Forgot password?
+                        </button>
                     </div>
 
                     <button

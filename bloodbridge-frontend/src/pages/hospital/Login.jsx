@@ -1,24 +1,29 @@
 import { useState } from "react";
 import { hospitalLogin } from "../../services/hospital/loginService";
 import { useNavigate } from "react-router-dom";
+import PasswordInput from "../../components/PasswordInput";
+import Toast from "../../components/Toast";
+import { IconHospital } from "../../components/icons/Icons";
 import "../../styles/Auth.css";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError("");
+        setLoading(true);
 
         try {
             const response = await hospitalLogin({
                 email,
                 password,
             });
-
-            console.log(response);
 
             localStorage.setItem("token", response.token);
 
@@ -28,18 +33,41 @@ function Login() {
             );
 
             navigate("/hospital/dashboard");
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
+
+            const msg = err.response?.data;
+
+            // Specific case: registration not yet approved
+            if (
+                typeof msg === "string" &&
+                msg.toLowerCase().includes("not been accepted")
+            ) {
+                setError(
+                    "Your registration is still pending admin approval. " +
+                    "You will receive an email once your account is approved."
+                );
+            } else if (typeof msg === "string" && msg.length > 0) {
+                setError(msg);
+            } else {
+                setError("Invalid email or password. Please try again.");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={error ? { text: error, type: "error" } : null} onClose={() => setError("")} />
 
             <div className="auth-card">
 
                 <div className="auth-header">
-                    <div className="auth-brand-mark">♥</div>
+                    <div className="auth-brand-mark" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IconHospital size={24} color="var(--secondary)" />
+                    </div>
 
                     <p className="auth-label">
                         HOSPITAL PORTAL
@@ -80,9 +108,8 @@ function Login() {
                             Password
                         </label>
 
-                        <input
+                        <PasswordInput
                             id="password"
-                            type="password"
                             placeholder="Enter your password"
                             value={password}
                             onChange={(event) =>
@@ -104,8 +131,9 @@ function Login() {
                     <button
                         type="submit"
                         className="auth-submit"
+                        disabled={loading}
                     >
-                        Sign In
+                        {loading ? "Signing in..." : "Sign In"}
                     </button>
 
                 </form>

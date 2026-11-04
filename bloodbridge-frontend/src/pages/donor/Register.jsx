@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { donorRegister } from "../../services/donor/registerService";
+import PasswordInput from "../../components/PasswordInput";
+import Toast from "../../components/Toast";
+import { IconBloodDrop } from "../../components/icons/Icons";
 import "../../styles/Auth.css";
 
 function Register() {
@@ -17,39 +20,29 @@ function Register() {
     const [hasDonatedBefore, setHasDonatedBefore] = useState(false);
     const [lastDonationDate, setLastDonationDate] = useState("");
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
+        setError("");
 
-        if (
-            !fullName ||
-            !dateOfBirth ||
-            !contactNumber ||
-            !email ||
-            !password ||
-            !confirmPassword ||
-            !bloodGroup ||
-            !city
-        ) {
-            alert("Please fill all required fields.");
+        if (password !== confirmPassword) {
+            setError("Passwords do not match. Please re-enter them.");
             return;
         }
 
         if (hasDonatedBefore && !lastDonationDate) {
-            alert("Please provide your last donation date.");
+            setError("Please provide your last donation date.");
             return;
         }
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
+        setLoading(true);
 
         try {
-
-            const response = await donorRegister({
+            await donorRegister({
                 fullName,
                 dateOfBirth,
                 contactNumber,
@@ -64,32 +57,35 @@ function Register() {
                     : null
             });
 
-            console.log(response);
+            navigate("/donor/login", { state: { registered: true } });
+        } catch (err) {
+            console.error("Donor registration error:", err);
 
-            alert("Registration Successful!");
-
-            navigate("/donor/login");
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                error.response?.data ||
-                "Registration Failed!"
-            );
+            const data = err.response?.data;
+            if (data && typeof data === "object") {
+                const messages = Object.values(data).join(" ");
+                setError(messages);
+            } else if (data && typeof data === "string") {
+                setError(data);
+            } else {
+                setError("Registration failed. Please check your details and try again.");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-page auth-register-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={error ? { text: error, type: "error" } : null} onClose={() => setError("")} />
 
             <div className="auth-card auth-card-wide">
 
                 <div className="auth-header">
 
-                    <div className="auth-brand-mark">
-                        ♥
+                    <div className="auth-brand-mark" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IconBloodDrop size={24} color="var(--primary)" />
                     </div>
 
                     <p className="auth-label">
@@ -106,7 +102,6 @@ function Register() {
                     </p>
 
                 </div>
-
 
                 <form
                     className="auth-form"
@@ -207,9 +202,8 @@ function Register() {
                                 Password
                             </label>
 
-                            <input
+                            <PasswordInput
                                 id="password"
-                                type="password"
                                 placeholder="Minimum 8 characters"
                                 value={password}
                                 onChange={(event) =>
@@ -228,9 +222,8 @@ function Register() {
                                 Confirm Password
                             </label>
 
-                            <input
+                            <PasswordInput
                                 id="confirmPassword"
-                                type="password"
                                 placeholder="Minimum 8 characters"
                                 value={confirmPassword}
                                 onChange={(event) =>
@@ -416,8 +409,9 @@ function Register() {
                     <button
                         type="submit"
                         className="auth-submit"
+                        disabled={loading}
                     >
-                        Create Donor Account
+                        {loading ? "Creating Account..." : "Create Donor Account"}
                     </button>
 
                 </form>

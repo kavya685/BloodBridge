@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { verifyOTP } from "../../../services/passwordService.js";
+import Toast from "../../../components/Toast.jsx";
+import { IconHospital } from "../../../components/icons/Icons.jsx";
 import "../../../styles/Auth.css";
 
 function VerifyOTP() {
@@ -11,12 +13,17 @@ function VerifyOTP() {
     const { email } = location.state || {};
 
     const [otp, setOtp] = useState("");
+    const [toast, setToast] = useState(null);
+
+    const showToast = (text, type = "success") => {
+        setToast({ text, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!email) {
-            alert("Invalid password reset request.");
             navigate("/hospital/forgot-password");
             return;
         }
@@ -33,28 +40,27 @@ function VerifyOTP() {
                 });
 
             } else {
-                alert("Invalid OTP.");
+                showToast("Invalid OTP. Please check and try again.", "error");
             }
 
         } catch (error) {
-            console.log(error);
-
-            alert(
-                error.response?.data ||
-                "Invalid or expired OTP."
-            );
+            console.error(error);
+            const msg = error.response?.data?.message || error.response?.data || "Invalid or expired OTP.";
+            showToast(typeof msg === "string" ? msg : "Invalid or expired OTP.", "error");
         }
     };
 
     return (
         <div className="auth-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
             <div className="auth-card">
 
                 <div className="auth-header">
 
-                    <div className="auth-brand-mark">
-                        ♥
+                    <div className="auth-brand-mark" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IconHospital size={24} color="var(--secondary)" />
                     </div>
 
                     <p className="auth-label">

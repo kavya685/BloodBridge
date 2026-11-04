@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../../services/passwordService.js";
+import PasswordInput from "../../../components/PasswordInput.jsx";
+import Toast from "../../../components/Toast.jsx";
+import { IconHospital } from "../../../components/icons/Icons.jsx";
 import "../../../styles/Auth.css";
 
 function ResetPassword() {
@@ -12,18 +15,23 @@ function ResetPassword() {
 
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [toast, setToast] = useState(null);
+
+    const showToast = (text, type = "success") => {
+        setToast({ text, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!email) {
-            alert("Invalid password reset request.");
             navigate("/hospital/forgot-password");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            alert("Passwords do not match.");
+            showToast("Passwords do not match.", "error");
             return;
         }
 
@@ -35,29 +43,30 @@ function ResetPassword() {
                 confirmPassword
             );
 
-            alert("Password reset successfully.");
+            showToast("Password reset successfully! Redirecting to login...", "success");
 
-            navigate("/hospital/login");
+            setTimeout(() => {
+                navigate("/hospital/login");
+            }, 1200);
 
         } catch (error) {
-            console.log(error);
-
-            alert(
-                error.response?.data ||
-                "Password reset failed. Please try again."
-            );
+            console.error(error);
+            const msg = error.response?.data?.message || error.response?.data || "Password reset failed. Please try again.";
+            showToast(typeof msg === "string" ? msg : "Password reset failed. Please try again.", "error");
         }
     };
 
     return (
         <div className="auth-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
             <div className="auth-card">
 
                 <div className="auth-header">
 
-                    <div className="auth-brand-mark">
-                        ♥
+                    <div className="auth-brand-mark" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <IconHospital size={24} color="var(--secondary)" />
                     </div>
 
                     <p className="auth-label">
@@ -79,14 +88,12 @@ function ResetPassword() {
                 >
 
                     <div className="auth-field">
-
                         <label htmlFor="newPassword">
                             New Password
                         </label>
 
-                        <input
+                        <PasswordInput
                             id="newPassword"
-                            type="password"
                             placeholder="Enter new password"
                             value={newPassword}
                             onChange={(event) =>
@@ -94,18 +101,15 @@ function ResetPassword() {
                             }
                             required
                         />
-
                     </div>
 
                     <div className="auth-field">
-
                         <label htmlFor="confirmPassword">
                             Confirm Password
                         </label>
 
-                        <input
+                        <PasswordInput
                             id="confirmPassword"
-                            type="password"
                             placeholder="Confirm new password"
                             value={confirmPassword}
                             onChange={(event) =>
@@ -113,7 +117,6 @@ function ResetPassword() {
                             }
                             required
                         />
-
                     </div>
 
                     <button
