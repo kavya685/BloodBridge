@@ -1,6 +1,7 @@
 import { editBloodRequest } from "../../services/bloodRequestService.js";
 import { useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import Toast from "../../components/Toast";
 import "../../styles/EditBloodRequest.css";
 
 function EditBloodRequest() {
@@ -9,6 +10,12 @@ function EditBloodRequest() {
     const request = state?.request;
 
     const navigate = useNavigate();
+    const [toast, setToast] = useState(null);
+
+    const showToast = (text, type = "success") => {
+        setToast({ text, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     if (!request) {
         return (
@@ -36,22 +43,27 @@ function EditBloodRequest() {
         e.preventDefault();
 
         try {
+            const formattedExpiresAt = expiresAt && expiresAt.length === 16 ? `${expiresAt}:00` : expiresAt;
             await editBloodRequest(id, {
                 description,
                 urgency,
-                expiresAt
+                expiresAt: formattedExpiresAt
             });
 
-            alert("Blood request edited!");
-            navigate("/hospital/my-blood-requests");
+            navigate("/hospital/my-blood-requests", {
+                state: { toastMessage: "Blood request updated successfully!" }
+            });
         } catch (error) {
-            console.log(error);
-            alert("Failed to edit blood request.");
+            console.error(error);
+            const msg = error.response?.data?.message || error.response?.data || "Failed to edit blood request.";
+            showToast(typeof msg === "string" ? msg : "Failed to edit blood request.", "error");
         }
     };
 
     return (
         <div className="edit-request-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
             <section className="edit-request-header">
                 <div>
@@ -125,10 +137,13 @@ function EditBloodRequest() {
                                     Select Urgency
                                 </option>
                                 <option value="NORMAL">
-                                    NORMAL
+                                    Normal
+                                </option>
+                                <option value="URGENT">
+                                    Urgent
                                 </option>
                                 <option value="EMERGENCY">
-                                    EMERGENCY
+                                    Emergency
                                 </option>
                             </select>
                         </div>

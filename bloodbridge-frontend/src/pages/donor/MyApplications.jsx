@@ -3,6 +3,8 @@ import {
     getApplicationsByDonor,
     withdrawApplication
 } from "../../services/donationApplicationService";
+import DonationCertificateModal from "../../components/DonationCertificateModal";
+import { IconAward, IconCheckCircle, IconFileText } from "../../components/icons/Icons";
 import "../../styles/Dashboard.css";
 
 function MyApplications() {
@@ -11,6 +13,8 @@ function MyApplications() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [actionLoading, setActionLoading] = useState(false);
+    const [selectedCertApp, setSelectedCertApp] = useState(null);
+    const [donorInfo, setDonorInfo] = useState(null);
 
     const fetchApplications = async () => {
 
@@ -27,6 +31,8 @@ function MyApplications() {
                 setError("Donor information not found.");
                 return;
             }
+
+            setDonorInfo(donor);
 
             const data =
                 await getApplicationsByDonor(donor.id);
@@ -173,12 +179,19 @@ function MyApplications() {
                         >
 
                             <p className="stat-label">
-                                BLOOD REQUEST #{application.bloodRequestId}
+                                {application.hospitalName ? application.hospitalName.toUpperCase() : `BLOOD REQUEST #${application.bloodRequestId}`}
                             </p>
 
                             <h3>
                                 {application.status}
                             </h3>
+
+                            {application.bloodGroup && (
+                                <p style={{ fontWeight: "600", color: "var(--primary-accent)", margin: "4px 0" }}>
+                                    Type: {application.bloodGroup.replace("_POSITIVE", "+").replace("_NEGATIVE", "-")}
+                                    {application.unitsRequired ? ` • ${application.unitsRequired} Unit(s)` : ""}
+                                </p>
+                            )}
 
                             <p>
                                 Applied At:{" "}
@@ -210,21 +223,41 @@ function MyApplications() {
                             )}
 
                             {application.status === "ACCEPTED" && (
-                                <p>
-                                    Your application has been accepted.
-                                </p>
+                                <div style={{ marginTop: "10px" }}>
+                                    <p style={{ color: "#2563eb", fontWeight: "600", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <IconCheckCircle size={16} color="#2563eb" /> Application accepted! Please visit the hospital to donate.
+                                    </p>
+                                    <button
+                                        className="primary-button"
+                                        style={{ background: "#2563eb", borderColor: "#2563eb", padding: "7px 16px", fontSize: "0.85rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                                        onClick={() => setSelectedCertApp(application)}
+                                    >
+                                        <IconFileText size={16} />
+                                        View Donation Certificate
+                                    </button>
+                                </div>
                             )}
 
                             {application.status === "REJECTED" && (
-                                <p>
-                                    This application was rejected by the hospital.
+                                <p style={{ color: "var(--text-secondary)" }}>
+                                    {application.remarks || "This application was rejected by the hospital."}
                                 </p>
                             )}
 
                             {application.status === "COMPLETED" && (
-                                <p>
-                                    Your donation has been completed.
-                                </p>
+                                <div style={{ marginTop: "10px" }}>
+                                    <p style={{ color: "#059669", fontWeight: "600", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <IconCheckCircle size={16} color="#059669" /> Life-saving donation completed!
+                                    </p>
+                                    <button
+                                        className="primary-button"
+                                        style={{ background: "#059669", borderColor: "#059669", padding: "7px 16px", fontSize: "0.85rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                                        onClick={() => setSelectedCertApp(application)}
+                                    >
+                                        <IconAward size={16} />
+                                        Download Life-Saver Certificate
+                                    </button>
+                                </div>
                             )}
 
                             {application.status === "WITHDRAWN" && (
@@ -239,6 +272,14 @@ function MyApplications() {
 
                 </div>
 
+            )}
+
+            {selectedCertApp && (
+                <DonationCertificateModal
+                    application={selectedCertApp}
+                    donorName={donorInfo?.fullName || donorInfo?.name}
+                    onClose={() => setSelectedCertApp(null)}
+                />
             )}
 
         </div>

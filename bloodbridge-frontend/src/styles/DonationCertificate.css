@@ -1,0 +1,328 @@
+/* ============================================================
+   DONATION CERTIFICATE MODAL & PRINT STYLES
+   ============================================================ */
+
+.cert-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.cert-modal-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35);
+    max-width: 860px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    animation: certFadeIn 0.25s ease-out;
+}
+
+@keyframes certFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.cert-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Certificate Sheet Canvas */
+.cert-sheet {
+    background: #fffdfa;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.cert-inner-frame {
+    border: 3px double #d97706;
+    outline: 2px solid #b45309;
+    outline-offset: -10px;
+    padding: 40px 36px 32px;
+    background: #ffffff;
+    position: relative;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(217, 119, 6, 0.05);
+}
+
+.cert-header {
+    margin-bottom: 16px;
+}
+
+.cert-emblem {
+    font-size: 2.2rem;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.cert-brand {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #991b1b;
+    text-transform: uppercase;
+}
+
+.cert-motto {
+    font-size: 0.8rem;
+    color: #78716c;
+    font-style: italic;
+    margin: 4px 0 0 0;
+}
+
+.cert-divider {
+    width: 140px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d97706, transparent);
+    margin: 16px auto;
+}
+
+.cert-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.5px;
+}
+
+.cert-subtitle {
+    font-size: 0.825rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #b45309;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.cert-recipient-container {
+    margin: 0 auto 24px auto;
+    display: inline-block;
+}
+
+.cert-recipient-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-bottom: 2px solid #d97706;
+    padding: 0 32px 6px;
+    letter-spacing: -0.5px;
+}
+
+.cert-desc {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.65;
+    max-width: 620px;
+    margin: 0 auto 28px auto;
+}
+
+/* Verification Grid */
+.cert-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: #fafaf9;
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    text-align: left;
+}
+
+.cert-grid-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cert-item-label {
+    font-size: 0.725rem;
+    text-transform: uppercase;
+    color: #78716c;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.cert-item-val {
+    font-size: 0.975rem;
+    font-weight: 700;
+    color: #1c1917;
+}
+
+.cert-item-val.cert-highlight {
+    color: #dc2626;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+/* Bottom Signatures & Seal */
+.cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 16px;
+    border-top: 1px dashed #d6d3d1;
+    margin-top: 12px;
+}
+
+.cert-signature-block {
+    text-align: left;
+    min-width: 180px;
+}
+
+.cert-signature-line {
+    font-family: Georgia, "Brush Script MT", cursive, serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    border-bottom: 1.5px solid #475569;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+.cert-sign-title {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+}
+
+.cert-sign-org {
+    display: block;
+    font-size: 0.725rem;
+    color: #64748b;
+}
+
+/* Medallion Ribbon Seal */
+.cert-seal-badge {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fef08a 0%, #ca8a04 100%);
+    border: 3px solid #b45309;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(180, 83, 9, 0.25);
+    flex-shrink: 0;
+}
+
+.cert-seal-inner {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 1px dashed #78350f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cert-seal-star {
+    font-size: 0.55rem;
+    color: #78350f;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.cert-seal-text {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #78350f;
+    letter-spacing: 0.5px;
+    margin: 2px 0 1px;
+}
+
+.cert-seal-sub {
+    font-size: 0.525rem;
+    font-weight: 800;
+    color: #92400e;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   PRINT / PDF MEDIA QUERY (SCOPED ONLY TO CERTIFICATE MODAL)
+   ============================================================ */
+@media print {
+    body.cert-modal-open *,
+    body:has(.cert-modal-backdrop) * {
+        visibility: hidden;
+    }
+
+    body.cert-modal-open .no-print,
+    body:has(.cert-modal-backdrop) .no-print,
+    body.cert-modal-open .cert-modal-actions,
+    body:has(.cert-modal-backdrop) .cert-modal-actions {
+        display: none !important;
+    }
+
+    body.cert-modal-open .cert-modal-backdrop,
+    body:has(.cert-modal-backdrop) .cert-modal-backdrop {
+        position: static !important;
+        background: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        backdrop-filter: none !important;
+    }
+
+    body.cert-modal-open .cert-modal-container,
+    body:has(.cert-modal-backdrop) .cert-modal-container {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    body.cert-modal-open .cert-sheet,
+    body.cert-modal-open .cert-sheet *,
+    body:has(.cert-modal-backdrop) .cert-sheet,
+    body:has(.cert-modal-backdrop) .cert-sheet * {
+        visibility: visible !important;
+    }
+
+    body.cert-modal-open .cert-sheet,
+    body:has(.cert-modal-backdrop) .cert-sheet {
+        padding: 0 !important;
+        background: #ffffff !important;
+    }
+
+    body.cert-modal-open .cert-inner-frame,
+    body:has(.cert-modal-backdrop) .cert-inner-frame {
+        border: 4px double #d97706 !important;
+        outline: 2px solid #b45309 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+}

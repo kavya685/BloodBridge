@@ -1,40 +1,53 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getMyBloodRequests } from "../../services/bloodRequestService";
-import { deleteBloodRequest } from "../../services/bloodRequestService";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getMyBloodRequests, deleteBloodRequest } from "../../services/bloodRequestService";
+import Toast from "../../components/Toast";
 import "../../styles/MyBloodRequests.css";
 
 function MyBloodRequests() {
     const [bloodRequest, setBloodRequest] = useState([]);
+    const [toast, setToast] = useState(null);
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const showToast = (text, type = "success") => {
+        setToast({ text, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     useEffect(() => {
         fetchBloodRequest();
+        if (location.state?.toastMessage) {
+            showToast(location.state.toastMessage, "success");
+        }
     }, []);
 
     const fetchBloodRequest = async () => {
         try {
             const response = await getMyBloodRequests();
-            setBloodRequest(response);
+            setBloodRequest(response || []);
         } catch (error) {
             console.error(error);
-            alert("Failed to fetch blood requests.");
+            showToast("Failed to fetch blood requests.", "error");
         }
     };
 
     const handleDelete = async (bloodRequestId) => {
         try {
             await deleteBloodRequest(bloodRequestId);
-            alert("Blood Request deleted!");
+            showToast("Blood Request deleted successfully!", "success");
             fetchBloodRequest();
         } catch (error) {
-            alert("Failed to delete blood request.");
+            console.error(error);
+            showToast(error.response?.data?.message || "Failed to delete blood request.", "error");
         }
     };
 
     return (
         <div className="my-requests-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
             {/* Page Header */}
             <section className="my-requests-header">
