@@ -1,35 +1,32 @@
 import { useState, useEffect } from "react";
-import { donorNotifications } from "../../services/donor/notificationService";
-import "../../styles/Dashboard.css";
+import {
+    donorNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead
+} from "../../services/donor/notificationService";
+import Toast from "../../components/Toast";
+import { IconBell, IconCheck } from "../../components/icons/Icons";
+import "../../styles/Notifications.css";
 
 function Notifications() {
-
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [toast, setToast] = useState(null);
+
+    const showToast = (text, type = "success") => {
+        setToast({ text, type });
+        setTimeout(() => setToast(null), 4000);
+    };
 
     const fetchNotifications = async () => {
-
         try {
-
             setLoading(true);
-            setError("");
-
             const response = await donorNotifications();
-
             setNotifications(response || []);
-
         } catch (error) {
-
             console.error(error);
-
-            setError(
-                error.response?.data ||
-                "Unable to load notifications. Please try again."
-            );
-
+            showToast("Failed to fetch notifications.", "error");
         } finally {
-
             setLoading(false);
         }
     };
@@ -38,121 +35,157 @@ function Notifications() {
         fetchNotifications();
     }, []);
 
-    if (loading) {
+    const checkIsRead = (n) => {
+        if (typeof n.isRead === "boolean") return n.isRead;
+        if (typeof n.read === "boolean") return n.read;
+        return false;
+    };
 
-        return (
-            <div className="dashboard-loading">
-                <p>Loading notifications...</p>
-            </div>
-        );
-    }
+    const handleMarkAsRead = async (id) => {
+        try {
+            await markNotificationAsRead(id);
+            setNotifications(prev =>
+                prev.map(n => n.id === id ? { ...n, isRead: true, read: true } : n)
+            );
+        } catch (err) {
+            console.error("Failed to mark notification as read", err);
+            showToast("Unable to update notification status.", "error");
+        }
+    };
+
+    const handleMarkAllAsRead = async () => {
+        try {
+            await markAllNotificationsAsRead();
+            setNotifications(prev =>
+                prev.map(n => ({ ...n, isRead: true, read: true }))
+            );
+            showToast("All notifications marked as read.");
+        } catch (err) {
+            console.error("Failed to mark all as read", err);
+            showToast("Unable to mark all notifications as read.", "error");
+        }
+    };
+
+    const unreadCount = notifications.filter(n => !checkIsRead(n)).length;
 
     return (
-        <div className="dashboard-page">
+        <div className="notifications-page">
+            {/* Floating Top-Right Toast Notification */}
+            <Toast message={toast} onClose={() => setToast(null)} />
 
-            <section className="dashboard-header">
-
-                <div className="dashboard-heading">
-
-                    <p className="dashboard-label">
-                        DONOR PORTAL
+            <section className="notifications-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                <div>
+                    <p className="page-label">DONOR PORTAL</p>
+                    <h1>Notifications</h1>
+                    <p className="page-subtitle">
+                        Stay updated about your applications and blood donations.
                     </p>
-
-                    <h1>
-                        Notifications
-                    </h1>
-
-                    <p className="dashboard-subtitle">
-                        Stay updated about your applications and donations.
-                    </p>
-
                 </div>
 
-                <button
-                    className="secondary-button"
-                    onClick={fetchNotifications}
-                >
-                    Refresh
-                </button>
-
-            </section>
-
-
-            {error && (
-
-                <div className="dashboard-error">
-
-                    <p>{error}</p>
-
+                <div style={{ display: "flex", gap: "10px" }}>
+                    {unreadCount > 0 && (
+                        <button
+                            className="secondary-btn"
+                            style={{ padding: "8px 14px", fontSize: "0.85rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                            onClick={handleMarkAllAsRead}
+                        >
+                            <IconCheck size={14} />
+                            Mark All as Read
+                        </button>
+                    )}
                     <button
-                        className="secondary-button"
+                        className="secondary-btn"
+                        style={{ padding: "8px 14px", fontSize: "0.85rem", cursor: "pointer" }}
                         onClick={fetchNotifications}
                     >
-                        Try Again
+                        Refresh
                     </button>
-
                 </div>
+            </section>
 
-            )}
-
-
-            {!error && notifications.length === 0 && (
-
-                <div className="stat-card">
-
-                    <h3>
-                        No notifications
-                    </h3>
-
-                    <p>
-                        You're all caught up.
-                    </p>
-
+            {loading ? (
+                <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)" }}>
+                    <p>Loading notifications...</p>
                 </div>
+            ) : notifications.length === 0 ? (
+                <section className="notifications-empty">
+                    <div className="notification-empty-icon" style={{ display: "flex", justifyContent: "center", color: "var(--text-muted)" }}>
+                        <IconBell size={42} />
+                    </div>
+                    <h2>No notifications</h2>
+                    <p>You don't have any notifications at the moment.</p>
+                </section>
+            ) : (
+                <section className="notifications-list">
+                    {notifications.map((notification) => {
+                        const isUnread = !checkIsRead(notification);
+                        return (
+                            <article
+                                className="notification-card"
+                                key={notification.id}
+                                style={{
+                                    borderLeft: isUnread ? "4px solid var(--primary-accent)" : "1px solid var(--border-color)",
+                                    background: isUnread ? "rgba(229, 62, 62, 0.02)" : "var(--card-bg)"
+                                }}
+                            >
+                                <div className="notification-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <IconBell size={18} color="var(--primary)" />
+                                </div>
 
+                                <div className="notification-content" style={{ width: "100%" }}>
+                                    <div className="notification-top">
+                                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                            <span className="notification-type">
+                                                {notification.type ? notification.type.replaceAll("_", " ") : "DONATION UPDATE"}
+                                            </span>
+                                            {isUnread && (
+                                                <span style={{
+                                                    fontSize: "0.7rem",
+                                                    fontWeight: "600",
+                                                    background: "rgba(229, 62, 62, 0.12)",
+                                                    color: "var(--primary-accent)",
+                                                    padding: "1px 6px",
+                                                    borderRadius: "10px"
+                                                }}>
+                                                    Unread
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <span className="notification-date">
+                                            {notification.createdAt
+                                                ? new Date(notification.createdAt).toLocaleString("en-IN")
+                                                : "—"}
+                                        </span>
+                                    </div>
+
+                                    <p className="notification-message">
+                                        {notification.message}
+                                    </p>
+
+                                    {isUnread && (
+                                        <button
+                                            style={{
+                                                background: "transparent",
+                                                border: "none",
+                                                color: "var(--medical-blue)",
+                                                fontSize: "0.8rem",
+                                                fontWeight: "600",
+                                                cursor: "pointer",
+                                                padding: 0,
+                                                marginTop: "6px"
+                                            }}
+                                            onClick={() => handleMarkAsRead(notification.id)}
+                                        >
+                                            Mark as read
+                                        </button>
+                                    )}
+                                </div>
+                            </article>
+                        );
+                    })}
+                </section>
             )}
-
-
-            {!error && notifications.length > 0 && (
-
-                <div className="stats-grid">
-
-                    {notifications.map((notification) => (
-
-                        <div
-                            className="stat-card"
-                            key={notification.id}
-                        >
-
-                            <p className="stat-label">
-                                BLOODBRIDGE
-                            </p>
-
-                            <h3>
-                                Notification
-                            </h3>
-
-                            <p>
-                                {notification.message}
-                            </p>
-
-                            <p>
-                                {notification.createdAt
-                                    ? new Date(
-                                        notification.createdAt
-                                    ).toLocaleString()
-                                    : ""
-                                }
-                            </p>
-
-                        </div>
-
-                    ))}
-
-                </div>
-
-            )}
-
         </div>
     );
 }

@@ -24,6 +24,8 @@ import ResetPassword from "./pages/hospital/forgotPassword/ResetPassword.jsx";
 import DonorForgotPassword from "./pages/donor/forgotPassword/ForgotPassword.jsx";
 import DonorVerifyOTP from "./pages/donor/forgotPassword/VerifyOTP.jsx";
 import DonorResetPassword from "./pages/donor/forgotPassword/ResetPassword.jsx";
+import AdminLogin from "./pages/admin/Login";
+import AdminDashboard from "./pages/admin/Dashboard";
 import DonorProfile from "./pages/donor/Profile";
 import HospitalProfile from "./pages/hospital/Profile";
 
@@ -180,6 +182,21 @@ function App() {
             <Route
                 path="/donor/reset-password"
                 element={<DonorResetPassword />}
+            />
+
+            {/* Admin Routes */}
+            <Route
+                path="/admin/login"
+                element={<AdminLogin />}
+            />
+
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <ProtectedRoute role="admin">
+                        <AdminDashboard />
+                    </ProtectedRoute>
+                }
             />
 
             {/* Profile Routes */}

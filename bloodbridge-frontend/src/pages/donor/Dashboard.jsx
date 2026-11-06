@@ -2,6 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { donorDashboard } from "../../services/donor/dashboardService";
 import { donorEligibility } from "../../services/donor/eligibilityService";
 import { useState, useEffect } from "react";
+import {
+    IconBell,
+    IconBloodDrop,
+    IconUsers,
+    IconClock,
+    IconCheckCircle,
+    IconX,
+    IconAward
+} from "../../components/icons/Icons";
 import "../../styles/Dashboard.css";
 
 function Dashboard() {
@@ -116,7 +125,9 @@ function Dashboard() {
                         onClick={() =>
                             navigate("/donor/notifications")
                         }
+                        style={{ display: "inline-flex", alignItems: "center" }}
                     >
+                        <IconBell size={16} style={{ marginRight: "6px" }} />
                         Notifications
                     </button>
 
@@ -125,7 +136,9 @@ function Dashboard() {
                         onClick={() =>
                             navigate("/blood-requests")
                         }
+                        style={{ display: "inline-flex", alignItems: "center" }}
                     >
+                        <IconBloodDrop size={16} style={{ marginRight: "6px" }} />
                         Find Blood Requests
                     </button>
 
@@ -141,47 +154,75 @@ function Dashboard() {
                     <h2>My Applications</h2>
 
                     <p>
-                        Overview of your blood donation applications.
+                        Overview of your blood donation applications. Click any card to view your applications.
                     </p>
 
                 </div>
 
                 <div className="stats-grid">
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Total Applications
-                        </p>
+                    <div
+                        className="stat-card stat-blue"
+                        onClick={() => navigate("/donor/my-applications")}
+                        title="View all your applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Total Applications</p>
+                            <span className="stat-icon-badge">
+                                <IconUsers size={18} color="#2563eb" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.totalApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Pending
-                        </p>
+                    <div
+                        className="stat-card stat-amber"
+                        onClick={() => navigate("/donor/my-applications")}
+                        title="View pending applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Pending</p>
+                            <span className="stat-icon-badge">
+                                <IconClock size={18} color="#d97706" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.pendingApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Accepted
-                        </p>
+                    <div
+                        className="stat-card stat-green"
+                        onClick={() => navigate("/donor/my-applications")}
+                        title="View accepted applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Accepted</p>
+                            <span className="stat-icon-badge">
+                                <IconCheckCircle size={18} color="#059669" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.acceptedApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Rejected
-                        </p>
+                    <div
+                        className="stat-card stat-red"
+                        onClick={() => navigate("/donor/my-applications")}
+                        title="View rejected applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Rejected</p>
+                            <span className="stat-icon-badge">
+                                <IconX size={18} color="#dc2626" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.rejectedApplications}
@@ -205,35 +246,47 @@ function Dashboard() {
 
                 </div>
 
-                <div className="stat-card">
+                <div className={`stat-card ${eligibility.eligible ? "stat-green" : "stat-amber"}`}>
 
                     {eligibility.eligible ? (
 
                         <>
-                            <h3>
+                            <div className="stat-card-header">
+                                <p className="stat-label">Eligibility Status</p>
+                                <span className="stat-icon-badge">
+                                    <IconCheckCircle size={18} color="#059669" />
+                                </span>
+                            </div>
+
+                            <h3 style={{ fontSize: "22px", marginBottom: "8px", color: "var(--success-dark)" }}>
                                 You are eligible to donate
                             </h3>
 
-                            <p>
-                                You can apply for compatible blood requests.
+                            <p style={{ color: "var(--text-secondary)", margin: 0 }}>
+                                You can apply for compatible blood requests in your area.
                             </p>
                         </>
 
                     ) : (
 
                         <>
-                            <h3>
-                                You are currently not eligible
+                            <div className="stat-card-header">
+                                <p className="stat-label">Cooldown Active</p>
+                                <span className="stat-icon-badge">
+                                    <IconClock size={18} color="#d97706" />
+                                </span>
+                            </div>
+
+                            <h3 style={{ fontSize: "22px", marginBottom: "8px", color: "var(--warning-dark)" }}>
+                                You are currently in recovery cooldown
                             </h3>
 
-                            <p>
-                                Next eligible date:{" "}
-                                {eligibility.nextEligible}
+                            <p style={{ color: "var(--text-secondary)", marginBottom: "4px" }}>
+                                Next eligible date: <strong>{eligibility.nextEligible}</strong>
                             </p>
 
-                            <p>
-                                Days remaining:{" "}
-                                {eligibility.daysRemaining}
+                            <p style={{ color: "var(--text-secondary)", margin: 0 }}>
+                                Days remaining: <strong>{eligibility.daysRemaining} days</strong>
                             </p>
                         </>
 
@@ -279,8 +332,10 @@ function Dashboard() {
                         onClick={() =>
                             navigate("/donor/my-applications")
                         }
+                        style={{ display: "inline-flex", alignItems: "center" }}
                     >
-                        My Applications
+                        <IconAward size={16} style={{ marginRight: "6px" }} />
+                        Certificates & Applications
                     </button>
 
                 </div>

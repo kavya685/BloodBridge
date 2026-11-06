@@ -1,6 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { hospitalDashboard } from "../../services/hospital/dashboardService";
 import { useEffect, useState } from "react";
+import {
+    IconBloodDrop,
+    IconClock,
+    IconCheckCircle,
+    IconX,
+    IconUsers,
+    IconBell,
+    IconPlus
+} from "../../components/icons/Icons";
 import "../../styles/Dashboard.css";
 
 function Dashboard() {
@@ -50,7 +59,7 @@ function Dashboard() {
                     </p>
 
                     <h1>
-                        Welcome, {hospital.fullName}
+                        Welcome, {hospital?.hospitalName || hospital?.fullName || "Hospital"}
                     </h1>
 
                     <p className="dashboard-subtitle">
@@ -67,7 +76,9 @@ function Dashboard() {
                         onClick={() =>
                             navigate("/hospital/notifications")
                         }
+                        style={{ display: "inline-flex", alignItems: "center" }}
                     >
+                        <IconBell size={16} style={{ marginRight: "6px" }} />
                         Notifications
                     </button>
 
@@ -76,7 +87,9 @@ function Dashboard() {
                         onClick={() =>
                             navigate("/hospital/create-blood-request")
                         }
+                        style={{ display: "inline-flex", alignItems: "center" }}
                     >
+                        <IconPlus size={16} style={{ marginRight: "6px" }} />
                         Create Request
                     </button>
 
@@ -92,46 +105,74 @@ function Dashboard() {
                     <h2>Blood Requests</h2>
 
                     <p>
-                        Overview of your blood requests.
+                        Overview of your blood requests. Click any card to view your requests.
                     </p>
                 </div>
 
                 <div className="stats-grid">
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Total Requests
-                        </p>
+                    <div
+                        className="stat-card stat-blue"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="View all your blood requests"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Total Requests</p>
+                            <span className="stat-icon-badge">
+                                <IconBloodDrop size={18} color="#2563eb" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.totalRequests}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Open Requests
-                        </p>
+                    <div
+                        className="stat-card stat-amber"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="View open blood requests"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Open Requests</p>
+                            <span className="stat-icon-badge">
+                                <IconClock size={18} color="#d97706" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.openRequests}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Fulfilled
-                        </p>
+                    <div
+                        className="stat-card stat-green"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="View fulfilled requests"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Fulfilled</p>
+                            <span className="stat-icon-badge">
+                                <IconCheckCircle size={18} color="#059669" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.fulfilledRequests}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Deleted
-                        </p>
+                    <div
+                        className="stat-card stat-red"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="View deleted requests"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Deleted</p>
+                            <span className="stat-icon-badge">
+                                <IconX size={18} color="#dc2626" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.deletedRequests}
@@ -150,46 +191,74 @@ function Dashboard() {
                     <h2>Donation Applications</h2>
 
                     <p>
-                        Track applications received for your requests.
+                        Track applications received for your requests. Click to review applicants.
                     </p>
                 </div>
 
                 <div className="stats-grid">
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Total Applications
-                        </p>
+                    <div
+                        className="stat-card stat-blue"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="Review all applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Total Applications</p>
+                            <span className="stat-icon-badge">
+                                <IconUsers size={18} color="#2563eb" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.totalApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Pending
-                        </p>
+                    <div
+                        className="stat-card stat-amber"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="Review pending applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Pending</p>
+                            <span className="stat-icon-badge">
+                                <IconClock size={18} color="#d97706" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.pendingApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Accepted
-                        </p>
+                    <div
+                        className="stat-card stat-green"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="Review accepted applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Accepted</p>
+                            <span className="stat-icon-badge">
+                                <IconCheckCircle size={18} color="#059669" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.acceptedApplications}
                         </h3>
                     </div>
 
-                    <div className="stat-card">
-                        <p className="stat-label">
-                            Rejected
-                        </p>
+                    <div
+                        className="stat-card stat-red"
+                        onClick={() => navigate("/hospital/my-blood-requests")}
+                        title="Review rejected applications"
+                    >
+                        <div className="stat-card-header">
+                            <p className="stat-label">Rejected</p>
+                            <span className="stat-icon-badge">
+                                <IconX size={18} color="#dc2626" />
+                            </span>
+                        </div>
 
                         <h3>
                             {dashboard.rejectedApplications}

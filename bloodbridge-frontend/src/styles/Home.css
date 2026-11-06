@@ -1,473 +1,970 @@
-.home {
-    min-height: calc(100vh - 64px);
+/* ==========================================================================
+   Home.css - Modern Medical-Grade BloodBridge Design System
+   ========================================================================== */
+
+.home-container {
+    width: 100%;
+    min-height: calc(100vh - 65px);
+    background: var(--background);
+    color: var(--text-primary);
 }
 
+/* =========================================================
+   EMERGENCY TICKER
+   ========================================================= */
 
-/* =========================
-   HERO
-========================= */
+.emergency-ticker {
+    background: #fff5f5;
+    border-bottom: 1px solid #fed7d7;
+    padding: 10px 24px;
+    font-size: 0.85rem;
+    color: #c53030;
+    font-weight: 500;
+}
 
-.hero-section {
+.emergency-ticker-content {
     max-width: var(--max-width);
-    min-height: 600px;
-
     margin: 0 auto;
-    padding: 80px 24px;
-
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    align-items: center;
-    gap: 70px;
-}
-
-.hero-content {
-    max-width: 620px;
-}
-
-.hero-eyebrow,
-.section-eyebrow {
-    margin-bottom: 16px;
-
-    color: var(--primary);
-
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-}
-
-.hero-content h1 {
-    margin-bottom: 24px;
-
-    font-size: 60px;
-    line-height: 1.05;
-    letter-spacing: -2px;
-}
-
-.hero-content h1 span {
-    color: var(--primary);
-}
-
-.hero-description {
-    max-width: 540px;
-
-    margin-bottom: 30px;
-
-    color: var(--text-secondary);
-
-    font-size: 17px;
-    line-height: 1.7;
-}
-
-.hero-actions {
     display: flex;
+    align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
+.ticker-pulse {
+    color: var(--primary);
+    font-size: 1rem;
+    animation: beaconPulse 1.8s infinite;
+}
 
-/* =========================
-   BUTTONS
-========================= */
+@keyframes beaconPulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+    100% { opacity: 1; transform: scale(1); }
+}
 
-.primary-button,
-.secondary-button {
+.ticker-label {
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    background: var(--primary);
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 0.725rem;
+}
+
+.ticker-link {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-decoration: underline;
+    transition: var(--transition-fast);
+}
+
+.ticker-link:hover {
+    color: var(--primary);
+}
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.home-hero {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 64px 24px 72px;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+}
+
+.hero-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-
-    padding: 12px 18px;
-
-    border-radius: var(--radius-sm);
-
-    font-size: 14px;
-    font-weight: 600;
-
-    transition: 0.2s ease;
-}
-
-.primary-button {
-    background: var(--primary);
-    color: white;
-}
-
-.primary-button:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-.secondary-button {
-    background: var(--surface);
-
-    color: var(--text-primary);
-
+    gap: 8px;
+    background: var(--surface-muted);
     border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
 }
 
-.secondary-button:hover {
+.hero-title {
+    font-size: 3.25rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.highlight-red {
+    color: var(--primary);
+}
+
+.highlight-blue {
+    color: var(--secondary);
+}
+
+.highlight-green {
+    color: var(--success);
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    max-width: 560px;
+}
+
+.hero-cta-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.hero-btn {
+    padding: 13px 26px;
+    font-size: 1rem;
+}
+
+.hero-hospital-prompt {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.hospital-prompt-link {
+    color: var(--secondary);
+    font-weight: 700;
+    transition: var(--transition-fast);
+}
+
+.hospital-prompt-link:hover {
+    color: var(--secondary-dark);
+    text-decoration: underline;
+}
+
+/* Live Feed Simulation Card */
+.live-feed-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: var(--transition-smooth);
+}
+
+.live-feed-card:hover {
+    border-color: var(--border-accent);
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+.feed-header {
+    background: var(--surface-muted);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.feed-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feed-header-title h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.feed-dot {
+    color: var(--primary);
+    font-size: 0.8rem;
+    animation: beaconPulse 1.5s infinite;
+}
+
+.feed-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--secondary);
+    background: var(--secondary-subtle);
+    border: 1px solid var(--border-secondary);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+
+.feed-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.feed-item {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    transition: var(--transition-fast);
+}
+
+.feed-item:last-child {
+    border-bottom: none;
+}
+
+.feed-item:hover {
+    background: #fbfcfd;
+}
+
+.feed-blood-badge {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-md);
+    background: #fff5f5;
+    border: 1.5px solid #fed7d7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.feed-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.feed-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.feed-top-row strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.feed-urgency-pill {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+}
+
+.urgency-critical {
+    background: #fff5f5;
+    color: var(--primary);
+    border: 1px solid #fed7d7;
+}
+
+.urgency-high {
+    background: #fffaf0;
+    color: #dd6b20;
+    border: 1px solid #feebc8;
+}
+
+.urgency-medium {
+    background: #ebf8ff;
+    color: var(--secondary);
+    border: 1px solid #bee3f8;
+}
+
+.feed-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.feed-time {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.feed-footer {
+    padding: 14px 20px;
+    background: var(--surface-muted);
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.feed-cta-button {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+    transition: var(--transition-fast);
+}
+
+.feed-cta-button:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* =========================================================
+   IMPACT METRICS STRIP
+   ========================================================= */
+
+.impact-strip {
+    background: var(--surface-muted);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px;
+}
+
+.impact-grid {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+}
+
+.impact-item {
+    text-align: center;
+}
+
+.impact-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.impact-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.impact-desc {
+    font-size: 0.825rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* =========================================================
+   COMMON SECTION HEADERS
+   ========================================================= */
+
+.section-head {
+    max-width: 680px;
+    margin: 0 auto 48px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.section-eyebrow {
+    color: var(--secondary);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.section-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* =========================================================
+   INTERACTIVE BLOOD COMPATIBILITY CHECKER
+   ========================================================= */
+
+.compat-section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 80px 24px;
+}
+
+.compat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.compat-selector-bar {
+    display: flex;
+    background: var(--surface-muted);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    gap: 8px;
+    overflow-x: auto;
+    justify-content: center;
+}
+
+.compat-pill {
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.compat-pill:hover {
     border-color: var(--primary);
     color: var(--primary);
 }
 
-
-/* =========================
-   REQUEST PREVIEW
-========================= */
-
-.hero-preview {
-    padding: 26px;
-
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-
-    box-shadow: var(--shadow-md);
+.compat-pill.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-sm);
 }
 
-.preview-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-
-    padding-bottom: 20px;
-    margin-bottom: 8px;
-
-    border-bottom: 1px solid var(--border);
+.compat-result-box {
+    padding: 36px 32px;
 }
 
-.preview-label {
-    display: block;
-
-    margin-bottom: 5px;
-
-    color: var(--text-muted);
-
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.preview-header h3 {
-    margin: 0;
-
-    font-size: 18px;
-}
-
-.live-indicator {
-    color: var(--success);
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.request-preview {
+.compat-header {
     display: flex;
     align-items: center;
-
-    gap: 14px;
-
-    padding: 17px 0;
-
+    justify-content: space-between;
+    padding-bottom: 24px;
     border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
-.blood-group {
-    width: 44px;
-    height: 44px;
+.compat-header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
 
+.compat-large-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    background: #fff5f5;
+    border: 2px solid #fed7d7;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    flex-shrink: 0;
-
-    background: var(--primary-light);
+    font-size: 1.5rem;
+    font-weight: 800;
     color: var(--primary);
-
-    border-radius: 8px;
-
-    font-size: 15px;
-    font-weight: 700;
 }
 
-.request-info {
-    display: flex;
-    flex-direction: column;
-
-    flex: 1;
-
-    gap: 3px;
+.compat-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.35rem;
+    font-weight: 800;
 }
 
-.request-info strong {
-    font-size: 14px;
-}
-
-.request-info span {
-    color: var(--text-muted);
-
-    font-size: 12px;
-}
-
-.urgent-badge,
-.open-badge {
-    padding: 5px 8px;
-
-    border-radius: 5px;
-
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.urgent-badge {
-    background: var(--danger-light);
-    color: var(--danger);
-}
-
-.open-badge {
-    background: var(--success-light);
-    color: var(--success);
-}
-
-.preview-link {
-    display: inline-block;
-
-    margin-top: 18px;
-
-    color: var(--primary);
-
-    font-size: 13px;
-    font-weight: 600;
-}
-
-
-/* =========================
-   ROLES
-========================= */
-
-.roles-section {
-    padding: 85px 24px;
-
-    background: var(--surface-muted);
-}
-
-.section-intro {
-    max-width: 700px;
-
-    margin: 0 auto 40px;
-}
-
-.section-intro h2 {
+.compat-type-label {
     margin: 0;
-
-    font-size: 34px;
-    letter-spacing: -0.5px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.role-grid {
-    max-width: 1000px;
+.compat-urgency-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--secondary-subtle);
+    color: var(--secondary);
+    border: 1px solid var(--border-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+}
 
-    margin: 0 auto;
-
+.compat-details-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
 }
 
-.role-card {
-    padding: 32px;
+.compat-column-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+}
 
-    background: var(--surface);
+.compat-pills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
-    border: 1px solid var(--border);
+.badge-pill {
+    padding: 6px 14px;
     border-radius: var(--radius-md);
-}
-
-.role-number {
-    margin-bottom: 30px;
-
-    color: var(--text-muted);
-
-    font-size: 12px;
+    font-size: 0.875rem;
     font-weight: 700;
 }
 
-.role-card h3 {
-    margin-bottom: 10px;
-
-    font-size: 23px;
+.badge-give {
+    background: #f0fff4;
+    color: var(--success-dark);
+    border: 1px solid var(--success-border);
 }
 
-.role-card > p {
-    margin-bottom: 22px;
-
-    color: var(--text-secondary);
-
-    line-height: 1.6;
+.badge-receive {
+    background: #ebf8ff;
+    color: var(--secondary-dark);
+    border: 1px solid var(--border-secondary);
 }
 
-.role-card ul {
-    margin: 0 0 25px;
-    padding: 0;
-
-    list-style: none;
-}
-
-.role-card li {
-    padding: 9px 0;
-
-    border-top: 1px solid var(--border);
-
-    color: var(--text-secondary);
-
-    font-size: 13px;
-}
-
-.role-card li:last-child {
-    border-bottom: 1px solid var(--border);
-}
-
-.role-card a {
-    color: var(--primary);
-
-    font-size: 13px;
-    font-weight: 600;
-}
-
-
-/* =========================
-   PROCESS
-========================= */
-
-.process-section {
-    max-width: var(--max-width);
-
-    margin: 0 auto;
-
-    padding: 90px 24px;
-}
-
-.centered {
-    text-align: center;
-}
-
-.process-flow {
+.compat-footer {
     display: flex;
     align-items: center;
-
-    max-width: 900px;
-
-    margin: 55px auto 0;
+    justify-content: space-between;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 22px;
+    font-size: 0.925rem;
+    flex-wrap: wrap;
+    gap: 14px;
 }
 
-.process-step {
+.compat-act-btn {
+    font-weight: 700;
+    color: var(--primary);
+    transition: var(--transition-fast);
+}
+
+.compat-act-btn:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* =========================================================
+   DUAL PLATFORM PILLARS (DONOR vs HOSPITAL)
+   ========================================================= */
+
+.pillars-section {
+    background: var(--surface-muted);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 88px 24px;
+}
+
+.pillars-grid {
+    max-width: 1040px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.pillar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 40px 32px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.donor-pillar:hover {
+    border-color: var(--border-accent);
+}
+
+.hospital-pillar:hover {
+    border-color: var(--border-secondary);
+}
+
+.pillar-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+}
+
+.donor-icon {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+}
+
+.hospital-icon {
+    background: #ebf8ff;
+    border: 1px solid #bee3f8;
+}
+
+.pillar-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.donor-tag {
+    color: var(--primary);
+}
+
+.hospital-tag {
+    color: var(--secondary);
+}
+
+.pillar-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.pillar-desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.pillar-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     flex: 1;
 }
 
-.process-step span {
-    color: var(--primary);
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.process-step h3 {
-    margin: 9px 0 6px;
-
-    font-size: 19px;
-}
-
-.process-step p {
-    margin: 0;
-
+.pillar-features li {
+    font-size: 0.9rem;
     color: var(--text-secondary);
-
-    font-size: 13px;
     line-height: 1.5;
 }
 
-.process-line {
-    width: 70px;
-    height: 1px;
-
-    margin: 0 20px;
-
-    background: var(--border-strong);
+.pillar-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.95rem;
 }
 
+.hospital-btn:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+}
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* =========================================================
+   HOW IT WORKS (4-STEP WORKFLOW)
+   ========================================================= */
 
-@media (max-width: 850px) {
+.workflow-section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 88px 24px;
+}
 
-    .hero-section {
+.workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.workflow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    box-shadow: var(--shadow-xs);
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.workflow-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.workflow-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--secondary);
+    margin-bottom: 14px;
+    opacity: 0.85;
+}
+
+.workflow-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.workflow-card p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* =========================================================
+   FINAL CALL TO ACTION BANNER
+   ========================================================= */
+
+.cta-banner {
+    max-width: var(--max-width);
+    margin: 0 auto 80px;
+    padding: 0 24px;
+}
+
+.cta-inner {
+    background: linear-gradient(135deg, #1a202c 0%, #2b6cb0 100%);
+    border-radius: var(--radius-xl);
+    padding: 64px 36px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: var(--shadow-xl);
+}
+
+.cta-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    color: #fed7d7;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    border-radius: var(--radius-full);
+    margin-bottom: 16px;
+}
+
+.cta-inner h2 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+}
+
+.cta-inner p {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.cta-primary {
+    background: var(--primary);
+    padding: 13px 28px;
+}
+
+.cta-secondary {
+    background: #ffffff;
+    color: #1a202c;
+    border: none;
+    padding: 13px 28px;
+}
+
+.cta-secondary:hover {
+    background: #f7fafc;
+    color: var(--secondary);
+}
+
+/* =========================================================
+   CLEAN FOOTER
+   ========================================================= */
+
+.home-footer {
+    background: var(--surface-muted);
+    border-top: 1px solid var(--border);
+    padding: 64px 24px 32px;
+}
+
+.footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 2fr;
+    gap: 60px;
+    margin-bottom: 48px;
+}
+
+.footer-brand .brand-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.footer-brand p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 320px;
+    margin: 0;
+}
+
+.footer-links-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.footer-col h5 {
+    font-size: 0.825rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+}
+
+.footer-col a,
+.footer-col span {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.footer-col a:hover {
+    color: var(--primary);
+}
+
+.footer-bottom {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================= */
+
+@media (max-width: 1024px) {
+    .hero-grid {
         grid-template-columns: 1fr;
-
-        gap: 45px;
+        gap: 40px;
     }
 
-    .hero-content {
-        max-width: 700px;
+    .hero-title {
+        font-size: 2.6rem;
     }
 
-    .hero-content h1 {
-        font-size: 48px;
+    .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .role-grid {
+    .workflow-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pillars-grid {
         grid-template-columns: 1fr;
+    }
+
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 36px;
     }
 }
 
-
-@media (max-width: 600px) {
-
-    .hero-section {
-        padding: 55px 18px;
+@media (max-width: 768px) {
+    .home-hero {
+        padding: 40px 16px;
     }
 
-    .hero-content h1 {
-        font-size: 40px;
-        letter-spacing: -1px;
+    .hero-title {
+        font-size: 2.1rem;
     }
 
-    .hero-description {
-        font-size: 15px;
+    .compat-details-grid {
+        grid-template-columns: 1fr;
     }
 
-    .hero-actions {
-        flex-direction: column;
+    .workflow-grid {
+        grid-template-columns: 1fr;
     }
 
-    .primary-button,
-    .secondary-button {
-        width: 100%;
+    .footer-links-group {
+        grid-template-columns: 1fr;
+        gap: 24px;
     }
 
-    .hero-preview {
-        padding: 20px;
+    .cta-inner {
+        padding: 40px 20px;
     }
 
-    .roles-section,
-    .process-section {
-        padding: 65px 18px;
-    }
-
-    .section-intro h2 {
-        font-size: 28px;
-    }
-
-    .process-flow {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 25px;
-    }
-
-    .process-line {
-        width: 1px;
-        height: 30px;
-
-        margin: 0 0 0 6px;
+    .cta-inner h2 {
+        font-size: 1.8rem;
     }
 }
